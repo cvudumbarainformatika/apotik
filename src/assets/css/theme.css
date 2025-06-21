@@ -1,0 +1,51 @@
+
+/* INI NANTI JIKA ADA DARK */
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *)); 
+
+
+
+
+@theme {
+  --font-poppins: "Poppins", sans-serif;
+
+
+  --color-primary: #001F54;
+  --color-light-primary: #003366;
+  --color-secondary: #E2E1EF;
+  --color-background: #FFFDF2;
+  --color-dark: #181818;
+  --color-text: #1f2937;
+
+  
+}
+
+/* 🌐 Terapkan secara global */
+body {
+  font-family: var(--font-poppins);
+}
+
+
+/* :root {
+  --color-primary: #2563eb;
+  --color-secondary: #38bdf8;
+  --color-background: #ffffff;
+  --color-text: #1f2937;
+}
+
+.theme-dark {
+  --color-primary: #6366f1;
+  --color-secondary: #8b5cf6;
+  --color-background: #1f2937;
+  --color-text: #f9fafb;
+}
+
+.theme-forest {
+  --color-primary: #047857;
+  --color-secondary: #10b981;
+  --color-background: #ecfdf5;
+  --color-text: #064e3b;
+}
+
+:root, .theme-dark, .theme-forest {
+  transition: all 0.3s ease;
+} */
