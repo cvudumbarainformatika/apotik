@@ -5,6 +5,10 @@
 
 @import 'tailwindcss';
 
+
+
 @import './assets/css/theme.css';
+
+@config '../tailwind.config.js'
 
 

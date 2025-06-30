@@ -6,6 +6,8 @@
       :class="[
         baseClasses,
         variantClasses,
+        fullWidth ? 'w-full' : 'w-auto',
+        props.class
       ]"
     >
       <span class="text-[12px]">{{ label }}</span>
@@ -47,14 +49,25 @@ const props = defineProps({
     default: 'primary',
     validator: (val) => ['primary', 'secondary'].includes(val),
   },
+  fullWidth: {
+    type: Boolean,
+    default: false
+  },
+  class: {
+    type: String,
+    default: ''
+  }
 });
 
 const baseClasses =
-  'inline-flex items-center justify-center gap-1 px-[16px] py-[6px] rounded-full disabled:opacity-50 disabled:cursor-not-allowed transition w-auto cursor-pointer border border-primary';
+  'inline-flex items-center justify-center gap-1 px-[16px] py-[6px] rounded-full disabled:opacity-50 disabled:cursor-not-allowed transition w-auto cursor-pointer';
 
 const variantClasses = computed(() => {
   return props.variant === 'secondary'
-    ? 'text-primary bg-secondary hover:bg-background'
-    : 'text-white bg-primary hover:bg-light-primary '; // default = primary
+    ? 'text-primary bg-grady-secondary hover:bg-grady-secondary-hover hover:shadow-secondary'
+    : 'text-white bg-grady-primary hover:bg-grady-primary-hover hover:shadow-primary'; // efek shine saat hover// default = primary
 });
 </script>
+
+<style scoped>
+</style>
