@@ -13,6 +13,10 @@ const router = createRouter({
           path: '/home',
           component: () => import('../components/HelloWorld.vue'),
         },
+        {
+          path: '/coba',
+          component: () => import('../components/Percobaan.vue'),
+        },
         
       ],
     },

@@ -33,8 +33,8 @@ export default {
       },
 
       boxShadow: {
-        'primary': `0 0 12px ${colors.lightPrimary}`,
-        'secondary': `0 0 12px ${colors.lightPrimary}`,
+        'primary': `0 0 8px ${colors.lightPrimary}`,
+        'secondary': `0 0 8px ${colors.lightPrimary}`,
       }
 
       // backgroundSize: {

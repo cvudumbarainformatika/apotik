@@ -60,7 +60,7 @@ const props = defineProps({
 });
 
 const baseClasses =
-  'inline-flex items-center justify-center gap-1 px-[16px] py-[6px] rounded-full disabled:opacity-50 disabled:cursor-not-allowed transition w-auto cursor-pointer';
+  'inline-flex items-center justify-center gap-1 px-[16px] py-[6px] rounded-full disabled:opacity-50 disabled:cursor-not-allowed transition w-auto cursor-pointer border border-primary';
 
 const variantClasses = computed(() => {
   return props.variant === 'secondary'

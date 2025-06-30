@@ -9,11 +9,11 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex h-screen overflow-hidden p-1">
+  <div class="flex h-screen overflow-hidden">
 
     <!-- Main Content -->
-    <main class="flex-1 px-2 pt-[50px] pb-2 overflow-hidden flex justify-center bg-secondary dark:bg-gray-900 rounded-2xl" >
-      <div class="flex-1 overflow-hidden flex mx-auto bg-background text-gray-800 dark:text-gray-100 rounded-2xl">
+    <main class="flex-1 px-2 pt-[60px] pb-2 overflow-hidden flex justify-center bg-secondary dark:bg-gray-900" >
+      <div class="flex-1 overflow-hidden flex mx-auto bg-background text-gray-800 dark:text-gray-100 rounded-3xl">
         <router-view />
       </div>
     </main>
