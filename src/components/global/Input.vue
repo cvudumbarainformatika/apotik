@@ -1,7 +1,7 @@
 <script setup>
 import { computed, ref } from 'vue'
 
-defineProps({
+const props = defineProps({
   label: { type: String, required: true },
   modelValue: { type: [String, Number], default: '' },
   type: { type: String, default: 'text' },
