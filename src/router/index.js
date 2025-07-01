@@ -8,9 +8,9 @@ const router = createRouter({
       path: '/admin',
       component: () => import('../layout/AdminLayout.vue'),
       children: [
-        { path: '', redirect: '/home' },
+        { path: '', redirect: '/dashboard' },
         {
-          path: '/home',
+          path: '/dashboard',
           component: () => import('../components/HelloWorld.vue'),
         },
         {

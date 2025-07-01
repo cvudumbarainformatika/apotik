@@ -1,18 +1,17 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, defineAsyncComponent } from 'vue'
+import { useRouter } from 'vue-router'
 
-onMounted(() => {
-  console.log('layout mounted');
-
-})
-
+const router = useRouter()
+const HeaderMenu = defineAsyncComponent(() => import('./HeaderMenu.vue'))
 </script>
 
 <template>
   <div class="flex h-screen overflow-hidden">
-
+    
     <!-- Main Content -->
-    <main class="flex-1 px-2 pt-[60px] pb-2 overflow-hidden flex justify-center bg-secondary dark:bg-gray-900" >
+    <main class="flex-1 px-2 pt-[65px] pb-2 overflow-hidden flex justify-center bg-secondary dark:bg-gray-900" >
+      <HeaderMenu />
       <div class="flex-1 overflow-hidden flex mx-auto bg-background text-gray-800 dark:text-gray-100 rounded-3xl">
         <router-view />
       </div>
@@ -59,4 +58,6 @@ onMounted(() => {
 .dark ::-webkit-scrollbar-thumb:hover {
   background-color: rgba(75, 85, 99, 0.7);
 }
+
+
 </style>

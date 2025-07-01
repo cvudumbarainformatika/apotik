@@ -13,7 +13,7 @@ const form = ref({
   status: ''
 })
 
-const errorSelect = ref(false)
+const errorSelect = ref(true)
 const errorMessageSelect = ref('')
 const options = ref([
   { value: '1', label: 'Tampilkan' },
@@ -73,14 +73,18 @@ const options = ref([
           <u-title class="">Select (u-select)</u-title>
           <u-col  class="w-full">
               <u-select label="Uselect" v-model="form.status"
-                :options="options" :error="errorSelect" :error-message="errorMessageSelect"
+                :options="options" 
                 @update:modelValue="(val)=> {
                   console.log('val',val);
                   
                 }"
               />
+              <u-select label="Uselect" v-model="form.status"
+                :options="options" :error="errorSelect" :error-message="errorMessageSelect"
+              />
             <div style="margin-bottom: 300px;"></div>
           </u-col>
+          
       </u-col>
 
     </u-view>

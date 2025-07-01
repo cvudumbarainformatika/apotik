@@ -66,7 +66,7 @@ const handleBlur = () => {
    <!-- Error icon & message overlay -->
     <div
       v-if="error && errorMessage && !isFocussed"
-      class="absolute inset-y-0 right-0 flex items-center gap-1 px-2 bg-transparent rounded-r-xl"
+      class="absolute inset-y-0 right-2 flex items-center gap-1 px-2 bg-transparent rounded-r-xl"
     >
       <!-- Error message -->
       <p class="text-xs text-danger whitespace-nowrap mr-2">

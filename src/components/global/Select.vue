@@ -1,86 +1,60 @@
 <script setup>
-import { computed, ref, watch, onMounted, onUnmounted, nextTick } from 'vue'
+import { ref, computed, watch, nextTick, onMounted, onUnmounted } from 'vue'
 
 const props = defineProps({
-  label: { type: String, required: true },
-  modelValue: { type: [String, Number], default: '' },
-  type: { type: String, default: 'text' },
   id: { type: String, default: () => `input-${Math.random().toString(36).substring(2, 8)}` },
-  placeholder: { type: String, default: ' ' }, // default harus ada spasi agar placeholder-shown berfungsi
+  modelValue: [String, Number],
+  options: { type: Array, default: () => [] }, // Format: [{ label, value }]
+  label: String,
+  placeholder: { type: String, default: ' ' },
   error: { type: Boolean, default: false },
-  errorMessage: { type: String, default: '' },
-  noMatchText: { type: String, default: 'Tidak ditemukan' },
-
-  options: { type: Array, default: () => [] }, // [{ label, value }]
+  errorMessage: { type: String, default: 'Harap diisi' },
 })
 
-const emit = defineEmits(['update:modelValue', 'focus', 'blur'])
-
-const hasValue = computed(() => !!modelValue)
-
-const isFocussed = ref(false)
+const emit = defineEmits(['update:modelValue'])
 
 const query = ref('')
 const open = ref(false)
 const activeIndex = ref(-1)
 
+const matching = computed(() => query.value.trim().toLowerCase())
+
+// Sinkronkan query dari modelValue saat berubah
 watch(() => props.modelValue, () => {
-  const match = props.options.find(opt => opt.value === props.modelValue)
+  const match = props.options.find(o => o.value === props.modelValue)
   query.value = match?.label || ''
 })
 
-const filteredOptions = computed(() =>
-  query.value.trim() === ''
-    ? props.options
-    : props.options.filter(opt =>
-        opt.label.toLowerCase().includes(query.value.toLowerCase())
-      )
-)
-
-const matchingValue = computed(() =>
-  query.value.trim().toLowerCase()
-)
-
-const allOptions = computed(() => props.options)
-
-function isActive(opt) {
-  return matchingValue.value && opt.label.toLowerCase().includes(matchingValue.value)
+// Memisahkan label menjadi array bagian cocok & tidak cocok
+function splitLabel(label) {
+  if (!matching.value) return [{ text: label, match: false }]
+  const parts = label.split(new RegExp(`(${matching.value})`, 'gi'))
+  return parts.map(part => ({
+    text: part,
+    match: part.toLowerCase() === matching.value
+  }))
 }
 
-function select(opt) {
-  console.log('opt',opt);
-  
+function select(opt, idx) {
+  console.log('activeIndex', activeIndex.value, 'idx', idx)
   query.value = opt.label
-  open.value = false
   emit('update:modelValue', opt.value)
-  activeIndex.value = -1
+  open.value = false
+  activeIndex.value = idx
 }
 
 function clear() {
   query.value = ''
   emit('update:modelValue', null)
   open.value = false
-}
-
-const handleFocus = () => {
-  emit('focus')
-  isFocussed.value = true
-  open.value = true
-}
-
-const handleBlur = () => {
-  console.log('blur');
-  
-  emit('blur')
-  isFocussed.value = false
-  // open.value = false
+  activeIndex.value = -1
 }
 
 function onKeyDown(e) {
-  if (!open.value && ['ArrowDown', 'ArrowUp'].includes(e.key)) {
-    open.value = true
-  }
+  if (!open.value) open.value = true
+
   const max = props.options.length
+  if (max === 0) return
 
   if (e.key === 'ArrowDown') {
     e.preventDefault()
@@ -101,14 +75,6 @@ function onKeyDown(e) {
   }
 }
 
-// Klik di luar = tutup dropdown
-function handleClickOutside(e) {
-  if (!e.target.closest('.autocomplete-wrapper')) {
-    open.value = false
-    activeIndex.value = -1
-  }
-}
-
 function scrollToActive() {
   nextTick(() => {
     const el = document.querySelector('.autocomplete-active')
@@ -116,40 +82,41 @@ function scrollToActive() {
   })
 }
 
-function getHighlightedLabel(label) {
-  if (!matching.value) return label
-  const regex = new RegExp(`(${matching.value})`, 'gi')
-  return label.replace(regex, '<strong>$1</strong>')
+function handleClickOutside(e) {
+  if (!e.target.closest('.autocomplete-wrapper')) {
+    open.value = false
+    activeIndex.value = -1
+  }
+}
+
+
+function handleFocus() {
+  open.value = true
+  const i = props.options.findIndex(o => o.value === props.modelValue)
+  activeIndex.value = i >= 0 ? i : -1
 }
 
 onMounted(() => window.addEventListener('click', handleClickOutside))
 onUnmounted(() => window.removeEventListener('click', handleClickOutside))
-
 </script>
 
 <template>
   <div class="relative w-full autocomplete-wrapper">
     <!-- Input -->
     <input
-      :id="id"
-      :type="type"
-      :value="modelValue"
-      :placeholder="placeholder"
-      @input="open = true"
+      v-model="query"
       @focus="handleFocus"
-      @blur="handleBlur"
+      @input="open = true"
       @keydown="onKeyDown"
-      v-bind="$attrs"
-
+      :placeholder="placeholder"
+      class="peer w-full px-5 py-3 pr-10 text-sm bg-transparent border rounded-full focus:outline-none focus:ring-1 transition"
       :class="[
-        'peer w-full px-5 py-3 text-sm bg-transparent  border  rounded-full focus:outline-none focus:ring-1  transition duration-200',
-        error ? 'border-danger focus:border-danger focus:ring-danger text-danger' : 'border-light-primary focus:border-primary focus:ring-primary text-primary',
+        error ? 'border-danger text-danger focus:ring-danger' : 'border-light-primary text-primary focus:border-primary focus:ring-primary',
       ]"
-
     />
 
-    <!-- Floating Label (Overlay on border top) -->
-    <label
+    <!-- Floating Label -->
+   <label
       :for="id"
       :class="[
         'absolute left-4 -top-2 px-2 text-xs text-background  rounded-lg transition-all duration-200',
@@ -161,65 +128,58 @@ onUnmounted(() => window.removeEventListener('click', handleClickOutside))
       {{ label }}
     </label>
 
-    <!-- Clear button -->
+    <!-- Clear Button -->
     <button
       v-if="query"
       type="button"
-      class="absolute right-4 top-1/2 -translate-y-1/2 text-light-primary hover:text-primary transition duration-200"
+      class="absolute right-4 top-1/2 -translate-y-1/2 p-1 rounded-xl bg-secondary hover:bg-primary text-primary hover:text-background transition"
       @click="clear"
+      aria-label="Clear"
     >
-      &times;
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
     </button>
 
-
-   <!-- Error icon & message overlay -->
+    <!-- Dropdown -->
     <div
-      v-if="error && errorMessage && !isFocussed"
-      class="absolute inset-y-0 right-0 flex items-center gap-1 px-2 bg-transparent rounded-r-xl"
+      v-show="open"
+      class="absolute z-50 mt-1 w-full bg-secondary border rounded-lg shadow-lg max-h-60 overflow-auto"
     >
-      <!-- Error message -->
-      <p class="text-xs text-danger whitespace-nowrap mr-2">
-        {{ label }} {{ errorMessage }}
-      </p>
-      <!-- Error icon -->
-      <div class="w-5 h-5 flex items-center justify-center text-danger border border-danger border-2 rounded-sm text-sm font-bold rotate-45">
-        <span class="-rotate-45 text-md font-bold">!</span>
+      <div
+        v-for="(opt, idx) in props.options"
+        :key="opt.value"
+        @click="select(opt, idx)"
+        class="px-4 py-2 cursor-pointer transition flex hover:bg-primary/10 hover:text-white"
+        :class="{
+          'autocomplete-active bg-light-primary text-white font-medium': idx === activeIndex
+        }"
+      >
+        <!-- Split label into matched/unmatched parts -->
+        <template v-for="(part, i) in splitLabel(opt.label)" :key="i">
+          <strong v-if="part.match">{{ part.text }}</strong>
+          <span v-else>{{ part.text }}</span>
+        </template>
       </div>
+    </div>
+
+       <!-- Error icon & message overlay -->
+    <div
+      v-if="error"
+      class="absolute inset-y-0 right-2 flex items-center gap-1 px-2 bg-transparent rounded-r-xl"
+    >
+        <!-- Error message -->
+        <p class="text-xs text-danger whitespace-nowrap mr-2">
+          {{ errorMessage }}
+        </p>
+        <!-- Error icon -->
+        <div class="w-5 h-5 flex items-center justify-center text-danger border border-danger border-2 rounded-sm text-sm font-bold rotate-45">
+          <span class="-rotate-45 text-md font-bold">!</span>
+        </div>
 
       
     </div>
 
 
-
-    <!-- Dropdown -->
-    <div
-      v-if="open"
-      class="absolute z-50 w-full bg-secondary border rounded-xl shadow-lg max-h-90 overflow-auto"
-    >
-      <template v-if="filteredOptions.length > 0">
-
-        <div
-          v-for="(opt, idx) in allOptions"
-          :key="opt.value"
-          @click="select(opt)"
-          class="px-4 py-2 hover:bg-primary/10 hover:text-white cursor-pointer transition"
-          :class="{ 
-            'bg-primary/10': idx === activeIndex, 
-            'bg-light-primary text-white font-semibold': isActive(opt)
-            }"
-        >
-          <slot name="option" :option="opt">{{ opt.label }} <span v-if="isActive(opt)">✔</span></slot>
-        </div>
-      </template>
-      <div v-else class="px-4 py-2 text-sm ">
-        {{ noMatchText }}
-      </div>
-    </div>
-
-
-
   </div>
 </template>
-
-<style scoped>
-</style>
