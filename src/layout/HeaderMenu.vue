@@ -10,10 +10,8 @@
             v-for="menu in menus"
             :key="menu.name"
             class="relative"
-            @mouseenter="menu.submenu.length && (openMenu = menu.name)"
-            @mouseleave="menu.submenu.length && (openMenu = null)"
-            @pointerenter="handleEnter(menu.name)"
-            @pointerleave="handleLeave(menu.name)"
+            @mouseenter="handleEnter(menu.name)"
+            @mouseleave="handleLeave(menu.name)"
           >
             <button
               class="hover:text-primary transition px-2 py-1 rounded-md hover:bg-primary/10"
@@ -38,9 +36,10 @@
               <div
                 v-if="openMenu === menu.name && menu.submenu.length"
                 :ref="el => dropdownRefs[menu.name] = el"
-                class="absolute top-full mt-4 min-w-[12rem] bg-white border shadow-lg rounded-md py-2 z-50"
+                class="absolute top-full mt-4 w-max max-w-[320px] bg-white border shadow-lg rounded-md py-2 z-50"
                 style="left: 0;"
-
+                @mouseenter="clearHoverTimeout"
+                @mouseleave="handleLeave(menu.name)"
               >
                 <button
                   v-for="sub in menu.submenu"
@@ -48,8 +47,8 @@
                   @click="goTo(sub.url)"
                   class="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-primary/10 hover:text-primary transition"
                 >
-                  <span class="w-2.5 h-2.5 bg-primary rounded-full shrink-0"></span>
-                  <span>{{ sub.label }}</span>
+                  <span class="w-1 h-1 bg-primary rounded-full shrink-0"></span>
+                  <span class="truncate block max-w-full">{{ sub.label }}</span>
                 </button>
               </div>
             </transition>
@@ -158,14 +157,26 @@ function adjustDropdownPosition(menuName) {
 let hoverTimeout = null
 
 function handleEnter(name) {
+  // console.log('handleEnter');
+  
   clearTimeout(hoverTimeout)
-  openMenu.value = name
+  // openMenu.value = name
+  const menu = menus.value.find(m => m.name === name)
+  menu.submenu.length && (openMenu.value = name)
 }
 
 function handleLeave(name) {
+  // console.log('handleLeave');
+  
+    // const menu = menus.value.find(m => m.name === name)
   hoverTimeout = setTimeout(() => {
     if (openMenu.value === name) openMenu.value = null
+    // menu.submenu.length && (openMenu.value = null)
   }, 100) // kasih delay 100ms supaya tidak flicker
+}
+
+function clearHoverTimeout() {
+  clearTimeout(hoverTimeout)
 }
 
 </script>
