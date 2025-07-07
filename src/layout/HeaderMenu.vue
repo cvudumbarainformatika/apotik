@@ -1,11 +1,13 @@
 <template>
-   <header class="absolute top-0 left-0 w-full h-[60px] px-4 pt-2">
-        <u-view flex1 class="gap-2">
-          <u-row class="">
-            <img src="/images/logo.svg" alt="Logo" class="w-10 h-10" />
-          </u-row>
-          <u-row flex1 right class="">
-            <div class="flex items-center gap-6 text-sm font-medium text-gray-700">
+   <header class="absolute top-0 left-0 w-full h-[60px] px-4 pt-2 text-sm text-primary">
+    <u-view flex1 class="gap-2 ">
+      <u-row class="">
+        <img src="/images/logo.svg" alt="Logo" class="w-10 h-10" />
+        <div>Apotik Udumbara</div>
+      </u-row>
+      <u-row flex1 right class="">
+        <!-- header desktop -->
+        <div class="hidden md:flex items-center gap-6 text-sm font-medium">
           <div
             v-for="menu in menus"
             :key="menu.name"
@@ -14,13 +16,29 @@
             @mouseleave="handleLeave(menu.name)"
           >
             <button
-              class="hover:text-primary transition px-2 py-1 rounded-md hover:bg-primary/10"
+              class="transition px-3 py-2 rounded-lg hover:bg-grady-primary hover:text-background hover:shadow-primary"
               :class="{
-                'bg-primary/10 text-primary font-medium': openMenu === menu.name
+                'bg-grady-primary text-background shadow-primary': openMenu === menu.name
               }"
               @click="menu.submenu.length ? toggleMenu(menu.name) : goTo(menu.url)"
             >
-              {{ menu.label }}
+              <u-row>
+                <span>{{ menu.label }}</span>
+                  <svg
+                    v-if="menu.submenu.length"
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="w-[14px] h-[14px] transition-transform duration-300 ease-in-out"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      :class="{ 'rotate-95': openMenu === menu.name }"
+                    >
+                    <path
+                      fill-rule="evenodd"
+                      d="M6.5 4.5a.5.5 0 0 1 .79-.41l7 5a.5.5 0 0 1 0 .82l-7 5a.5.5 0 0 1-.79-.41v-10z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+              </u-row>
             </button>
 
             <transition 
@@ -36,7 +54,7 @@
               <div
                 v-if="openMenu === menu.name && menu.submenu.length"
                 :ref="el => dropdownRefs[menu.name] = el"
-                class="absolute top-full mt-4 w-max max-w-[320px] bg-white border shadow-lg rounded-md py-2 z-50"
+                class="absolute top-full mt-4 w-max max-w-[320px] bg-light-primary text-background border shadow-lg rounded-md py-2 z-50"
                 style="left: 0;"
                 @mouseenter="clearHoverTimeout"
                 @mouseleave="handleLeave(menu.name)"
@@ -45,28 +63,38 @@
                   v-for="sub in menu.submenu"
                   :key="sub.name"
                   @click="goTo(sub.url)"
-                  class="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-primary/10 hover:text-primary transition"
+                  class="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-background hover:bg-primary hover:text-secondary transition"
                 >
-                  <span class="w-1 h-1 bg-primary rounded-full shrink-0"></span>
+                  <span class="w-1.5 h-1.5 bg-background rounded-full shrink-0"></span>
                   <span class="truncate block max-w-full">{{ sub.label }}</span>
                 </button>
               </div>
             </transition>
           </div>
         </div>
-          </u-row>
-        </u-view>
-      </header>
+
+        <!-- header mobile -->
+        <MobileMenu :menus="menus" />
+      </u-row>
+    </u-view>
+  </header>
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick, watch, computed } from 'vue'
+import { ref, onMounted, nextTick, watch, computed, defineAsyncComponent } from 'vue'
 
 import { useRouter } from 'vue-router'
 
+
+const MobileMenu = defineAsyncComponent(() => import('./MobileMenu.vue'))
+
+
+// KHusus Desktop
 const router = useRouter()
 const dropdownDirection = ref({})
 const dropdownRefs = ref({})
+
+
 
 const openMenu = ref(null)
 onMounted(() => {
@@ -161,17 +189,14 @@ function handleEnter(name) {
   
   clearTimeout(hoverTimeout)
   // openMenu.value = name
-  const menu = menus.value.find(m => m.name === name)
-  menu.submenu.length && (openMenu.value = name)
+  // const menu = menus.value.find(m => m.name === name)
+  openMenu.value = name
 }
 
 function handleLeave(name) {
   // console.log('handleLeave');
-  
-    // const menu = menus.value.find(m => m.name === name)
   hoverTimeout = setTimeout(() => {
     if (openMenu.value === name) openMenu.value = null
-    // menu.submenu.length && (openMenu.value = null)
   }, 100) // kasih delay 100ms supaya tidak flicker
 }
 
@@ -182,13 +207,4 @@ function clearHoverTimeout() {
 </script>
 
 <style>
-/* untuk menu */
-/* .fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.1s ease;
-}
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-} */
 </style>
