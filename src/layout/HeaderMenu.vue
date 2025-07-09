@@ -7,7 +7,7 @@
       </u-row>
       <u-row flex1 right class="">
         <!-- header desktop -->
-        <div class="hidden md:flex items-center gap-6 text-sm font-medium">
+        <div class="hidden md:flex items-center gap-6 text-sm ">
           <div
             v-for="menu in menus"
             :key="menu.name"
@@ -23,7 +23,7 @@
               @click="menu.submenu.length ? toggleMenu(menu.name) : goTo(menu.url)"
             >
               <u-row>
-                <span>{{ menu.label }}</span>
+                <span class="">{{ menu.label }}</span>
                   <svg
                     v-if="menu.submenu.length"
                       xmlns="http://www.w3.org/2000/svg"
@@ -66,7 +66,7 @@
                   class="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-background hover:bg-primary hover:text-secondary transition"
                 >
                   <span class="w-1.5 h-1.5 bg-background rounded-full shrink-0"></span>
-                  <span class="truncate block max-w-full">{{ sub.label }}</span>
+                  <span class="truncate block max-w-full text-xs font-light">{{ sub.label }}</span>
                 </button>
               </div>
             </transition>
@@ -186,10 +186,7 @@ let hoverTimeout = null
 
 function handleEnter(name) {
   // console.log('handleEnter');
-  
   clearTimeout(hoverTimeout)
-  // openMenu.value = name
-  // const menu = menus.value.find(m => m.name === name)
   openMenu.value = name
 }
 

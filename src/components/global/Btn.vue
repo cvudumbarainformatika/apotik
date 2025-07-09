@@ -10,7 +10,7 @@
         props.class
       ]"
     >
-      <span class="text-[12px]">{{ label }}</span>
+      <span>{{ label }}</span>
       <svg
         v-if="showIcon"
         xmlns="http://www.w3.org/2000/svg"
@@ -18,12 +18,12 @@
         fill="currentColor"
         viewBox="0 0 20 20"
       >
-      <path
-        fill-rule="evenodd"
-        d="M6.5 4.5a.5.5 0 0 1 .79-.41l7 5a.5.5 0 0 1 0 .82l-7 5a.5.5 0 0 1-.79-.41v-10z"
-        clip-rule="evenodd"
-      />
-    </svg>
+        <path
+          fill-rule="evenodd"
+          d="M6.5 4.5a.5.5 0 0 1 .79-.41l7 5a.5.5 0 0 1 0 .82l-7 5a.5.5 0 0 1-.79-.41v-10z"
+          clip-rule="evenodd"
+        />
+      </svg>
   </button>
   </div>
 </template>

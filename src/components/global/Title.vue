@@ -1,6 +1,6 @@
 <template>
   <div class="text-xl font-bold">
-    {{ label }}
+    <slot>{{ label }}</slot>
   </div>
 </template>
 <script setup>

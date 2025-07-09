@@ -43,7 +43,7 @@ const handleBlur = () => {
       v-bind="$attrs"
 
       :class="[
-        'peer w-full px-5 py-3 text-sm bg-transparent  border  rounded-full focus:outline-none focus:ring-1  transition duration-200',
+        'peer w-full px-4 py-2 bg-transparent border rounded-full focus:outline-none focus:ring-1 transition duration-200',
         error ? 'border-danger focus:border-danger focus:ring-danger text-danger' : 'border-light-primary focus:border-primary focus:ring-primary text-primary',
       ]"
 
@@ -53,9 +53,9 @@ const handleBlur = () => {
     <label
       :for="id"
       :class="[
-        'absolute left-4 -top-2 px-2 text-xs text-background  rounded-lg transition-all duration-200',
-        'peer-placeholder-shown:top-3 peer-placeholder-shown:text-sm  peer-placeholder-shown:bg-transparent',
-        'peer-focus:-top-2 peer-focus:text-xs peer-focus:text-background ',
+        'absolute left-4 -top-2 px-2 text-background  rounded-lg transition-all duration-200',
+        'peer-placeholder-shown:top-2  peer-placeholder-shown:bg-transparent',
+        'peer-focus:-top-2 peer-focus:text-xs peer-focus:text-background',
         error ? 'bg-danger peer-placeholder-shown:text-danger peer-focus:bg-danger peer-focus' : 'bg-light-primary peer-placeholder-shown:text-gray-600 peer-focus:bg-light-primary peer-focus'
       ]"
     >
@@ -73,7 +73,7 @@ const handleBlur = () => {
         {{ label }} {{ errorMessage }}
       </p>
       <!-- Error icon -->
-      <div class="w-5 h-5 flex items-center justify-center text-danger border border-danger border-2 rounded-sm text-sm font-bold rotate-45">
+      <div class="w-5 h-5 flex items-center justify-center text-danger border border-danger border-2 rounded-sm font-bold rotate-45">
         <span class="-rotate-45 text-md font-bold">!</span>
       </div>
 
