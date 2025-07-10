@@ -18,7 +18,7 @@
             <button
               class="transition px-3 py-2 rounded-lg hover:bg-grady-primary hover:text-background hover:shadow-primary"
               :class="{
-                'bg-grady-primary text-background shadow-primary': openMenu === menu.name
+                'bg-grady-primary text-background shadow-primary': openMenu === menu.name || isActive(menu)
               }"
               @click="menu.submenu.length ? toggleMenu(menu.name) : goTo(menu.url)"
             >
@@ -59,15 +59,15 @@
                 @mouseenter="clearHoverTimeout"
                 @mouseleave="handleLeave(menu.name)"
               >
-                <button
+                <router-link
                   v-for="sub in menu.submenu"
                   :key="sub.name"
-                  @click="goTo(sub.url)"
+                  :to="fixUrl(sub.url)"
                   class="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-background hover:bg-primary hover:text-secondary transition"
                 >
                   <span class="w-1.5 h-1.5 bg-background rounded-full shrink-0"></span>
                   <span class="truncate block max-w-full text-xs font-light">{{ sub.label }}</span>
-                </button>
+                </router-link>
               </div>
             </transition>
           </div>
@@ -83,11 +83,14 @@
 <script setup>
 import { ref, onMounted, nextTick, watch, computed, defineAsyncComponent } from 'vue'
 
+import { useMenuStore } from '@/stores/menus'
+import { convertMenusToHeader } from '../router/modules/convertMenusToHeader'
 import { useRouter } from 'vue-router'
 
 
 const MobileMenu = defineAsyncComponent(() => import('./MobileMenu.vue'))
 
+const menuStore = useMenuStore()
 
 // KHusus Desktop
 const router = useRouter()
@@ -97,6 +100,7 @@ const dropdownRefs = ref({})
 
 
 const openMenu = ref(null)
+
 onMounted(() => {
   console.log('layout mounted');
 
@@ -106,49 +110,11 @@ watch(openMenu, (val) => {
   if (val) adjustDropdownPosition(val)
 })
 
-const menus = ref([
-  {
-    name: 'dashboard',
-    label: 'Dashboard',
-    url: '/',
-    submenu: []
-  },
-  {
-    name: 'master',
-    label: 'Master',
-    url: '/master',
-    submenu: [
-      {
-        name: 'satuan',
-        label: 'Master Satuan',
-        url: '/master/satuan',
-      },
-      {
-        name: 'jenis',
-        label: 'Master Jenis',
-        url: '/master/jenis',
-      },
-    ]
-  },
-  {
-    name: 'transaksi',
-    label: 'Transaksi',
-    url: '/transaksi',
-    submenu: [
-      {
-        name: 'penjualan',
-        label: 'Transaksi Penjualan',
-        url: '/transaksi/penjualan',
-      },
-      {
-        name: 'pembelian',
-        label: 'Transaksi Pembelian',
-        url: '/transaksi/pembelian',
-      },
-    ]
-  },
-  
-])
+watch(() => router.currentRoute.value.path, () => {
+  openMenu.value = null
+})
+
+const menus = computed(() => convertMenusToHeader(menuStore.items))
 
 
 function toggleMenu(name) {
@@ -156,10 +122,26 @@ function toggleMenu(name) {
 }
 
 function goTo(url) {
-  // router.push(url)
-  // openMenu.value = null
-  console.log('url',url);
+  if (!url.startsWith('/admin')) {
+    url = '/admin' + (url.startsWith('/') ? url : '/' + url)
+  }
+  router.push(url)
+  openMenu.value = null
   
+}
+
+function isActive(menu) {
+  const current = router.currentRoute.value.path
+
+  if (menu.submenu && menu.submenu.length) {
+    return menu.submenu.some(sub => fixUrl(sub.url) === current)
+  }
+
+  return fixUrl(menu.url) === current
+}
+
+function fixUrl(url) {
+  return url.startsWith('/admin') ? url : '/admin' + (url.startsWith('/') ? url : '/' + url)
 }
 
 function adjustDropdownPosition(menuName) {

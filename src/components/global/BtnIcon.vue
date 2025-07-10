@@ -16,7 +16,7 @@
         props.class
       ]"
     >
-      <u-icon :name="icon" stroke-width="3" />
+      <u-icon :name="icon" size="20" stroke-width="3" />
   </button>
   </div>
 </template>
