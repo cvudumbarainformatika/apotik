@@ -18,7 +18,7 @@ defineProps({
   },
   mb: {
     type: [String, Number],
-    default: 50,
+    default: 100,
   }
 })
 </script>

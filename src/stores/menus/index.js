@@ -22,6 +22,14 @@ export const useMenuStore = defineStore('menu-store', {
         component: null,
         children:[
           {
+            title: 'Master Satuan',
+            icon: 'layers',
+            url: 'admin/master/satuan',
+            name: 'master.satuan',
+            view: '/src/views/master/satuan',
+            component: 'IndexPage',
+          },
+          {
             title: 'Master Barang',
             icon: 'layers',
             url: 'admin/master/barang',

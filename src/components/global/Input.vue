@@ -53,7 +53,7 @@ const handleBlur = () => {
     <label
       :for="id"
       :class="[
-        'absolute left-4 -top-2 px-2 text-background  rounded-lg transition-all duration-200',
+        'absolute text-xs left-4 -top-2 px-2 text-background  rounded-lg transition-all duration-200',
         'peer-placeholder-shown:top-2  peer-placeholder-shown:bg-transparent',
         'peer-focus:-top-2 peer-focus:text-xs peer-focus:text-background',
         error ? 'bg-danger peer-placeholder-shown:text-danger peer-focus:bg-danger peer-focus' : 'bg-light-primary peer-placeholder-shown:text-gray-600 peer-focus:bg-light-primary peer-focus'
@@ -65,12 +65,12 @@ const handleBlur = () => {
 
    <!-- Error icon & message overlay -->
     <div
-      v-if="error && errorMessage && !isFocussed"
+      v-if="error && !isFocussed"
       class="absolute inset-y-0 right-2 flex items-center gap-1 px-2 bg-transparent rounded-r-xl"
     >
       <!-- Error message -->
       <p class="text-xs text-danger whitespace-nowrap mr-2">
-        {{ label }} {{ errorMessage }}
+        {{ errorMessage }}
       </p>
       <!-- Error icon -->
       <div class="w-5 h-5 flex items-center justify-center text-danger border border-danger border-2 rounded-sm font-bold rotate-45">

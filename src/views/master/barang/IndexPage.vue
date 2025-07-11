@@ -1,47 +1,50 @@
-<template>
-  <u-page>
-    <u-view>
-      <u-row flex1 class="w-full">
-        <u-row class="">
-          <u-input-search />
-          <u-btn-icon tooltip="Tambah Data" />
-          <u-btn-icon icon="rotate-cw" tooltip="Refresh" />
-        </u-row>
-      </u-row>
-    </u-view>
-     <u-view flex1 :scrollY="items.length > 0">
-      <u-list v-if="items.length" :items="items">
-        <template #item="{ item }">
-          <u-col gap="gap-1" class="w-full px-4 py-1">
-            <u-view padding="0" flex1 class="w-full">
-              <u-row class=" ">
-                <div class="font-bold">Header</div>
-              </u-row>
-              <u-row flex1 right class="">
-                bbb
-              </u-row>
-            </u-view>
-            <u-separator />
-            <u-view padding="0" flex1 class="w-full">
-              <u-row class="">
-                <u-col gap="gap-1">
-                  <div class="">Header</div>
-                  <div class="text-sm text-light-primary">Sub Header</div>
-                </u-col>
-              </u-row>
-              <u-row flex1 right class="">
-                <u-btndrop label="Menu" :items="['Profile', 'Settings', 'Logout']" />
-              </u-row>
-            </u-view>
-          </u-col>
-        </template>
-      </u-list>
-      <u-empty v-else></u-empty>
-     </u-view>
-  </u-page>
-</template>
-
 <script setup>
-import { ref } from 'vue'
-const items = ref([])
+import { defineAsyncComponent } from 'vue'
+import { useBarangStore } from '@/stores/template/register'
+
+
+// import BaseMaster from '@/components/templates/BaseMaster.vue'
+const BaseMaster = defineAsyncComponent(() => import('@/components/templates/BaseMaster.vue'))
+const ListComp = defineAsyncComponent(() => import('./ListComp.vue'))
+const ModalForm = defineAsyncComponent(() => import('./ModalForm.vue'))
+
+const store = useBarangStore()
+
+function handleAdd() {
+  console.log('Tambah Barang')
+  store.modalFormOpen = true
+}
+function handleRefresh() {
+  console.log('Refresh List')
+}
 </script>
+
+<template>
+  <base-master :store="store" :onAdd="handleAdd" :onRefresh="handleRefresh">
+    <template #item="{ item }">
+      <list-comp :item="item" />
+    </template>
+    <template #modal-form>
+      <modal-form 
+        v-model="store.modalFormOpen" 
+        :store="store" 
+        @close="store.modalFormOpen = false"
+      />
+    </template>
+
+    <!-- <template #form>
+        <u-grid cols="2" class="bg-background p-4  pb-20" >
+          <u-input label="Kode" type="text"  />
+          <u-input label="Kode" type="text"  />
+          <u-input label="Kode" type="text"  />
+        </u-grid>
+    </template>
+
+    <template #form-footer>
+      <u-row flex1 class="w-full" right>
+        <u-btn variant="secondary" label="Batal" @click="store.modalFormOpen = false" />
+        <u-btn label="Simpan"  />
+      </u-row>
+    </template> -->
+  </base-master>
+</template>

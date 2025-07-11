@@ -80,7 +80,7 @@ const hasDefaultMenu = computed(() => props.items.length > 0)
     <transition name="fade" appear>
       <div
         v-if="isOpen"
-        class="absolute text-xs right-0 top-8 pt-2 min-w-48  w-full rounded-md shadow-lg bg-background ring-1 ring-primary ring-opacity-5 z-50 "
+        class="absolute text-xs right-0 top-8 pt-1 min-w-32  w-full rounded-md shadow-lg bg-background ring-1 ring-primary ring-opacity-5 z-50 "
         
       >
         <div class="py-1">

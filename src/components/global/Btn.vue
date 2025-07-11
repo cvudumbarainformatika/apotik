@@ -1,7 +1,7 @@
 <template>
   <div>
     <button
-      :disabled="disabled"
+      :disabled="disabled || loading"
       v-bind="$attrs"
       :class="[
         baseClasses,
@@ -12,7 +12,7 @@
     >
       <span>{{ label }}</span>
       <svg
-        v-if="showIcon"
+        v-if="!loading"
         xmlns="http://www.w3.org/2000/svg"
         class="w-[14px] h-[14px]"
         fill="currentColor"
@@ -22,6 +22,25 @@
           fill-rule="evenodd"
           d="M6.5 4.5a.5.5 0 0 1 .79-.41l7 5a.5.5 0 0 1 0 .82l-7 5a.5.5 0 0 1-.79-.41v-10z"
           clip-rule="evenodd"
+        />
+      </svg>
+
+      <svg
+        v-else
+        class="animate-spin w-[14px] h-[14px]"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <circle
+          class="opacity-25"
+          cx="12" cy="12" r="10"
+          stroke="currentColor"
+          stroke-width="4"
+        />
+        <path
+          class="opacity-75"
+          fill="currentColor"
+          d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
         />
       </svg>
   </button>
@@ -56,6 +75,10 @@ const props = defineProps({
   class: {
     type: String,
     default: ''
+  },
+  loading: {
+    type: Boolean,
+    default: false
   }
 });
 

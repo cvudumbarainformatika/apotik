@@ -1,5 +1,8 @@
 import axios from 'axios'
 import { useAuthStore } from '@/stores/auth'
+import { useNotificationStore } from '@/stores/notification'
+
+const notify = useNotificationStore().notify
 
 // Create axios instance
 const api = axios.create({
@@ -35,6 +38,8 @@ api.interceptors.response.use(
   error => {
     // Improve error handling
     if (error.response) {
+      console.log('error.response from api', error.response);
+      
       // Extract more detailed error message if available
       const responseData = error.response.data
 
@@ -62,6 +67,8 @@ api.interceptors.response.use(
         // Clear token and redirect to login
         localStorage.removeItem('token')
         // window.location.href = '/login'
+      } else if (error.response.status === 500) {
+        notify({ message: 'Server error, Harap Ulangi', type: 'error' })
       }
     } else if (error.request) {
       // The request was made but no response was received

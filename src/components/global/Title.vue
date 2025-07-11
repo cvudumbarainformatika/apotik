@@ -1,5 +1,5 @@
 <template>
-  <div class="text-xl font-bold">
+  <div class="text-md font-bold">
     <slot>{{ label }}</slot>
   </div>
 </template>
