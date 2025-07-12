@@ -7,6 +7,18 @@ export const useBarangStore = createTemplateStore('barang', {
 })
 export const useSatuanStore = createTemplateStore('satuan', {
   baseUrl: 'api/v1/master/satuan',
+  persist: true
+})
+export const useJabatanStore = createTemplateStore('jabatan', {
+  baseUrl: 'api/v1/master/jabatan',
+  persist: true
+})
+export const useSupplierStore = createTemplateStore('supplier', {
+  baseUrl: 'api/v1/master/supplier',
+  persist: false
+})
+export const usePelangganStore = createTemplateStore('pelanggan', {
+  baseUrl: 'api/v1/master/pelanggan',
   persist: false
 })
 

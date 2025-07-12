@@ -1,6 +1,6 @@
 <script setup>
 import { defineAsyncComponent, onMounted, computed, ref } from 'vue'
-import { useBarangStore, useSatuanStore } from '@/stores/template/register'
+import { useSupplierStore } from '@/stores/template/register'
 import { useRoute } from 'vue-router'
 import { inject } from 'vue'
 const $confirm = inject('confirm')
@@ -12,20 +12,18 @@ const ListComp = defineAsyncComponent(() => import('./ListComp.vue'))
 const ModalForm = defineAsyncComponent(() => import('./ModalForm.vue'))
 
 
-const store = useBarangStore()
-const masterSatuan = useSatuanStore()
+const store = useSupplierStore()
 
 
 const route = useRoute()
 const title = computed(() => route.meta.title)
 
 onMounted(() => {
-  // console.log('Mounted ', title.value);
+  console.log('Mounted ', title.value);
   
   store.per_page = 100
   Promise.all([
-    store.fetchAll(),
-    masterSatuan.fetchAll()
+    store.fetchAll()
   ])
 })
 function handleAdd() {

@@ -4,7 +4,7 @@
     <!-- Header Search & Action -->
     <u-view class="w-full" padding="py-1 px-4">
       <u-row flex1>
-        <u-title :label="title" />
+        <div class="font-bold text-lg text-primary">{{ title }}</div>
       </u-row>
     </u-view>
     <u-separator />

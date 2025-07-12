@@ -23,7 +23,7 @@ export const useMenuStore = defineStore('menu-store', {
         children:[
           {
             title: 'Master Satuan',
-            icon: 'layers',
+            icon: 'tag',
             url: 'admin/master/satuan',
             name: 'master.satuan',
             view: '/src/views/master/satuan',
@@ -35,6 +35,30 @@ export const useMenuStore = defineStore('menu-store', {
             url: 'admin/master/barang',
             name: 'master.barang',
             view: '/src/views/master/barang',
+            component: 'IndexPage',
+          },
+          {
+            title: 'Master Jabatan',
+            icon: 'network',
+            url: 'admin/master/jabatan',
+            name: 'master.jabatan',
+            view: '/src/views/master/jabatan',
+            component: 'IndexPage',
+          },
+          {
+            title: 'Master Supplier',
+            icon: 'users-round',
+            url: 'admin/master/supplier',
+            name: 'master.supplier',
+            view: '/src/views/master/supplier',
+            component: 'IndexPage',
+          },
+          {
+            title: 'Master Pelanggan',
+            icon: 'users',
+            url: 'admin/master/pelanggan',
+            name: 'master.pelanggan',
+            view: '/src/views/master/pelanggan',
             component: 'IndexPage',
           }
         ]

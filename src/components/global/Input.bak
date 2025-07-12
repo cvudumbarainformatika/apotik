@@ -1,83 +1,43 @@
 <script setup>
-import { computed, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 
 const props = defineProps({
   label: { type: String, required: true },
   modelValue: { type: [String, Number], default: '' },
   type: { type: String, default: 'text' },
   id: { type: String, default: () => `input-${Math.random().toString(36).substring(2, 8)}` },
-  placeholder: { type: String, default: ' ' },
+  placeholder: { type: String, default: ' ' }, // default harus ada spasi agar placeholder-shown berfungsi
   error: { type: Boolean, default: false },
   errorMessage: { type: String, default: '' },
 })
 
 const emit = defineEmits(['update:modelValue', 'focus', 'blur'])
 
+const hasValue = computed(() => !!modelValue)
+
 const isFocussed = ref(false)
-const internalValue = ref('')
 
-watch(() => props.modelValue, (val) => {
-  if (props.type === 'number' && !isFocussed.value) {
-    internalValue.value = formatNumber(val)
-  } else {
-    internalValue.value = val?.toString() ?? ''
-  }
-}, { immediate: true })
-
-function formatNumber(value) {
-  if (value === null || value === undefined || value === '') return ''
-  const [intPart, decimalPart] = value.toString().split(/[.,]/)
-  const formattedInt = Number(intPart).toLocaleString('id-ID')
-  return decimalPart ? `${formattedInt},${decimalPart}` : formattedInt
-}
-
-function parseNumber(str) {
-  return Number(str.replace(/\./g, '').replace(',', '.'))
-}
-
-function handleInput(e) {
- let raw = e.target.value
-
-  // ❗ Hanya izinkan angka dan koma
-  if (props.type === 'number') {
-    raw = raw.replace(/[^\d,]/g, '') // Hanya digit dan koma
-    e.target.value = raw // Untuk refleksi langsung di input
-    internalValue.value = raw
-
-    const parsed = parseNumber(raw)
-    emit('update:modelValue', isNaN(parsed) ? null : parsed)
-  } else {
-    internalValue.value = raw
-    emit('update:modelValue', raw)
-  }
-}
-
-function handleFocus() {
+const handleFocus = () => {
   emit('focus')
   isFocussed.value = true
 }
 
-function handleBlur() {
+const handleBlur = () => {
   emit('blur')
   isFocussed.value = false
-  if (props.type === 'number') {
-    internalValue.value = formatNumber(props.modelValue)
-  }
 }
 
-const hasValue = computed(() => !!props.modelValue)
 </script>
-
 
 <template>
   <div class="relative w-full">
     <!-- Input -->
     <input
       :id="id"
-      :type="type === 'number' ? 'text' : type"
-      :value="internalValue"
+      :type="type"
+      :value="modelValue"
       :placeholder="placeholder"
-      @input="handleInput"
+      @input="emit('update:modelValue', $event.target.value)"
       @focus="handleFocus"
       @blur="handleBlur"
       v-bind="$attrs"

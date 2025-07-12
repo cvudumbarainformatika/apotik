@@ -10,53 +10,25 @@
         </u-row>
         <u-row flex1 class="w-full">
           <u-row>
-            <u-select label="Satuan Kecil" v-model="form.satuan_k"
-                :options="optionSatuans" 
-                :error="isError('satuan_k')"
-                :error-message="errorMessage('satuan_k')" 
-                @update:modelValue="(val)=> {
-                  console.log('val',val);
-                  
-                }"
-              />
-          </u-row>
-          <u-row>
-            <u-select label="Satuan Besar" v-model="form.satuan_b"
-                :options="optionSatuans" 
-                :error="isError('satuan_b')"
-                :error-message="errorMessage('satuan_b')" 
-                @update:modelValue="(val)=> {
-                  console.log('val',val);
-                  
-                }"
-              />
-          </u-row>
-          <u-row class="w-36">
-            <u-input v-model="form.isi" type="number" label="Isi sat Bsr" 
-              :error="isError('isi')"
-              :error-message="errorMessage('isi')" 
+            <u-input v-model="form.tlp" label="Telepon" 
+              :error="isError('tlp')"
+              :error-message="errorMessage('tlp')" 
             />
           </u-row>
+          <!-- <u-row flex1>
+            <u-input v-model="form.rekening" label="Rekening" 
+              :error="isError('rekening')"
+              :error-message="errorMessage('rekening')" 
+            />
+          </u-row> -->
         </u-row>
         <u-row flex1 class="w-full">
-          <u-input v-model="form.kandungan" label="Kandungan" 
-            :error="isError('kandungan')"
-            :error-message="errorMessage('kandungan')" 
+          <u-textarea
+            v-model="form.alamat"
+            label="alamat"
+            :error="isError('alamat')"
+            :error-message="errorMessage('alamat')"
           />
-        </u-row>
-        <u-row flex1 class="w-full">
-          <u-row>
-            <u-input type="number" v-model="form.harga_jual_resep_k" label="Harga jual Resep" 
-              :error="isError('harga_jual_resep_k')"
-              :error-message="errorMessage('harga_jual_resep_k')" 
-            />
-          </u-row>
-          <u-row>
-            <u-input type="number" v-model="form.harga_jual_biasa_k" label="Harga Jual Biasa" 
-              :error="isError('harga_jual_biasa_k')"
-              :error-message="errorMessage('harga_jual_biasa_k')" 
-            />
-          </u-row>
         </u-row>
       </u-col>
     </template>
@@ -89,12 +61,8 @@ const error = computed(() => {
 
 const form = ref({
   nama: '',
-  satuan_k: '',
-  satuan_b: '',
-  isi: '',
-  kandungan: '',
-  harga_jual_resep_k: '',
-  harga_jual_biasa_k: ''
+  tlp: '',
+  alamat: '',
 })
 
 function isError(field){
@@ -154,15 +122,9 @@ function init(){
   
 }
 
-import { useSatuanStore } from '@/stores/template/register'
-const masterSatuan = useSatuanStore()
-const optionSatuans = computed(() => masterSatuan?.items?.map(item => ({ label: item?.nama, value: item?.nama })) || [])
-
 onMounted(() => {
-  console.log('Mounted Form', masterSatuan.items);
+  // console.log('Mounted Form', props.mode);
   init()
-
-  // ini tambahan
 })
 
 </script>

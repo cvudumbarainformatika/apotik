@@ -16,22 +16,17 @@
           <u-row flex1 class="w-full">
             <div class="w-full">
               <u-row flex1 class="text-xs">
-                <div>Satuan Kecil : </div>
-                <div class="font-bold">{{ item?.satuan_k }}</div>
-                <div>Satuan Besar : </div>
-                <div class="font-bold">{{ item?.satuan_b }}</div>
+                <div>Contact : </div>
+                <div class="font-bold">{{ item?.tlp }}</div>
+                <div>Rek : </div>
+                <div class="font-bold">{{ item?.rekening }}</div>
                 
               </u-row>
               <u-row flex1 class="w-full text-xs">
-                <div>Isi Satuan Besar : </div>
-                <div class="font-bold">{{ item?.isi }}</div>
+                <div>Alamat : </div>
+                <div class="font-light">{{ item?.alamat }}</div>
               </u-row>
-              <u-row flex1 class="w-full text-xs">
-                <div>Harga Rsp : </div>
-                <div class="font-bold">{{ formatRupiah(item?.harga_jual_resep_k) }}</div>
-                <div>Harga Biasa : </div>
-                <div class="font-bold">{{ formatRupiah(item?.harga_jual_biasa_k) }}</div>
-              </u-row>
+              
              
             </div>
             

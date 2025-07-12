@@ -140,9 +140,15 @@ export function createTemplateStore(storeId, config) {
         this.q = ''
       }
     },
+
     // 💡 Hanya aktifkan persist jika config.persist = true
+    
     persist: config.persist === true ? {
-      paths: ['items', 'per_page'], // atau ['items', 'item'] sesuai kebutuhan
+      pick: ['items', 'per_page']
     } : false
+
+
+
+
   })
 }
