@@ -7,45 +7,69 @@ export const useAuthStore = defineStore('auth-store', {
     token: null,
     isAuthenticated: false,
     isError: false,
+    error: null,
     loading: false,
 
 
-    form : {
-      email: '',
-      password: ''
-    }
+    
   }),
 
   persist: true,
 
   actions: {
-    setUser(user, token) {
-      this.user = user
-      this.token = token
-      this.isAuthenticated = !!user
-    },
+    // setUser(user, token) {
+    //   this.user = user
+    //   this.token = token
+    //   this.isAuthenticated = !!token
+    // },
     setLoading(status) {
       this.loading = status
     },
 
-    async login() {
+    async login(form) {
 
       this.loading = true
 
       try {
-        const response = await api.post('/api/v1/login', this.form)
-        this.setUser(response.data.user, response.data.token)
+        const response = await api.post('/api/v1/auth/login', form)
+        console.log('response', response);
+        const tkn = response?.data?.token
+        this.token = tkn
+        this.isAuthenticated = !!tkn
+        // console.log('token', tkn);
+        
+        // this.setUser(null, response?.token)
         // return response
       } catch (error) {
         console.error('Login error:', error)
         this.isError = true
-        setTimeout(() => {
-          this.isError = false
-        }, 3000)
+        this.error = error
+        throw error
       } finally {
         this.loading = false
       }
     },
+    async getProfile() {
+
+      this.loading = true
+
+      try {
+        const response = await api.post('/api/v1/auth/profile')
+        // console.log('response', response);
+        // this.setUser(response?.data?.user, null)
+        this.user = response?.data?.user
+        // return response
+      } catch (error) {
+        console.error('Login error:', error)
+        this.isError = true
+        this.error = error
+        throw error
+      } finally {
+        this.loading = false
+      }
+    },
+
+
 
     async logout() {
       this.loading = true
@@ -63,6 +87,12 @@ export const useAuthStore = defineStore('auth-store', {
       }
 
 
+    },
+
+    clearFieldError(field) {
+      if (this.error?.response?.data?.errors?.[field]) {
+        delete this.error.response.data.errors[field]
+      }
     },
 
   },

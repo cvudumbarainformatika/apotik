@@ -60,6 +60,14 @@ export const useMenuStore = defineStore('menu-store', {
             name: 'master.pelanggan',
             view: '/src/views/master/pelanggan',
             component: 'IndexPage',
+          },
+          {
+            title: 'Master Pengguna',
+            icon: 'users',
+            url: 'admin/master/user',
+            name: 'master.user',
+            view: '/src/views/master/user',
+            component: 'IndexPage',
           }
         ]
       },

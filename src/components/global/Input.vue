@@ -15,6 +15,7 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue', 'focus', 'blur'])
 
+const inputRef = ref(null)
 const isFocussed = ref(false)
 const internalValue = ref('')
 
@@ -67,6 +68,11 @@ function handleBlur() {
   }
 }
 
+
+function handleClickError() {
+  inputRef.value?.focus()
+}
+
 const hasValue = computed(() => !!props.modelValue)
 </script>
 
@@ -76,6 +82,7 @@ const hasValue = computed(() => !!props.modelValue)
     <!-- Input -->
     <input
       :id="id"
+      ref="inputRef"
       :type="type === 'number' ? 'text' : type"
       :value="internalValue"
       :placeholder="placeholder"
@@ -113,6 +120,7 @@ const hasValue = computed(() => !!props.modelValue)
     <div
       v-if="error && !isFocussed"
       class="absolute inset-y-0 right-2 flex items-center gap-1 px-2 bg-transparent rounded-r-xl"
+      @click="handleClickError"
     >
       <!-- Error message -->
       <p class="text-xs text-danger whitespace-nowrap mr-2">

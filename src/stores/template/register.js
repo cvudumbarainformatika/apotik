@@ -21,6 +21,10 @@ export const usePelangganStore = createTemplateStore('pelanggan', {
   baseUrl: 'api/v1/master/pelanggan',
   persist: false
 })
+export const useUserStore = createTemplateStore('user', {
+  baseUrl: 'api/v1/auth',
+  persist: false
+})
 
 // export const useSupplierStore = createTemplateStore('supplier', {
 //   baseUrl: '/api/supplier',

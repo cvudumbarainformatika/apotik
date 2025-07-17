@@ -2,11 +2,13 @@
   <label class="inline-flex items-center space-x-2 cursor-pointer select-none">
     <input
       type="checkbox"
-      class="form-checkbox h-5 w-5 text-primary rounded-md border-primary focus:ring-primary"
+      :class="[`form-checkbox h-4 w-4 rounded-md`,
+        login ? 'text-background border-primary focus:ring-primary' : 'text-primary border-background focus:ring-background'
+      ]"
       :checked="modelValue"
       @change="$emit('update:modelValue', $event.target.checked)"
     />
-    <span class="text-primary">{{ label }}</span>
+    <span :class="login ? 'text-background' : 'text-primary'">{{ label }}</span>
   </label>
 </template>
 
@@ -20,6 +22,7 @@ defineProps({
     type: String,
     default: '',
   },
+  login: { type: Boolean, default: false },
 })
 
 defineEmits(['update:modelValue'])

@@ -9,17 +9,31 @@
           />
         </u-row>
         <u-row flex1 class="w-full">
-          <u-row>
-            <u-input v-model="form.tlp" label="Telepon" 
-              :error="isError('tlp')"
-              :error-message="errorMessage('tlp')" 
+          <u-row flex1>
+            <u-input v-model="form.username" label="Username" 
+              :error="isError('username')"
+              :error-message="errorMessage('username')" 
             />
           </u-row>
           <u-row flex1>
-            <u-input v-model="form.rekening" label="Rekening" 
-              :error="isError('rekening')"
-              :error-message="errorMessage('rekening')" 
+            <u-input v-model="form.email" label="Email" 
+              :error="isError('email')"
+              :error-message="errorMessage('email')" 
             />
+          </u-row>
+        </u-row>
+        <u-row flex1 class="w-full">
+          <u-row flex1>
+            <u-input v-model="form.hp" label="No. Hp" 
+              :error="isError('hp')"
+              :error-message="errorMessage('hp')" 
+            />
+          </u-row>
+          <u-row flex1>
+            <!-- <u-input v-model="form.email" label="Email" 
+              :error="isError('email')"
+              :error-message="errorMessage('email')" 
+            /> -->
           </u-row>
         </u-row>
         <u-row flex1 class="w-full">
@@ -29,6 +43,20 @@
             :error="isError('alamat')"
             :error-message="errorMessage('alamat')"
           />
+        </u-row>
+         <u-row flex1 class="w-full">
+          <u-row flex1>
+            <u-input v-model="form.password" label="Buat Password" 
+              :error="isError('password')"
+              :error-message="errorMessage('password')" 
+            />
+          </u-row>
+          <u-row flex1>
+            <u-input v-model="form.password_confirmation" label="Password Confirmation" 
+              :error="isError('password_confirmation')"
+              :error-message="errorMessage('password_confirmation')" 
+            />
+          </u-row>
         </u-row>
       </u-col>
     </template>
@@ -43,6 +71,7 @@
 
 <script setup>
 import { ref, onMounted, computed, watch } from 'vue'
+import { useFormError } from '@/composables/useFormError'
 const props = defineProps({
   store: { type: Object, required: true },
   title: { type: String, default: 'Data' },
@@ -54,45 +83,16 @@ const emit = defineEmits(['close', 'save'])
 
 const form = ref({
   nama: '',
-  tlp: '',
-  rekening: '',
+  username: '',
+  email: '',
+  password: '',
+  password_confirmation: '',
+  hp: '',
   alamat: '',
+  kode_jabatan: '',
 })
 
-
-const error = computed(() => {
-  const err = props.store.error
-  const status = err?.status === 422
-  if (status) {
-    return err?.response?.data?.errors
-  }
-  return null
-})
-
-function isError(field){
-  return !!error.value?.[field]
-}
-
-function errorMessage(field){
-  return error.value?.[field]?.[0] ?? null
-} 
-
-
-
-watch(
-  () => ({ ...form.value }),
-  (newForm, oldForm) => {
-    // console.log('🔥 watch form', newForm, oldForm);
-    
-    for (const key in newForm) {
-      if (newForm[key] !== oldForm[key]) {
-        props.store.clearFieldError(key)
-      }
-    }
-  },
-  { deep: true }
-)
-
+const { isError, errorMessage } = useFormError(form.value, props.store)
 
 
 
