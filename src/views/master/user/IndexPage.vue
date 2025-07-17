@@ -37,7 +37,12 @@ function handleRefresh() {
 
 function handleSave(form, mode) {
   console.log('handleSave', form, mode);
-  store.create(form, mode)
+  if (mode === 'add') {
+    store.create(form, mode)
+  } else {
+    store.update(form, mode)
+  }
+  
 }
 
 function handleEdit(item) {

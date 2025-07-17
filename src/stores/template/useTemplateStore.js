@@ -65,11 +65,11 @@ export function createTemplateStore(storeId, config) {
       async create(data, mode) {
         // console.log('data', data);
         // console.log('mode', mode);
+          this.loadingSave = true
         
         
         try {
-          this.loadingSave = true
-          const res = await api.post(config.baseUrl + '/simpan', data)
+          const res = await api.post(`${config.baseUrl}/${ config?.createUrl || '/simpan'}`, data)
           console.log(`resp ${storeId} create : `, res);
           if (res.status === 200) {
             const result = res.data.data
@@ -96,8 +96,32 @@ export function createTemplateStore(storeId, config) {
           this.loadingSave = false
         }
       },
-      async update(id, data) {
-        return await api.put(`${config.baseUrl}/${id}`, data)
+      async update(data, mode) {
+        // return await api.put(`${config.baseUrl}/${config?.endpointUpdate || '/update'}/${id}`, data)
+        this.loadingSave = true
+        try {
+          const res = await api.put(`${config.baseUrl}/${config?.updateUrl || '/update'}`, data)
+          console.log(`resp ${storeId} update : `, res);
+          if (res.status === 200) {
+            const result = res.data.data
+            // if (mode === 'add') {
+            //   this.items.unshift(result)
+            // }else {
+            this.items = this.items.map((item) => {
+              if (item.id === result.id) {
+                return result
+              }
+              return item
+            })
+            // }
+            this.error = null
+          }
+        } catch (error) {
+          console.log(`error ${storeId} update : `, error);
+          
+        } finally {
+          this.loadingSave = false
+        }
       },
       async remove(id) {
         // return await api.delete(`${config.baseUrl}/${id}`)
