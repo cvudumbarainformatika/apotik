@@ -21,7 +21,7 @@ const title = computed(() => route.meta.title)
 onMounted(() => {
   // console.log('Mounted ', title.value);
   
-  store.per_page = 100
+  store.per_page = 10
   Promise.all([
     store.fetchAll()
   ])

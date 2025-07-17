@@ -92,7 +92,7 @@ const hasValue = computed(() => !!props.modelValue)
       v-bind="$attrs"
 
       :class="[
-        'peer w-full px-4 py-2 bg-transparent border rounded-full focus:outline-none focus:ring-1 transition duration-200',
+        'peer w-full text-sm px-4 py-2 bg-transparent border rounded-full focus:outline-none focus:ring-1 transition duration-200',
         error ? 'border-danger focus:border-danger focus:ring-danger text-danger' 
           : login ? 'border-secondary focus:border-background focus:ring-background text-background'
             : 'border-light-primary focus:border-primary focus:ring-primary text-primary',
@@ -104,12 +104,12 @@ const hasValue = computed(() => !!props.modelValue)
     <label
       :for="id"
       :class="[
-        'absolute text-xs left-4 -top-2 px-2 text-background  rounded-lg transition-all duration-200',
+        'absolute text-xs left-4 -top-2 px-2  rounded-lg transition-all duration-200',
         'peer-placeholder-shown:top-2  peer-placeholder-shown:bg-transparent',
         'peer-focus:-top-2 peer-focus:text-xs ',
-        error ? 'bg-danger peer-placeholder-shown:text-danger peer-focus:bg-danger peer-focus:text-background peer-focus' 
-          : login ? 'bg-secondary peer-placeholder-shown:text-secondary peer-focus:bg-secondary peer-focus:text-primary peer-focus'
-            : 'bg-light-primary peer-placeholder-shown:text-gray-600 peer-focus:bg-light-primary peer-focus:text-background peer-focus'
+        error ? 'bg-danger text-background peer-placeholder-shown:text-danger peer-focus:bg-danger peer-focus:text-background peer-focus' 
+          : login ? 'bg-secondary text-primary peer-placeholder-shown:text-secondary peer-focus:bg-secondary peer-focus:text-primary peer-focus'
+            : 'bg-light-primary text-background peer-placeholder-shown:text-gray-600 peer-focus:bg-light-primary peer-focus:text-background peer-focus'
       ]"
     >
       {{ label }}

@@ -9,7 +9,7 @@
           />
         </u-row>
         <u-row flex1 class="w-full">
-          <u-row>
+          <u-row flex1>
             <u-input v-model="form.tlp" label="Telepon" 
               :error="isError('tlp')"
               :error-message="errorMessage('tlp')" 

@@ -9,8 +9,10 @@ export function createTemplateStore(storeId, config) {
   return defineStore(storeId, {
     state: () => ({
       items: [],
+      meta:null,
       item: null,
       loading: false,
+      loadingMore: false,
       loadingSave: false,
       loadingDelete: false,
       error: null,
@@ -22,6 +24,10 @@ export function createTemplateStore(storeId, config) {
       per_page: 10,
       total: 0,
       q: '',
+      order_by: 'created_at',
+      sort: 'desc',
+
+      hasMore: true,
 
 
       modalFormOpen: false,
@@ -37,20 +43,52 @@ export function createTemplateStore(storeId, config) {
             page: this.page,
             per_page: this.per_page,
             q: this.q,
+            order_by: this.order_by,
+            sort: this.sort,
             ...extraParams
           }
           const res = await api.get(config.baseUrl + '/get-list', { params })
-          // console.log(`resp ${storeId} fetch All : `, res);
+          console.log(`resp ${storeId} getList : `, res);
           
-          this.items = res.data.data ?? res.data
-          this.total = res.data.total ?? this.items.length
+          this.items = res.data.data ?? res.data ?? []
+          this.meta = res.data.meta ?? res.meta ?? null
+          this.hasMore = this.page < (this.meta?.last_page ?? 1)
+
         } catch (err) {
-          console.log(`error ${storeId} fetch All : `, err);
+          console.log(`error ${storeId} getList : `, err);
           this.error = err
         } finally {
           this.loading = false
         }
       },
+
+      async fetchMore(extraParams = {}) {
+        
+        if (this.meta.page >= this.meta.last_page) return
+        this.loadingMore = true
+        this.page += 1
+        try {
+          const params = {
+            page: this.page,
+            per_page: this.per_page,
+            q: this.q,
+            order_by: this.order_by,
+            sort: this.sort,
+          }
+
+          const res = await api.get(config.baseUrl + '/get-list', { params })
+          const newItems = res.data.data ?? []
+          this.items.push(...newItems)
+          this.meta = res.data.meta
+          this.hasMore = this.page < (this.meta?.last_page ?? 1)  
+        } catch (err) {
+          console.error('FetchMore error:', err)
+        } finally {
+          this.loading = false
+        }
+      },
+
+
       async fetchOne(id) {
         this.loading = true
         try {
@@ -69,7 +107,7 @@ export function createTemplateStore(storeId, config) {
         
         
         try {
-          const res = await api.post(`${config.baseUrl}/${ config?.createUrl || '/simpan'}`, data)
+          const res = await api.post(`${config.baseUrl}${config?.createUrl || '/simpan'}`, data)
           console.log(`resp ${storeId} create : `, res);
           if (res.status === 200) {
             const result = res.data.data
@@ -100,7 +138,7 @@ export function createTemplateStore(storeId, config) {
         // return await api.put(`${config.baseUrl}/${config?.endpointUpdate || '/update'}/${id}`, data)
         this.loadingSave = true
         try {
-          const res = await api.put(`${config.baseUrl}/${config?.updateUrl || '/update'}`, data)
+          const res = await api.put(`${config.baseUrl}${config?.updateUrl || '/update'}`, data)
           console.log(`resp ${storeId} update : `, res);
           if (res.status === 200) {
             const result = res.data.data
