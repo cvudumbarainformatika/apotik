@@ -1,6 +1,8 @@
+import { defineAsyncComponent } from 'vue'
+
 export default {
   install(app) {
-    const components = import.meta.glob('./*.vue', { eager: true });
+    const components = import.meta.glob('./*.vue');
 
     function toKebabCase(str) {
       return str
@@ -9,13 +11,20 @@ export default {
         .toLowerCase()
     }
 
+    // for (const path in components) {
+    //   const component = components[path].default;
+    //   const filename = path.split('/').pop().replace('.vue', '');
+
+    //   const tagName = 'u-' + toKebabCase(filename); // u-btn(); // jadikan u-btn, u-card, dst
+
+    //   app.component(tagName, defineAsyncComponent(component));
+    // }
     for (const path in components) {
-      const component = components[path].default;
       const filename = path.split('/').pop().replace('.vue', '');
+      const tagName = 'u-' + toKebabCase(filename);
 
-      const tagName = 'u-' + toKebabCase(filename); // u-btn(); // jadikan u-btn, u-card, dst
-
-      app.component(tagName, component);
+      const loader = components[path]; // fungsi () => import('...')
+      app.component(tagName, defineAsyncComponent(loader));
     }
   },
 };

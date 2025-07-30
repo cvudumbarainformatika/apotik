@@ -1,11 +1,11 @@
 // src/stores/useTemplateStore.js
-import { defineStore } from 'pinia'
+import { defineStore, acceptHMRUpdate } from 'pinia'
 import { api } from '@/services/api'
 import { useNotificationStore } from '@/stores/notification'
 
 const notify = useNotificationStore().notify
 
-export function createTemplateStore(storeId, config) {
+export function createTemplateTransaksiStore(storeId, config) {
   return defineStore(storeId, {
     state: () => ({
       items: [],
@@ -47,8 +47,8 @@ export function createTemplateStore(storeId, config) {
             sort: this.sort,
             ...extraParams
           }
-          const res = await api.get(config.baseUrl + '/get-list', { params })
-          console.log(`resp ${storeId} getList : `, res);
+          const res = await api.get(config.baseUrl + '/header/get-list', { params })
+          console.log(`resp ${storeId} header getList : `, res);
           
           this.items = res.data.data ?? res.data ?? []
           this.meta = res.data.meta ?? res.meta ?? null
@@ -213,4 +213,9 @@ export function createTemplateStore(storeId, config) {
 
 
   })
+}
+
+if (import.meta.hot) {
+  import.meta.hot.accept(acceptHMRUpdate(createTemplateTransaksiStore, import.meta.hot))
+  
 }

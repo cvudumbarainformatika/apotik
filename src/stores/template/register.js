@@ -1,5 +1,8 @@
 // src/stores/register.js
 import { createTemplateStore } from './useTemplateStore'
+import { createTemplateTransaksiStore } from './useTemplateTransaksiStore'
+
+// MASTER STORE
 
 export const useBarangStore = createTemplateStore('barang', {
   baseUrl: 'api/v1/master/barang',
@@ -32,5 +35,13 @@ export const useUserStore = createTemplateStore('user', {
 //   baseUrl: '/api/supplier',
 //   persist: false
 // })
+
+
+// TRANSAKSI STORE
+
+export const useOrderStore = createTemplateTransaksiStore('order', {
+  baseUrl: '/api/order',
+  persist: false
+})
 
 // dan seterusnya...

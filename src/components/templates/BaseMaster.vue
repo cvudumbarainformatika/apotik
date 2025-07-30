@@ -2,7 +2,7 @@
 <template>
   <u-page>
     <!-- Header Search & Action -->
-    <u-view class="w-full" padding="py-1 px-4">
+    <u-view class="w-full" padding="pt-1 px-4">
       <u-row flex1>
         <div class="font-bold text-lg text-primary">{{ title }}</div>
       </u-row>

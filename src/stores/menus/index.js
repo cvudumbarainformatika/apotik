@@ -13,6 +13,9 @@ export const useMenuStore = defineStore('menu-store', {
         component: 'IndexPage',
         children:[]
       },
+
+
+      //  MASTER
       {
         title: 'Master',
         icon: 'layers',
@@ -67,6 +70,27 @@ export const useMenuStore = defineStore('menu-store', {
             url: 'admin/master/user',
             name: 'master.user',
             view: '/src/views/master/user',
+            component: 'IndexPage',
+          }
+        ]
+      },
+
+
+      // TRANSAKSI
+      {
+        title: 'Transaksi',
+        icon: 'layers',
+        url: 'admin/transaksi',
+        name: null,
+        view: null,
+        component: null,
+        children:[
+          {
+            title: 'Order Product',
+            icon: 'layers',
+            url: 'admin/transaksi/order',
+            name: 'transaksi.order',
+            view: '/src/views/transaksi/order',
             component: 'IndexPage',
           }
         ]
