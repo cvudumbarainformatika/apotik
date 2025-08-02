@@ -1,9 +1,9 @@
 <template>
   <u-page>
-    <div class="flex-1 flex flex-row bg-red-500 gap-0 md:gap-2">
+    <div class="flex-1 flex flex-row  gap-0 md:gap-2 w-full h-full" >
       <!-- KOLOM KIRI -->
-      <div class="kiri flex-1 flex flex-col  overflow-hidden">
-        <u-page padding="p-0" class="bg-yellow-500">
+      <div class="kiri flex-1 flex flex-col w-full h-full">
+        <!-- <u-page padding="p-0 -pb-10" class=" "> -->
           <u-view class="w-full" padding="pt-0">
             <u-row flex1>
               <div class="font-medium text-lg text-primary">{{ title }}</div>
@@ -11,25 +11,30 @@
           </u-view>
           <u-separator />
 
-          <u-view flex1 class="w-full bg-amber-100" padding="p-0">
+          <u-view flex1 scrollY class="w-full " padding="p-0">
             <slot name="kiri"></slot>
+             
           </u-view>
-        </u-page>
+        <!-- </u-page> -->
         
       </div>
 
       <!-- KOLOM KANAN -->
-      <div class="kanan hidden sm:flex flex-col bg-orange-500">
-        <u-page padding="p-0" class="bg-yellow-500">
+      <u-card class="kanan hidden sm:flex flex-col w-1/4 h-full bg-orange-500 overflow-y-scroll"   >
+        <!-- <u-page padding="p-0" class="bg-yellow-500"> -->
           <u-view class="w-full" padding="pt-0">
             <u-row flex1>
-              <div class="font-bold text-lg text-primary">Riwayat Transaksi</div>
+              <div class="font-medium text-base text-primary">Riwayat Transaksi</div>
             </u-row>
           </u-view>
           <u-separator />
-        </u-page>
 
-      </div>
+          <u-view flex1 scrollY class="w-full" padding="p-0">
+            <slot name="kanan"></slot>
+          </u-view>
+        <!-- </u-page> -->
+
+      </u-card>
     </div>
   </u-page>
 </template>

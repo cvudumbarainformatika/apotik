@@ -40,8 +40,8 @@ export const useUserStore = createTemplateStore('user', {
 // TRANSAKSI STORE
 
 export const useOrderStore = createTemplateTransaksiStore('order', {
-  baseUrl: '/api/order',
-  persist: false
+  baseUrl: '/api/v1/transactions/order',
+  persist: true
 })
 
 // dan seterusnya...

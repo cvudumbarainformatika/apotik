@@ -10,7 +10,7 @@
         props.class
       ]"
     >
-      <span>{{ label }}</span>
+      <slot>{{ label }}</slot>
       <svg
         v-if="!loading"
         xmlns="http://www.w3.org/2000/svg"

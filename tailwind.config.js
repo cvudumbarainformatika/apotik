@@ -18,6 +18,19 @@ export default {
     './index.html',
     './src/**/*.{vue,js,ts,jsx,tsx}',
   ],
+  safelist: [
+    'bg-background',
+    'bg-primary',
+    'bg-light-primary',
+    'bg-grady-primary',
+    'bg-secondary',
+    'bg-light-secondary',
+    'bg-grady-secondary',
+    'text-background',
+    'text-secondary',
+    'text-primary',
+    'text-text',
+  ],
   theme: {
     extend: {
       colors,

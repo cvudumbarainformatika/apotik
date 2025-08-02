@@ -4,6 +4,7 @@ import { computed, ref, watch } from 'vue'
 const props = defineProps({
   label: { type: String, required: true },
   modelValue: { type: [String, Number], default: '' },
+  readonly: { type: Boolean, default: false },
   type: { type: String, default: 'text' },
   id: { type: String, default: () => `input-${Math.random().toString(36).substring(2, 8)}` },
   placeholder: { type: String, default: ' ' },
@@ -13,7 +14,7 @@ const props = defineProps({
   login: { type: Boolean, default: false },
 })
 
-const emit = defineEmits(['update:modelValue', 'focus', 'blur'])
+const emit = defineEmits(['update:modelValue', 'focus', 'blur', 'click'])
 
 const inputRef = ref(null)
 const isFocussed = ref(false)
@@ -74,11 +75,14 @@ function handleClickError() {
 }
 
 const hasValue = computed(() => !!props.modelValue)
+
+defineExpose({ inputRef })
 </script>
 
 
 <template>
   <div class="relative w-full">
+    
     <!-- Input -->
     <input
       :id="id"
@@ -86,19 +90,24 @@ const hasValue = computed(() => !!props.modelValue)
       :type="type === 'number' ? 'text' : type"
       :value="internalValue"
       :placeholder="placeholder"
+      :readonly="readonly"
       @input="handleInput"
       @focus="handleFocus"
       @blur="handleBlur"
+      @click="$emit('click')"
       v-bind="$attrs"
 
       :class="[
-        'peer w-full text-sm px-4 py-2 bg-transparent border rounded-full focus:outline-none focus:ring-1 transition duration-200',
+        'peer w-full text-sm px-4 py-2  border rounded-full focus:outline-none focus:ring-1 transition duration-200',
         error ? 'border-danger focus:border-danger focus:ring-danger text-danger' 
           : login ? 'border-secondary focus:border-background focus:ring-background text-background'
-            : 'border-light-primary focus:border-primary focus:ring-primary text-primary',
+            : 'border-light-primary focus:border-primary focus:ring-primary text-primary focus:bg-background',
+        hasValue ? !login ? 'bg-background' : 'bg-gray-600' : 'bg-transparent'
       ]"
 
     />
+
+   
 
     <!-- Floating Label (Overlay on border top) -->
     <label
@@ -133,8 +142,15 @@ const hasValue = computed(() => !!props.modelValue)
 
       
     </div>
+    
   </div>
 </template>
 
-<style scoped>
+<style>
+
+input[type="date"] {
+  width: 100%;
+  cursor: pointer;
+}
+
 </style>

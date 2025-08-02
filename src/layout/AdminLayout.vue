@@ -1,9 +1,24 @@
 <script setup>
-import { ref, defineAsyncComponent } from 'vue'
+import { ref, defineAsyncComponent, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+
+import { useSatuanStore, useJabatanStore } from '@/stores/template/register'
 
 const router = useRouter()
 const HeaderMenu = defineAsyncComponent(() => import('./HeaderMenu.vue'))
+
+const storeSatuan = useSatuanStore()
+const storeJabatan = useJabatanStore()
+
+onMounted(() => {
+  storeSatuan.per_page = 100
+  storeJabatan.per_page = 100
+  Promise.all([
+    storeSatuan.fetchAll(),
+    storeJabatan.fetchAll()
+  ])
+})
+
 </script>
 
 <template>

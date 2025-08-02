@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, defineExpose } from 'vue'
+import { ref } from 'vue'
 import { useScroll } from '@vueuse/core'
 
 const scrollRef = ref(null)

@@ -18,6 +18,10 @@ const props = defineProps({
   strokeWidth: {
     type: [String, Number],
     default: 2
+  },
+  class: {
+    type: String,
+    default: ''
   }
 })
 
@@ -105,5 +109,7 @@ const icon = computed(() => {
     :size="size"
     :color="color"
     :stroke-width="strokeWidth"
+    v-bind="$attrs"
+    :class="class"
   />
 </template>

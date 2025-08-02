@@ -29,6 +29,31 @@ body {
   }
 }
 
+@layer utilities {
+  .animate-spin {
+    animation: spin 1s linear infinite;
+  }
+  .glow-pulse {
+    animation: pulseGlow 2s ease-in-out infinite;
+  }
+  @keyframes pulseGlow {
+    0%, 100% {
+      filter: drop-shadow(0 0 0px #6366f1);
+      transform: scale(1);
+    }
+    50% {
+      filter: drop-shadow(0 0 6px #6366f1);
+      transform: scale(1.1);
+    }
+  }
+}
+
+@layer utilities {
+  .animate-spin-slow {
+    animation: spin 1.2s linear infinite;
+  }
+}
+
 
 
 

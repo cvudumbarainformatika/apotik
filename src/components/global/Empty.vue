@@ -47,12 +47,12 @@ const iconSize = computed(() => {
       </div>
 
       <!-- Message -->
-      <h3 class="text-lg sm:text-xl font-medium text-light-primary opacity-70 dark:text-gray-200 tracking-wide">
+      <h3 class="text-md sm:text-lg font-medium text-light-primary opacity-70 dark:text-gray-200 tracking-wide">
         {{ title }}
       </h3>
 
       <!-- Optional description -->
-      <p v-if="subtitle" class="text-sm sm:text-base opacity-70 text-primary dark:text-gray-400">
+      <p v-if="subtitle" class="text-xs sm:text-xs opacity-70 text-primary dark:text-gray-400">
         {{ subtitle }}
       </p>
     </div>

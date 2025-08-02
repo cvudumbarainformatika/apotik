@@ -20,6 +20,9 @@ export function createTemplateTransaksiStore(storeId, config) {
       emptyTitle:`Belum Ada Data ${storeId}`,
       emptySubtitle:`Silahkan tambahkan data terlebih dahulu / Lakukan Pencarian Data dengan Kata Kunci yang Sesuai`,
 
+      supplierSelected: null,
+      barangSelected: null,
+
       page: 1,
       per_page: 10,
       total: 0,
@@ -31,6 +34,8 @@ export function createTemplateTransaksiStore(storeId, config) {
 
 
       modalFormOpen: false,
+      form:null,
+      mode: 'add',
 
 
       ...config.state
@@ -49,7 +54,7 @@ export function createTemplateTransaksiStore(storeId, config) {
           }
           const res = await api.get(config.baseUrl + '/header/get-list', { params })
           console.log(`resp ${storeId} header getList : `, res);
-          
+          // this.items = []
           this.items = res.data.data ?? res.data ?? []
           this.meta = res.data.meta ?? res.meta ?? null
           this.hasMore = this.page < (this.meta?.last_page ?? 1)
@@ -100,7 +105,7 @@ export function createTemplateTransaksiStore(storeId, config) {
           this.loading = false
         }
       },
-      async create(data, mode) {
+      async create(data) {
         // console.log('data', data);
         // console.log('mode', mode);
           this.loadingSave = true
@@ -109,30 +114,31 @@ export function createTemplateTransaksiStore(storeId, config) {
         try {
           const res = await api.post(`${config.baseUrl}${config?.createUrl || '/simpan'}`, data)
           console.log(`resp ${storeId} create : `, res);
-          if (res.status === 200) {
+          // if (res.status === 200) {
             const result = res.data.data
-            if (mode === 'add') {
-              this.items.unshift(result)
-            }else {
-              this.items = this.items.map((item) => {
-                if (item.id === result.id) {
-                  return result
-                }
-                return item
-              })
-            }
+            this.items.unshift(result)
+            this.form = result
+            this.supplierSelected = result?.supplier ?? null
+            this.mode = 'edit'
 
             this.error = null
-            this.modalFormOpen = false
-          }
+          // }
 
           
         } catch (err) {
           console.log(`error ${storeId} create : `, err);
           this.error = err
+          notify({ message: err.response?.data?.message ?? 'Gagal menyimpan data', type: 'error' })
         } finally {
           this.loadingSave = false
         }
+      },
+
+      init(){
+        this.form = null
+        this.supplierSelected = null
+        this.barangSelected = null
+        this.mode = 'add'
       },
       async update(data, mode) {
         // return await api.put(`${config.baseUrl}/${config?.endpointUpdate || '/update'}/${id}`, data)
@@ -206,7 +212,7 @@ export function createTemplateTransaksiStore(storeId, config) {
     // 💡 Hanya aktifkan persist jika config.persist = true
     
     persist: config.persist === true ? {
-      pick: ['items', 'per_page']
+      pick: ['items', 'per_page', 'form', 'supplierSelected', 'barangSelected', 'mode'],
     } : false
 
 
