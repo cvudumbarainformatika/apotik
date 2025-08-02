@@ -40,7 +40,7 @@ export function createTemplateStore(storeId, config) {
         this.loading = true
         try {
           const params = {
-            page: this.page,
+            page: 1,
             per_page: this.per_page,
             q: this.q,
             order_by: this.order_by,

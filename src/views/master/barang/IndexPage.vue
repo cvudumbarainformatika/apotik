@@ -6,8 +6,9 @@ import { inject } from 'vue'
 const $confirm = inject('confirm')
 
 
-// import BaseMaster from '@/components/templates/BaseMaster.vue'
-const BaseMaster = defineAsyncComponent(() => import('@/components/templates/BaseMaster.vue'))
+import BaseMaster from '@/components/templates/BaseMaster.vue'
+import LoaderItem from './LoaderItem.vue'
+
 const ListComp = defineAsyncComponent(() => import('./ListComp.vue'))
 const ModalForm = defineAsyncComponent(() => import('./ModalForm.vue'))
 
@@ -65,7 +66,8 @@ async function handleDelete(item) {
 <template>
   <base-master :title="title" :store="store" :onAdd="handleAdd" :onRefresh="handleRefresh">
     <template #item="{ item }">
-      <list-comp :item="item" @edit="handleEdit" @delete="handleDelete" />
+      <LoaderItem v-if="store.loading" />
+      <list-comp v-else :item="item" @edit="handleEdit" @delete="handleDelete" />
     </template>
     <template #modal-form>
       <modal-form 

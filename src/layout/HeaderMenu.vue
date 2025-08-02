@@ -7,7 +7,7 @@
       </u-row>
       <u-row flex1 right class="">
         <!-- header desktop -->
-        <div class="hidden md:flex items-center gap-6 text-sm ">
+        <div class="hidden md:flex items-center gap-3 text-sm ">
           <div
             v-for="menu in menus"
             :key="menu.name"

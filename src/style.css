@@ -9,6 +9,7 @@
 
 
 @import './assets/css/theme.css';
+@import './assets/css/skeleton.css';
 
 @config '../tailwind.config.js'
 

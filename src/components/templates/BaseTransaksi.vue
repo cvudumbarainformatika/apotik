@@ -20,7 +20,7 @@
       </div>
 
       <!-- KOLOM KANAN -->
-      <u-card padding="p-4" class="kanan hidden sm:flex flex-col h-full overflow-y-scroll transition-all duration-100" :class="store?.maxRight ? 'w-full' : ' w-1/4'"   >
+      <u-card :padding="store?.maxRight ? 'p-4' : 'p-3'" class="kanan hidden sm:flex flex-col h-full overflow-y-scroll transition-all duration-100" :class="store?.maxRight ? 'w-full' : ' w-1/4'"   >
         <!-- <u-page padding="p-0" class="bg-yellow-500"> -->
           <u-view class="w-full" padding="pt-0">
             <u-row flex1>

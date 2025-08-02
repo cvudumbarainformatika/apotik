@@ -1,5 +1,5 @@
 <template>
-  <u-col class="w-full py-4 px-2">
+  <u-col class="w-full pb-4 pt-1 px-2">
     <u-grid cols="5">
 
       <!-- HEADER 1 -->
@@ -58,11 +58,11 @@
 
           <div v-else
             class="bg-danger/10 border border-danger rounded-xl shadow-sm p-4 transition-all duration-300 hover:shadow-md w-full">
-            <u-row class="items-start">
-              <u-icon name="UserSearch" class="w-4 h-4 text-primary mb-3" />
+            <u-row class="items-start" padding="p-0">
+              <u-icon name="UserSearch" class="w-4 h-4 text-primary" />
               <div>
                 <u-text>
-                  Silakan cari dan pilih supplier di atas untuk melanjutkan order 
+                  Silahkan cari dan pilih supplier di atas untuk melanjutkan order 
                 </u-text>
               </div>
             </u-row>

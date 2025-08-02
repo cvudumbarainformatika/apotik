@@ -7,7 +7,7 @@ const props = defineProps({
   },
   color: {
     type: String,
-    default: 'border-light-primary',
+    default: 'border-primary/40',
   },
   thickness: {
     type: String,

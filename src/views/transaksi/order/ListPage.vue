@@ -1,7 +1,7 @@
 <template>
   <u-list :items="items" anim>
     <template #item="{ item }">
-      <u-view flex1 class="w-full cursor-pointer" @click="handleEdit(item)">
+      <u-view padding="px-3 py-3" flex1 class="w-full cursor-pointer" @click="handleEdit(item)">
         <u-grid cols="2" >
           <u-row flex1>
             <u-row>
@@ -19,8 +19,8 @@
           </u-row>
 
           <u-col align="items-end" gap="gap-0" class="" padding="p-0">
-            <u-icon name="lock-open" size="20" class="mb-1" />
-            <u-text color="text-gray-400">{{ useWaktuLaluReactive(item?.created_at) }}</u-text>
+            <u-icon name="lock-open" size="18" class="mb-1" :class="!item?.flag ? 'text-success' : 'text-danger'" />
+            <u-text color="text-gray-500" style="font-size: 10px !important;">{{ useWaktuLaluReactive(item?.created_at) }}</u-text>
           </u-col>
 
           <!-- <u-col align="items-end" gap="gap-0" class="w-full -mt-4 p-0" padding="p-0">

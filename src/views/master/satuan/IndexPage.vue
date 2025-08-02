@@ -2,12 +2,15 @@
 import { defineAsyncComponent, onMounted, computed, ref } from 'vue'
 import { useSatuanStore } from '@/stores/template/register'
 import { useRoute } from 'vue-router'
+
 import { inject } from 'vue'
 const $confirm = inject('confirm')
 
+import LoaderItem from './LoaderItem.vue'
+import BaseMaster from '@/components/templates/BaseMaster.vue'
 
 // import BaseMaster from '@/components/templates/BaseMaster.vue'
-const BaseMaster = defineAsyncComponent(() => import('@/components/templates/BaseMaster.vue'))
+// const BaseMaster = defineAsyncComponent(() => import('@/components/templates/BaseMaster.vue'))
 const ListComp = defineAsyncComponent(() => import('./ListComp.vue'))
 const ModalForm = defineAsyncComponent(() => import('./ModalForm.vue'))
 
@@ -61,10 +64,19 @@ async function handleDelete(item) {
 </script>
 
 <template>
+
   <base-master :title="title" :store="store" :onAdd="handleAdd" :onRefresh="handleRefresh">
-    <template #item="{ item }">
-      <list-comp :item="item" @edit="handleEdit" @delete="handleDelete" />
+    <template  #item="{ item }">
+      <Suspense>
+        <template #default>
+          <list-comp :item="item" @edit="handleEdit" @delete="handleDelete" />
+        </template>
+        <template #fallback>
+          <LoaderItem />
+        </template>
+      </Suspense>
     </template>
+    
     <template #modal-form>
       <modal-form 
         v-if="store.modalFormOpen"
@@ -76,9 +88,6 @@ async function handleDelete(item) {
         @save="handleSave"
       />
     </template>
-
-    
-
-   
   </base-master>
+
 </template>

@@ -26,7 +26,7 @@ onMounted(() => {
     
     <!-- Main Content -->
     <main class="flex-1 px-2 pt-[65px] pb-2 overflow-hidden flex justify-center bg-secondary dark:bg-gray-900" >
-      <HeaderMenu />
+      <HeaderMenu v-once />
       <div class="flex-1 overflow-hidden flex mx-auto bg-background text-gray-800 dark:text-gray-100 rounded-3xl"
         style="box-shadow: inset 0 5px 5px rgba(0,0,0,0.3), inset 0 -5px 5px rgba(0,0,0,0.2)"
       >

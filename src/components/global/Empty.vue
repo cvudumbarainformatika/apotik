@@ -18,7 +18,7 @@ const props = defineProps({
 })
 
 const iconSize = computed(() => {
-  return window.innerWidth < 640 ? 'w-20 h-20' : 'w-28 h-28'
+  return window.innerWidth < 640 ? 'w-16 h-16' : 'w-20 h-20'
 })
 </script>
 
@@ -47,9 +47,9 @@ const iconSize = computed(() => {
       </div>
 
       <!-- Message -->
-      <h3 class="text-md sm:text-lg font-medium text-light-primary opacity-70 dark:text-gray-200 tracking-wide">
+      <div class="text-md sm:text-lg font-medium text-light-primary opacity-70 dark:text-gray-200 tracking-wide">
         {{ title }}
-      </h3>
+      </div>
 
       <!-- Optional description -->
       <p v-if="subtitle" class="text-xs sm:text-xs opacity-70 text-primary dark:text-gray-400">

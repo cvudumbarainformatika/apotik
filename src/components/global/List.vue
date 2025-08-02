@@ -47,7 +47,7 @@ defineProps({
         :class="[
           `flex items-center flex-1 bg-background hover:bg-secondary  transition-all duration-300  hover:shadow-lg relative ${anim ? 'hover:translate-y-[2px]'  : ''}`,
           striped && index % 2 === 1 ? 'bg-gray-50' : '',
-          spaced ? 'border border-light-primary/50 hover:border-light-primary rounded-md' : 'border border-light-primary/50 hover:border-light-primary',
+          spaced ? 'border border-primary/40 hover:border-light-primary rounded-md' : '',
         ]"
       >
         <!-- If item slot provided, use it -->
