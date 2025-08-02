@@ -1,6 +1,6 @@
 <template>
   <div 
-    :class="`text-${size} text-gray-900 dark:text-white ${props.class}`"
+    :class="`text-${size} ${color}  ${props.class} `"
   >
     <slot>{{ label }}</slot>
   </div>
@@ -12,6 +12,7 @@ const props = defineProps({
   label: { type: String, default: '' },
   class: { type: String, default: '' },
   size: { type: String, default: 'xs' },
+  color: { type: String, default: 'text-gray-900 dark:text-white' },
 })
 
 const textClass = computed(() => `text-${props.size} text-gray-900 dark:text-white`)

@@ -33,7 +33,7 @@ export function createTemplateTransaksiStore(storeId, config) {
       hasMore: true,
 
 
-      modalFormOpen: false,
+      maxRight: false,
       form:null,
       mode: 'add',
 
@@ -52,7 +52,7 @@ export function createTemplateTransaksiStore(storeId, config) {
             sort: this.sort,
             ...extraParams
           }
-          const res = await api.get(config.baseUrl + '/header/get-list', { params })
+          const res = await api.get(config.baseUrl + '/get-list', { params })
           console.log(`resp ${storeId} header getList : `, res);
           // this.items = []
           this.items = res.data.data ?? res.data ?? []
@@ -116,10 +116,10 @@ export function createTemplateTransaksiStore(storeId, config) {
           console.log(`resp ${storeId} create : `, res);
           // if (res.status === 200) {
             const result = res.data.data
-            this.items.unshift(result)
-            this.form = result
-            this.supplierSelected = result?.supplier ?? null
-            this.mode = 'edit'
+            if (this.mode === 'add') {
+              this.items.unshift(result)
+            }
+            this.initModeEdit(result)
 
             this.error = null
           // }
@@ -139,6 +139,12 @@ export function createTemplateTransaksiStore(storeId, config) {
         this.supplierSelected = null
         this.barangSelected = null
         this.mode = 'add'
+      },
+
+      initModeEdit(result){
+        this.form = result
+        this.supplierSelected = result?.supplier ?? null
+        this.mode = 'edit'
       },
       async update(data, mode) {
         // return await api.put(`${config.baseUrl}/${config?.endpointUpdate || '/update'}/${id}`, data)
@@ -165,24 +171,6 @@ export function createTemplateTransaksiStore(storeId, config) {
           
         } finally {
           this.loadingSave = false
-        }
-      },
-      async remove(id) {
-        // return await api.delete(`${config.baseUrl}/${id}`)
-        try {
-          this.loadingDelete = true
-          const res = await api.post(`${config.baseUrl}/delete`, { id })
-          console.log(`resp ${storeId} delete : `, res);
-          if (res.status === 200) {
-            this.items = this.items.filter(item => item.id !== id)
-            this.error = null
-            notify({ message: res.data.message ?? 'Berhasil menghapus data', type: 'success' })
-          }
-        } catch (err) {
-          console.log(`error ${storeId} delete : `, err);
-          this.error = err
-        } finally {
-          this.loadingDelete = false
         }
       },
       setPage(page) {

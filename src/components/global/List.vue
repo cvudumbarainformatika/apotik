@@ -16,6 +16,10 @@ defineProps({
     type: Boolean,
     default: true,
   },
+  anim: {
+    type: Boolean,
+    default: false,
+  },
   mb: {
     type: [String, Number],
     default: 80,
@@ -31,20 +35,19 @@ defineProps({
     </div>
 
     <ul
-      class="w-full divide-y divide-gray-200 rounded-md overflow-hidden"
+      class="w-full divide-y divide-gray-200 rounded-md overflow-visible"
       :class="[
         bordered && !spaced ? 'border border-gray-300' : '',
-        spaced ? 'space-y-2' : '',
+        spaced ? 'space-y-1' : '',
       ]"
     >
       <li
         v-for="(item, index) in items"
         :key="item"
-        class="flex items-center flex-1 bg-background hover:bg-secondary  transition duration-200"
         :class="[
-          '',
+          `flex items-center flex-1 bg-background hover:bg-secondary  transition-all duration-300  hover:shadow-lg relative ${anim ? 'hover:translate-y-[2px]'  : ''}`,
           striped && index % 2 === 1 ? 'bg-gray-50' : '',
-          spaced ? 'border border-light-primary hover:border-primary rounded-md' : '',
+          spaced ? 'border border-light-primary/50 hover:border-light-primary rounded-md' : 'border border-light-primary/50 hover:border-light-primary',
         ]"
       >
         <!-- If item slot provided, use it -->

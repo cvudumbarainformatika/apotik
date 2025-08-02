@@ -1,5 +1,5 @@
 <template>
-  <base-transaksi :title="title" :store="store">
+  <base-transaksi :title="title" :titleKanan="`Riwayat ${title}`" :store="store">
     <template #kiri>
       <FormPage :store="store" :title="title" :mode="store.mode" />
     </template>

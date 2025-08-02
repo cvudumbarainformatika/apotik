@@ -71,23 +71,23 @@ export function useWaktuLaluReactive(dateInput) {
     updateInterval: 60,
     messages: {
         justNow: 'baru saja',
-        past: (n) => n.match(/\d/) ? `${n} yang lalu` : n,
+        past: (n) => n.match(/\d/) ? `${n} yg lalu` : n,
         future: (n) => n.match(/\d/) ? `dalam ${n}` : n,
-        second: (n) => `${n} detik`,
-        minute: (n) => `${n} menit`,
+        second: (n) => `${n} dtk`,
+        minute: (n) => `${n} mnt`,
         hour: (n) => `${n} jam`,
         day: (n, past) => n === 1
           ? (past ? 'kemarin' : 'besok')
-          : `${n} hari`,
+          : `${n} hr`,
         week: (n, past) => n === 1
           ? (past ? 'minggu lalu' : 'minggu depan')
-          : `${n} minggu`,
+          : `${n} mgu`,
         month: (n, past) => n === 1
           ? (past ? 'bulan lalu' : 'bulan depan')
-          : `${n} bulan`,
+          : `${n} bln`,
         year: (n, past) => n === 1
           ? (past ? 'tahun lalu' : 'tahun depan')
-          : `${n} tahun`,
+          : `${n} thn`,
         invalid: ''
       }
   })

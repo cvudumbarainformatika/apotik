@@ -73,95 +73,113 @@
 
       
       
-  </u-grid>
+    </u-grid>
   
-  <!-- CONTENT -->
-  <u-grid cols="12">
-      <u-card class="col-span-8 h-full space-y-4">
-        <u-row>
-          <u-icon name="baggage-claim" class="w-4 h-4" />
-          <u-text class="font-bold">Informasi Item</u-text>
-        </u-row>
-        <u-row>
-          <u-autocomplete v-model="searchBarang" placeholder="Cari Barang" 
-            :debounce="300" :min-search-length="2" 
-            item-key="id" 
-            item-label="nama"
-            not-found-text="Data Barang tidak ditemukan" 
-            not-found-subtext="Coba kata kunci lain" 
-            :show-add-button="false"
-            api-url="/api/v1/master/barang/get-list" api-response-path="data.data" :api-params="{ per_page: 10 }"
-            :use-api="true" @select="handleSelectedBarang" @items-loaded="onItemsLoadedBarang"
-          >
-            <template #item="{ item }">
-              <u-col gap="gap-1">
-                <u-text size="sm" class="font-medium">{{ item?.nama }}</u-text>
-                <u-row class="-mt-1" gap="gap-1">
-                  <u-text class="">{{ item?.kode }}</u-text>, 
-                  <u-text class="">{{ item?.satuan_k }}</u-text> | 
-                  <u-text class="">{{ item?.satuan_b }}</u-text>
-                  <u-text class="">Isi {{ item?.isi }}</u-text>
+    <!-- CONTENT -->
+    <u-grid cols="12">
+
+      <!-- List Items -->
+        <u-card class="col-span-8 h-full space-y-4">
+          <u-row>
+            <u-icon name="baggage-claim" class="w-4 h-4" />
+            <u-text class="font-bold">Informasi Item</u-text>
+          </u-row>
+          <u-row>
+            <u-autocomplete v-model="searchBarang" placeholder="Cari Barang" 
+              :debounce="300" :min-search-length="2" 
+              item-key="id" 
+              item-label="nama"
+              not-found-text="Data Barang tidak ditemukan" 
+              not-found-subtext="Coba kata kunci lain" 
+              :show-add-button="false"
+              api-url="/api/v1/master/barang/get-list" api-response-path="data.data" :api-params="{ per_page: 10 }"
+              :use-api="true" @select="handleSelectedBarang" @items-loaded="onItemsLoadedBarang"
+            >
+              <template #item="{ item }">
+                <u-col gap="gap-1">
+                  <u-text size="sm" class="font-medium">{{ item?.nama }}</u-text>
+                  <u-row class="-mt-1" gap="gap-1">
+                    <u-text class="">{{ item?.kode }}</u-text>, 
+                    <u-text class="">{{ item?.satuan_k }}</u-text> | 
+                    <u-text class="">{{ item?.satuan_b }}</u-text>
+                    <u-text class="">Isi {{ item?.isi }}</u-text>
+                  </u-row>
+                </u-col>
+              </template>
+            </u-autocomplete>
+          </u-row>
+
+          <u-row class="relative -mt-4">
+            <div v-if="store?.barangSelected"
+              ref="menuBarangRef"
+              class="bg-background border-1 border-primary rounded-xl shadow-sm p-4 transition-all duration-300 hover:shadow-md w-full absolute z-10 -top-4">
+              <u-grid cols="12" gap="gap-4">
+                <div class="col-span-4">
+                  <u-text class="font-bold">Nama Barang</u-text>
+                  <u-text>{{ store.barangSelected?.nama || '-' }}</u-text>
+                </div>
+                <div class="col-span-4 text-center">
+                  <u-text class="font-bold">Satuan</u-text>
+                  <u-text>{{ store.barangSelected?.satuan_k || '-' }} | {{ store.barangSelected?.satuan_b || '-' }}, {{ store.barangSelected?.isi || 0 }}</u-text>
+                </div>
+                <div class="col-span-4 text-right">
+                  <u-text class="font-bold">Kode</u-text>
+                  <u-text>{{ store.barangSelected?.kode || '-' }}</u-text>
+                </div>
+
+                <div class="col-span-12">
+                  <u-separator spacing="-my-2"></u-separator>
+                </div>
+                
+                <u-row class="col-span-4">
+                  <u-input ref="inpJumlahRef" v-model="form.jumlah_pesan" label="jumlah_pesan" type="number"
+                    :error="isError('jumlah_pesan')"
+                    :error-message="errorMessage('jumlah_pesan')" 
+                  />
                 </u-row>
-              </u-col>
-            </template>
-          </u-autocomplete>
-        </u-row>
+                <u-row right class="col-span-8 ">
+                  <u-btn variant="secondary" label="Batal"  @click="handleBatal"/>
+                  <u-btn :loading="store.loadingSave" label="Simpan" @click.stop="handleSubmit"  />
+                </u-row>
+              </u-grid>
+            </div>
+          </u-row>
+          <u-row>
+            <u-empty v-if="!store.form?.order_records?.length" title="Belum Ada Items" icon="baggage-claim" />
+            <u-list v-else :spaced="true" anim :items="store.form?.order_records">
+              <template #item="{ item }">
+                <ListRincian :item="item" :store="store" />
+              </template>
+            </u-list>
+          </u-row>
 
-        <u-row class="relative">
-          <div v-if="store?.barangSelected"
-            ref="menuBarangRef"
-            class="bg-background border-1 border-primary rounded-xl shadow-sm p-4 transition-all duration-300 hover:shadow-md w-full absolute z-10 -top-4">
-            <u-grid cols="12" gap="gap-4">
-              <div class="col-span-4">
-                <u-text class="font-bold">Nama Barang</u-text>
-                <u-text>{{ store.barangSelected?.nama || '-' }}</u-text>
-              </div>
-              <div class="col-span-4 text-center">
-                <u-text class="font-bold">Satuan</u-text>
-                <u-text>{{ store.barangSelected?.satuan_k || '-' }} | {{ store.barangSelected?.satuan_b || '-' }}, {{ store.barangSelected?.isi || 0 }}</u-text>
-              </div>
-              <div class="col-span-4 text-right">
-                <u-text class="font-bold">Kode</u-text>
-                <u-text>{{ store.barangSelected?.kode || '-' }}</u-text>
-              </div>
+        </u-card>
 
-              <div class="col-span-12">
-                <u-separator spacing="-my-2"></u-separator>
-              </div>
-              
-              <u-row class="col-span-4">
-                <u-input ref="inpJumlahRef" v-model="form.jumlah_pesan" label="jumlah_pesan" type="number"
-                  :error="isError('jumlah_pesan')"
-                  :error-message="errorMessage('jumlah_pesan')" 
-                />
-              </u-row>
-              <u-row right class="col-span-8 ">
-                <u-btn variant="secondary" label="Batal"  @click="handleBatal"/>
-                <u-btn :loading="store.loadingSave" label="Simpan" @click.stop="handleSubmit"  />
-              </u-row>
-            </u-grid>
-          </div>
-        </u-row>
-        <u-row>
-          <u-empty v-if="!store.form?.order_records?.length" title="Belum Ada Items" icon="baggage-claim" />
-          <u-list v-else :items="store.form?.order_records">
-            <template #item="{ item }">
-              <u-view class="w-full">
-                {{ item }}
-              </u-view>
-            </template>
-          </u-list>
-        </u-row>
-
-      </u-card>
-  </u-grid>
+        <u-col align="items-end" class="col-span-4">
+          <u-text class="font-bold" size="sm">Summary Order</u-text>
+          <u-separator spacing="-my-2"></u-separator>
+          <u-row>
+            <u-text>Total Item Order : </u-text>
+            <u-text class="font-bold" size="sm">{{ store.form?.order_records?.length || 0 }}</u-text>
+          </u-row>
+          <u-badge :variant="store.mode === 'add' ? 'success' : 'warning'">Mode {{ store.mode === 'add' ? 'Tambah' : 'Edit' }}</u-badge>
+          <u-separator spacing="-my-1"></u-separator>
+          <u-row>
+            <u-btn v-if="store.mode === 'edit'" variant="secondary" @click="initForm">Order Baru</u-btn>
+            <u-btn v-if="store.form">{{ store.form?.flag ? 'Buka Kunci' : 'Kunci Order' }}</u-btn>
+          </u-row>
+        </u-col>
+    </u-grid>
 
   
   </u-col>
 </template>
 
 <script setup>
-import { ref, computed, nextTick, onMounted, onUnmounted, watch } from 'vue'
+import { ref, computed, nextTick, onMounted, onUnmounted, watch, defineAsyncComponent } from 'vue'
+
+
+const ListRincian = defineAsyncComponent(() => import('./ListRincian.vue'))
 
 const props = defineProps({
   store: { type: Object, required: true },
@@ -217,7 +235,7 @@ const handleSelectedBarang = (item) => {
   form.value.satuan_b = item?.satuan_b ?? null
   form.value.isi = item?.isi ?? null
   searchBarang.value = ''
-  console.log('handleSelectedBarang', form.value);
+  // console.log('handleSelectedBarang', form.value);
 
   // await nextTick()
   // console.log('ref', inpJumlahRef.value);
@@ -266,7 +284,7 @@ const clearSelectedBarang = () => {
 }
 
 const handleSubmit = () => {
-  console.log('form', form.value);
+  // console.log('form', form.value);
   props.store.create(form.value)
   .then(() => {
     clearSelectedBarang()
@@ -279,10 +297,17 @@ const handleBatal = () => {
 
 onMounted(() => {
   // document.addEventListener('click', handleClickOutside)
+  initForm()
+})
+
+function initForm(){
+  const today = new Date().toISOString().split('T')[0];
+  form.value.tgl_order = today
+  form.value.nomor_order = ''
   props.store.init()
   clearSelectedBarang()
   clearSelectedSupplier()
-})
+} 
 
 onUnmounted(() => {
   // document.removeEventListener('click', handleClickOutside)
