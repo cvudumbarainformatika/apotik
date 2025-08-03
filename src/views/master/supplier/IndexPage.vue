@@ -64,23 +64,22 @@ async function handleDelete(item) {
 <template>
   <base-master :title="title" :store="store" :onAdd="handleAdd" :onRefresh="handleRefresh">
     <template #item="{ item }">
-      <LoaderItem v-if="store.loading" />
-      <list-comp v-else :item="item" @edit="handleEdit" @delete="handleDelete" />
+      <Suspense>
+        <template #default>
+          <list-comp :item="item" @edit="handleEdit" @delete="handleDelete" />
+        </template>
+        <template #fallback>
+          <LoaderItem />
+        </template>
+      </Suspense>
     </template>
     <template #modal-form>
-      <modal-form 
-        v-if="store.modalFormOpen"
-        v-model="store.modalFormOpen"
-        :mode="store.item ? 'edit' : 'add'"
-        :title="title"
-        :store="store"
-        @close="store.modalFormOpen = false"
-        @save="handleSave"
-      />
+      <modal-form v-if="store.modalFormOpen" v-model="store.modalFormOpen" :mode="store.item ? 'edit' : 'add'"
+        :title="title" :store="store" @close="store.modalFormOpen = false" @save="handleSave" />
     </template>
 
-    
 
-   
+
+
   </base-master>
 </template>
