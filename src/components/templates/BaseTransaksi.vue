@@ -44,7 +44,7 @@
                 </slot>
                 <slot  name="actions">
                   <u-btn-icon tooltip="Tambah Data" @click="handleAdd" />
-                  <u-btn-icon icon="rotate-cw" tooltip="Refresh" @click="onRefresh" />
+                  <u-btn-icon icon="rotate-cw" tooltip="Refresh" @click="handleRefresh" />
                 </slot>
               </u-row>
               <u-row  flex1 right class="gap-2">
@@ -69,12 +69,21 @@ const props = defineProps({
   title: { type: String, default: 'Title' },
   titleKanan: { type: String, default: 'Riwayat' },
   isLoadMore: { type: Boolean, default: true },
-  onAdd: { type: Function, default: () => {} }, // ✅ supaya tidak error saat dipanggil
-  onRefresh: Function // ✅ hanya dipanggil kalau diberikan
+  // onAdd: { type: Function, default: () => {} }, // ✅ supaya tidak error saat dipanggil
+  // onRefresh: Function // ✅ hanya dipanggil kalau diberikan
 })
 
-function handleAdd() {
+function handleAdd(e) {
+  e.preventDefault()
+  e.stopPropagation()
   // props.onAdd()
   props.store.init()
+}
+
+function handleRefresh(e) {
+  e.preventDefault()
+  e.stopPropagation()
+  // props.onRefresh()
+  props.store.fetchAll()
 }
 </script>

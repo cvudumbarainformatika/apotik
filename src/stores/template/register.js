@@ -30,7 +30,10 @@ export const useUserStore = createTemplateStore('user', {
   createUrl: 'register',
   updateUrl: 'update'
 })
-
+export const useDokterStore = createTemplateStore('dokter', {
+  baseUrl: 'api/v1/master/dokter',
+  persist: false
+})
 // export const useSupplierStore = createTemplateStore('supplier', {
 //   baseUrl: '/api/supplier',
 //   persist: false
