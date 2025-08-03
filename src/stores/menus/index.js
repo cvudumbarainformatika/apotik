@@ -92,6 +92,14 @@ export const useMenuStore = defineStore('menu-store', {
             name: 'transaksi.order',
             view: '/src/views/transaksi/order',
             component: 'IndexPage',
+          },
+           {
+            title: 'Penerimaan Produk',
+            icon: 'layers',
+            url: 'admin/transaksi/penerimaan',
+            name: 'transaksi.penerimaan',
+            view: '/src/views/transaksi/penerimaan',
+            component: 'IndexPage',
           }
         ]
       },

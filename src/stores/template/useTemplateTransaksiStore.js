@@ -23,6 +23,7 @@ export function createTemplateTransaksiStore(storeId, config) {
 
       supplierSelected: null,
       barangSelected: null,
+      orderSelected: null,
 
       page: 1,
       per_page: 10,
@@ -153,6 +154,7 @@ export function createTemplateTransaksiStore(storeId, config) {
         this.range.to = getToday()
         this.supplierSelected = null
         this.barangSelected = null
+        this.orderSelected = null
         this.maxRight = false
         this.mode = 'add'
       },
@@ -231,7 +233,7 @@ export function createTemplateTransaksiStore(storeId, config) {
     // 💡 Hanya aktifkan persist jika config.persist = true
     
     persist: config.persist === true ? {
-      pick: ['items', 'per_page', 'form', 'supplierSelected', 'barangSelected', 'mode'],
+      pick: ['items', 'per_page', 'form', 'supplierSelected', 'barangSelected', 'orderSelected', 'mode'],
     } : false
 
 

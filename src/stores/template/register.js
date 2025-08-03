@@ -44,4 +44,9 @@ export const useOrderStore = createTemplateTransaksiStore('order', {
   persist: true
 })
 
+export const usePenerimaanStore = createTemplateTransaksiStore('penerimaan', {
+  baseUrl: '/api/v1/transactions/penerimaan',
+  persist: true
+})
+
 // dan seterusnya...
