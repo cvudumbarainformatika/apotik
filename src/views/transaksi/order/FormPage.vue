@@ -1,5 +1,5 @@
 <template>
-  <u-col class="w-full pb-4 pt-1 px-2">
+  <u-col class="w-full pb-4 pt-1 px-2 relative">
     <u-grid cols="5">
 
       <!-- HEADER 1 -->
@@ -162,21 +162,27 @@
             <u-text>Total Item Order : </u-text>
             <u-text class="font-bold" size="sm">{{ store.form?.order_records?.length || 0 }}</u-text>
           </u-row>
-          <u-badge :variant="store.mode === 'add' ? 'success' : 'warning'">Mode {{ store.mode === 'add' ? 'Tambah' : 'Edit' }}</u-badge>
-          <u-separator spacing="-my-1"></u-separator>
           <u-row>
+            <u-badge v-if="store.form?.flag" variant="danger">Terkunci</u-badge>
+            <u-badge v-else :variant="store.mode === 'add' ? 'success' : 'warning'">Mode {{ store.mode === 'add' ? 'Tambah' : 'Edit' }}</u-badge>
+          </u-row>
+          <u-separator spacing="-my-1"></u-separator>
+          <u-row class="z-99">
             <u-btn v-if="store.mode === 'edit'" variant="secondary" @click="initForm">Order Baru</u-btn>
-            <u-btn v-if="store.form" @click="handleKunci">{{ store.form?.flag ? 'Buka Kunci' : 'Kunci Order' }}</u-btn>
+            <u-btn v-if="store.form" :loading="loadingLock" @click="handleKunci">{{ store.form?.flag ? 'Buka Kunci' : 'Kunci Order' }}</u-btn>
           </u-row>
         </u-col>
     </u-grid>
 
+    <div v-if="store.form?.flag" class="absolute top-0 left-0 right-0 w-full h-full rounded-2xl flex items-center justify-center p-4 bg-light-primary/10" padding="p-0"></div>
   
   </u-col>
 </template>
 
 <script setup>
 import { ref, computed, nextTick, onMounted, onUnmounted, watch, defineAsyncComponent } from 'vue'
+
+import { api } from '@/services/api'
 
 
 const ListRincian = defineAsyncComponent(() => import('./ListRincian.vue'))
@@ -191,6 +197,7 @@ const searchSupplier = ref('')
 const searchBarang = ref('')
 const menuBarangRef = ref(null)
 const inpJumlahRef = ref(null)
+const loadingLock = ref(false)
 
 const form = ref({
   nomor_order: '',
@@ -283,7 +290,9 @@ const clearSelectedBarang = () => {
   form.value.jumlah_pesan = 1
 }
 
-const handleSubmit = () => {
+const handleSubmit = (e) => {
+  e.preventDefault()
+  e.stopPropagation()
   // console.log('form', form.value);
   props.store.create(form.value)
   .then(() => {
@@ -295,11 +304,43 @@ const handleBatal = () => {
   clearSelectedBarang()
 }
 
-const handleKunci = (e) => {
+const handleKunci = async (e) => {
   e.preventDefault()
   e.stopPropagation()
-  console.log('store', props.store.items);
-  console.log('store form', props.store.form);
+  // console.log('store', props.store.items);
+  // console.log('store form', props.store.form);
+
+  const flag = (props.store.form?.flag === '1' || props.store.form?.flag === 1)
+  const nomor_order = props.store.form?.nomor_order
+  const payload = {
+    nomor_order
+  }
+
+  loadingLock.value = true
+
+  let resp
+  try {
+    if (!flag) {
+      resp = await api.post(`api/v1/transactions/order/lock-order`, payload)
+    } else {
+      resp = await api.post(`api/v1/transactions/order/unlock-order`, payload)
+    }
+
+    // console.log('resp', resp);
+  } catch (error) {
+    console.log('error', error);
+    
+  } finally {
+    loadingLock.value = false
+  }
+  
+
+  const data = resp?.data?.data
+  props.store.form.flag = data?.flag
+  props.store.initModeEdit(data)
+
+  
+
   
 }
 
