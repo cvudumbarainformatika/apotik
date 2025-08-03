@@ -2,6 +2,7 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
 import { api } from '@/services/api'
 import { useNotificationStore } from '@/stores/notification'
+import { getToday } from '@/utils/dateHelper'
 
 const notify = useNotificationStore().notify
 
@@ -30,6 +31,11 @@ export function createTemplateTransaksiStore(storeId, config) {
       order_by: 'created_at',
       sort: 'desc',
 
+      range:{
+        from: getToday(),
+        to: getToday()
+      },
+
       hasMore: true,
 
 
@@ -50,6 +56,8 @@ export function createTemplateTransaksiStore(storeId, config) {
             q: this.q,
             order_by: this.order_by,
             sort: this.sort,
+            from: this.range.from,
+            to: this.range.to,
             ...extraParams
           }
           const res = await api.get(config.baseUrl + '/get-list', { params })
@@ -79,6 +87,9 @@ export function createTemplateTransaksiStore(storeId, config) {
             q: this.q,
             order_by: this.order_by,
             sort: this.sort,
+            from: this.range.from,
+            to: this.range.to,
+            ...extraParams
           }
 
           const res = await api.get(config.baseUrl + '/get-list', { params })
@@ -182,6 +193,12 @@ export function createTemplateTransaksiStore(storeId, config) {
         this.page = 1
         this.fetchAll()
       },
+
+      setRange(range) {
+        this.range = range
+        this.page = 1
+        this.fetchAll()
+      },  
 
       clearFieldError(field) {
         if (this.error?.response?.data?.errors?.[field]) {

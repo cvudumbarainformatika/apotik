@@ -66,6 +66,7 @@ export function formatWaktuLalu(dateInput) {
  */
 
 
+
 export function useWaktuLaluReactive(dateInput) {
   return useTimeAgo(new Date(dateInput), {
     updateInterval: 60,
@@ -91,4 +92,45 @@ export function useWaktuLaluReactive(dateInput) {
         invalid: ''
       }
   })
+}
+
+export function toLocalDateString(date) {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+}
+export function getMonthStartDate() {
+  const now = new Date()
+  return toLocalDateString(new Date(now.getFullYear(), now.getMonth(), 1))
+}
+
+export function getMonthEndDate() {
+  const now = new Date()
+  return toLocalDateString(new Date(now.getFullYear(), now.getMonth() + 1, 0))
+}
+export function getToday() {
+  const now = new Date()
+  return toLocalDateString(now)
+}
+
+export function getWeekStartDate() {
+  const now = new Date()
+  const day = now.getDay()
+  const diff = now.getDate() - day + (day === 0 ? -6 : 1) // Senin sebagai awal minggu
+  return toLocalDateString(new Date(now.setDate(diff)))
+}
+
+export function getWeekEndDate() {
+  const now = new Date()
+  const day = now.getDay()
+  const diff = now.getDate() + (7 - day)
+  return toLocalDateString(new Date(now.setDate(diff)))
+}
+
+export function getYearStartDate() {
+  const now = new Date()
+  return toLocalDateString(new Date(now.getFullYear(), 0, 1))
+}
+
+export function getYearEndDate() {
+  const now = new Date()
+  return toLocalDateString(new Date(now.getFullYear(), 11, 31))
 }

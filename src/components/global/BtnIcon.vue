@@ -16,7 +16,9 @@
         props.class
       ]"
     >
-      <u-icon :name="icon" size="20" stroke-width="3" />
+    <slot name="icon">
+      <u-icon :name="icon" class="w-[14px] h-[14px]" />
+    </slot>
   </button>
   </div>
 </template>

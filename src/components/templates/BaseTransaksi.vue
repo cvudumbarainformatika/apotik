@@ -32,6 +32,26 @@
             </u-row>
           </u-view>
           <u-separator />
+          <u-view v-if="store.maxRight" class="w-full">
+            <u-row flex1 class="w-full justify-between">
+              <u-row>
+                <slot name="search">
+                  <u-input-search
+                    v-model="store.q"
+                    @update:modelValue="store.setSearch"
+                    :debounce="300"
+                  />
+                </slot>
+                <slot  name="actions">
+                  <u-btn-icon tooltip="Tambah Data" @click="onAdd" />
+                  <u-btn-icon icon="rotate-cw" tooltip="Refresh" @click="onRefresh" />
+                </slot>
+              </u-row>
+              <u-row  flex1 right class="gap-2">
+                <u-date-range v-model="store.range" @change="store.fetchAll" default-period="today" />
+              </u-row>
+            </u-row>
+          </u-view>
 
           <u-view flex1 scrollY class="w-full" padding="p-0">
             <slot name="kanan"></slot>

@@ -8,9 +8,10 @@
       @input="open = true"
       @keydown="onKeyDown"
       :placeholder="placeholder"
-      class="peer w-full px-4 py-2 pr-10 bg-transparent border rounded-full focus:outline-none focus:ring-1 transition"
+      class="peer w-full px-4 py-2 pr-10 focus:bg-background border rounded-full focus:outline-none focus:ring-1 transition"
       :class="[
         error ? 'border-danger text-danger focus:ring-danger' : 'border-light-primary text-primary focus:border-primary focus:ring-primary',
+        hasValue ? 'bg-background' : 'bg-transparent'
       ]"
     />
 
@@ -186,6 +187,8 @@ function updateDropdownPosition() {
     }
   })
 }
+
+const hasValue = computed(() => !!props.modelValue)
 
 onMounted(() => window.addEventListener('click', handleClickOutside))
 onUnmounted(() => window.removeEventListener('click', handleClickOutside))
