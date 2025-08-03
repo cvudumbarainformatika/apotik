@@ -1,5 +1,5 @@
 <script setup>
-import { defineAsyncComponent, onMounted, computed, ref } from 'vue'
+import { defineAsyncComponent, onMounted, computed, ref, onBeforeMount } from 'vue'
 import { useBarangStore, useSatuanStore } from '@/stores/template/register'
 import { useRoute } from 'vue-router'
 import { inject } from 'vue'
@@ -29,6 +29,17 @@ onMounted(() => {
     masterSatuan.fetchAll()
   ])
 })
+
+// onBeforeMount(() => {
+//   console.log('Before Mounted ', title.value);
+//   store.per_page = 100
+//   Promise.all([
+//     store.fetchAll(),
+//     masterSatuan.fetchAll()
+//   ])
+// }),
+
+
 function handleAdd() {
   store.item = null
   store.modalFormOpen = true
@@ -65,6 +76,9 @@ async function handleDelete(item) {
 
 <template>
   <base-master :title="title" :store="store" :onAdd="handleAdd" :onRefresh="handleRefresh">
+    <template #loading>
+      <LoaderItem />
+    </template>
     <template #item="{ item }">
       <Suspense>
         <template #default>

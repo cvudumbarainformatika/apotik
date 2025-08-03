@@ -32,37 +32,23 @@
 
     <!-- Content -->
     
-    <u-view ref="uViewRef" class="w-full" flex1 :scrollY="store.items.length > 0">
-      <u-list v-if="store.items.length" :items="store.items">
+    <u-view ref="uViewRef" class="w-full relative" flex1 scrollY>
+      <!-- <div class="absolute inset-0 top-12">
+        <u-load-spinner></u-load-spinner>
+      </div> -->
+      <div v-if="store.loading" class="w-full" >
+        <slot name="loading">
+          <u-load-spinner></u-load-spinner>
+        </slot>
+      </div>
+      <u-list v-else-if="store.items.length" :items="store.items">
         <template #item="{ item }">
           <slot name="item" :item="item" />
         </template>
       </u-list>
-      <u-empty :title="store.emptyTitle" :subtitle="store.emptySubtitle" v-else-if="!store.loading" />
+      <u-empty :title="store.emptyTitle" :subtitle="store.emptySubtitle" v-else-if="!store.loading && !store.items.length" />
       <!-- ⬇️ Loading indicator ketika fetchMore aktif dan ketika mode loadMore -->
-      <div v-if="store.loadingMore && isLoadMore"  class="flex justify-center items-center py-1">
-        <svg
-          class="animate-spin h-6 w-6 text-primary"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-        >
-          <circle
-            class="opacity-25"
-            cx="12"
-            cy="12"
-            r="10"
-            stroke="currentColor"
-            stroke-width="4"
-          ></circle>
-          <path
-            class="opacity-75"
-            fill="currentColor"
-            d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-          ></path>
-        </svg>
-        <span class="ml-2 text-sm text-gray-500">Memuat data...</span>
-      </div>
+      <u-load-spinner v-if="store.loadingMore && isLoadMore" />
     </u-view>
 
     <!-- modal form -->
@@ -78,7 +64,7 @@ const props = defineProps({
   store: { type: Object, required: true },
   title: { type: String, default: 'Data' },
   isLoadMore: { type: Boolean, default: true },
-  onAdd: { type: Function, default: () => {} }, // ✅ supaya tidak error saat dipanggil
+  onAdd: Function, // ✅ supaya tidak error saat dipanggil
   onRefresh: Function // ✅ hanya dipanggil kalau diberikan
 })
 
