@@ -7,8 +7,8 @@ const $confirm = inject('confirm')
 
 
 import BaseMaster from '@/components/templates/BaseMaster.vue'
-import LoaderItem from './LoaderItem.vue'
-
+// import LoaderItem from './LoaderItem.vue'
+const LoaderItem = defineAsyncComponent(() => import('./LoaderItem.vue'))
 const ListComp = defineAsyncComponent(() => import('./ListComp.vue'))
 const ModalForm = defineAsyncComponent(() => import('./ModalForm.vue'))
 
