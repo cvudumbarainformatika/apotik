@@ -38,7 +38,7 @@
           <slot name="item" :item="item" />
         </template>
       </u-list>
-      <u-empty :title="store.emptyTitle" :subtitle="store.emptySubtitle" v-else />
+      <u-empty :title="store.emptyTitle" :subtitle="store.emptySubtitle" v-else-if="!store.loading" />
       <!-- ⬇️ Loading indicator ketika fetchMore aktif dan ketika mode loadMore -->
       <div v-if="store.loadingMore && isLoadMore"  class="flex justify-center items-center py-1">
         <svg
