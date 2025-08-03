@@ -71,6 +71,14 @@ export const useMenuStore = defineStore('menu-store', {
             name: 'master.user',
             view: '/src/views/master/user',
             component: 'IndexPage',
+          },
+          {
+            title: 'Master Dokter',
+            icon: 'users',
+            url: 'admin/master/dokter',
+            name: 'master.dokter',
+            view: '/src/views/master/dokter',
+            component: 'IndexPage',
           }
         ]
       },
