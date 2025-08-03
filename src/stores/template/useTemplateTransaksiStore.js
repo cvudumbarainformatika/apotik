@@ -126,11 +126,13 @@ export function createTemplateTransaksiStore(storeId, config) {
           const res = await api.post(`${config.baseUrl}${config?.createUrl || '/simpan'}`, data)
           console.log(`resp ${storeId} create : `, res);
           // if (res.status === 200) {
-            const result = res.data.data
+            const result = res.data?.data
             if (this.mode === 'add') {
               this.items.unshift(result)
+              this.initModeEdit(result)
+            } else {
+              this.initModeEdit(result)
             }
-            this.initModeEdit(result)
 
             this.error = null
           // }
@@ -147,6 +149,8 @@ export function createTemplateTransaksiStore(storeId, config) {
 
       init(){
         this.form = null
+        this.range.from = getToday()
+        this.range.to = getToday()
         this.supplierSelected = null
         this.barangSelected = null
         this.mode = 'add'
@@ -154,6 +158,11 @@ export function createTemplateTransaksiStore(storeId, config) {
 
       initModeEdit(result){
         this.form = result
+        const id = result?.id ?? null
+        const index = this.items.findIndex(item => item?.id === id)
+        if (index !== -1) {
+          this.items[index] = result
+        }
         this.supplierSelected = result?.supplier ?? null
         this.mode = 'edit'
       },
