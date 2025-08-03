@@ -46,6 +46,7 @@ const props = defineProps({
 
 
 const handleEdit = (item) => {
+  props.store.maxRight = false
   props.store.initModeEdit(item)
 }
 

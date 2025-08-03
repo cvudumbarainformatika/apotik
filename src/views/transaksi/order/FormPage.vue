@@ -166,7 +166,7 @@
           <u-separator spacing="-my-1"></u-separator>
           <u-row>
             <u-btn v-if="store.mode === 'edit'" variant="secondary" @click="initForm">Order Baru</u-btn>
-            <u-btn v-if="store.form">{{ store.form?.flag ? 'Buka Kunci' : 'Kunci Order' }}</u-btn>
+            <u-btn v-if="store.form" @click="handleKunci">{{ store.form?.flag ? 'Buka Kunci' : 'Kunci Order' }}</u-btn>
           </u-row>
         </u-col>
     </u-grid>
@@ -295,6 +295,14 @@ const handleBatal = () => {
   clearSelectedBarang()
 }
 
+const handleKunci = (e) => {
+  e.preventDefault()
+  e.stopPropagation()
+  console.log('store', props.store.items);
+  console.log('store form', props.store.form);
+  
+}
+
 onMounted(() => {
   // document.addEventListener('click', handleClickOutside)
   initForm()
@@ -324,13 +332,23 @@ watch(() => ({ ...props.store.form }), (newForm, oldForm) => {
 
   if (newForm) {
     form.value = {
-      nomor_order: newForm?.nomor_order,
-      tgl_order: newForm?.tgl_order,
+      nomor_order: newForm?.nomor_order ?? '',
+      tgl_order: newForm?.tgl_order ?? '',
       // kode_user: newForm?.kode_user,
-      kode_supplier: newForm?.kode_supplier
+      kode_supplier: newForm?.kode_supplier ?? '',
+      
     }
   }
 
+}, { deep: true })
+
+watch(() => props.store.maxRight, (newMax, oldMax) => {
+  // if (!newMax) {
+  //   initForm()
+  // }
+  console.log('newMax', newMax);
+  console.log('form', form.value);
+  
 }, { deep: true })
 
 </script>

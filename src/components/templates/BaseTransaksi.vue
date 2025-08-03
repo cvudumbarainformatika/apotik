@@ -43,12 +43,12 @@
                   />
                 </slot>
                 <slot  name="actions">
-                  <u-btn-icon tooltip="Tambah Data" @click="onAdd" />
+                  <u-btn-icon tooltip="Tambah Data" @click="handleAdd" />
                   <u-btn-icon icon="rotate-cw" tooltip="Refresh" @click="onRefresh" />
                 </slot>
               </u-row>
               <u-row  flex1 right class="gap-2">
-                <u-date-range v-model="store.range" @change="store.fetchAll" default-period="today" />
+                <u-date-range v-model="store.range" @update:modelValue="store.setRange" default-period="today" />
               </u-row>
             </u-row>
           </u-view>
@@ -72,4 +72,9 @@ const props = defineProps({
   onAdd: { type: Function, default: () => {} }, // ✅ supaya tidak error saat dipanggil
   onRefresh: Function // ✅ hanya dipanggil kalau diberikan
 })
+
+function handleAdd() {
+  // props.onAdd()
+  props.store.init()
+}
 </script>

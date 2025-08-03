@@ -122,9 +122,6 @@
 
 <script setup>
 import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue'
-// import BaseButton from '@/components/ui/BaseButton.vue'
-// import u-iconButton from '@/components/ui/u-iconButton.vue'
-// import u-icon from '@/components/ui/u-icon.vue'
 
 // Tambahkan event listener untuk menutup dialog saat klik di luar
 onMounted(() => {
@@ -410,20 +407,38 @@ const selectPeriod = (period) => {
 
 // Terapkan filter
 const applyFilter = () => {
-  emit('update:modelValue', { ...tempRange.value })
-  // Hanya panggil event 'change' setelah model value diupdate
+  const newValue = { ...tempRange.value }
+  const currentValue = props.modelValue
+
+  const isSame =
+    newValue.start_date === currentValue.start_date &&
+    newValue.end_date === currentValue.end_date
+
+  if (!isSame) {
+    emit('update:modelValue', newValue)
+  }
+
   nextTick(() => {
-    emit('change')
     showDialog.value = false
   })
 }
 
 // Reset filter
 const resetFilter = () => {
+  // selectedPeriod.value = null
+  const newValue = { start_date: null, end_date: null }
+  const currentValue = props.modelValue
+
+  const isSame =
+    currentValue.start_date === null && currentValue.end_date === null
+
   selectedPeriod.value = null
-  tempRange.value = { start_date: null, end_date: null }
-  emit('update:modelValue', { start_date: null, end_date: null })
-  emit('change')
+  tempRange.value = newValue
+
+  if (!isSame) {
+    emit('update:modelValue', newValue)
+  }
+
   showDialog.value = false
 }
 

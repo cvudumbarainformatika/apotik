@@ -32,8 +32,8 @@ export function createTemplateTransaksiStore(storeId, config) {
       sort: 'desc',
 
       range:{
-        from: getToday(),
-        to: getToday()
+        start_date: getToday(),
+        end_date: getToday()
       },
 
       hasMore: true,
@@ -56,8 +56,8 @@ export function createTemplateTransaksiStore(storeId, config) {
             q: this.q,
             order_by: this.order_by,
             sort: this.sort,
-            from: this.range.from,
-            to: this.range.to,
+            from: this.range.start_date,
+            to: this.range.end_date,
             ...extraParams
           }
           const res = await api.get(config.baseUrl + '/get-list', { params })
@@ -87,8 +87,8 @@ export function createTemplateTransaksiStore(storeId, config) {
             q: this.q,
             order_by: this.order_by,
             sort: this.sort,
-            from: this.range.from,
-            to: this.range.to,
+            from: this.range.start_date,
+            to: this.range.end_date,
             ...extraParams
           }
 
@@ -153,6 +153,7 @@ export function createTemplateTransaksiStore(storeId, config) {
         this.range.to = getToday()
         this.supplierSelected = null
         this.barangSelected = null
+        this.maxRight = false
         this.mode = 'add'
       },
 
@@ -164,6 +165,7 @@ export function createTemplateTransaksiStore(storeId, config) {
           this.items[index] = result
         }
         this.supplierSelected = result?.supplier ?? null
+        this.maxRight = false
         this.mode = 'edit'
       },
       async update(data, mode) {
@@ -203,11 +205,11 @@ export function createTemplateTransaksiStore(storeId, config) {
         this.fetchAll()
       },
 
-      setRange() {
-        // console.log('range', range);
+      setRange(val) {
+        // console.log('range', val);
         
-        this.from = this.range.from
-        this.to = this.range.to
+        this.from = val.start_date
+        this.to = val.end_date
         this.page = 1
         this.fetchAll()
       },  
