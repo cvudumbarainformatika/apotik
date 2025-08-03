@@ -194,8 +194,11 @@ export function createTemplateTransaksiStore(storeId, config) {
         this.fetchAll()
       },
 
-      setRange(range) {
-        this.range = range
+      setRange() {
+        // console.log('range', range);
+        
+        this.from = this.range.from
+        this.to = this.range.to
         this.page = 1
         this.fetchAll()
       },  

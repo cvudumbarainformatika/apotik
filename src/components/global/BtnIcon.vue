@@ -17,7 +17,7 @@
       ]"
     >
     <slot name="icon">
-      <u-icon :name="icon" class="w-[14px] h-[14px]" />
+      <u-icon :name="icon" class="w-5 h-5" />
     </slot>
   </button>
   </div>

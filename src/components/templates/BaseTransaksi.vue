@@ -32,7 +32,7 @@
             </u-row>
           </u-view>
           <u-separator />
-          <u-view v-if="store.maxRight" class="w-full">
+          <u-view v-if="store.maxRight" class="w-full" padding="p-0">
             <u-row flex1 class="w-full justify-between">
               <u-row>
                 <slot name="search">
