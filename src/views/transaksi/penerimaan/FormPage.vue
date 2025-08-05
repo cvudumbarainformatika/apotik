@@ -15,42 +15,54 @@
           <u-input v-model="form.nopenerimaan" label="Nomor Penerimaan (Auto)" readonly :error="isError('nopenerimaan')"
             :error-message="errorMessage('nopenerimaan')" />
         </u-row>
-        <div v-if="store?.orderSelected"
-          class="bg-primary/10 border border-primary rounded-xl shadow-sm p-4 transition-all duration-300 hover:shadow-md w-full">
-          <div class="flex flex-1 justify-between items-start">
-            <u-row flex1 class="w-full">
-              <u-icon name="file-search-2" class="w-5 h-5 text-primary" />
-              <u-text>
-                {{ store.orderSelected?.nomor_order }}
-              </u-text>
-            </u-row>
-            <button @click="clearSelectedOrder" class="text-primary hover:text-danger " aria-label="Hapus">
-              <u-icon name="X" class="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-        <div v-else
-          class="bg-danger/10 border border-danger rounded-xl shadow-sm p-4 transition-all duration-300 hover:shadow-md w-full">
-          <u-row>
-            <u-row class="items-start" padding="p-0">
-              <u-icon name="file-search-2" class="w-4 h-4 text-primary" />
-              <div>
-                <u-text>
-                  Silahkan cari dan pilih Nomer Order di tombol samping
-                </u-text>
-              </div>
-            </u-row>
-            <u-btn label="Order" @click="modalOpendata = true" />
-          </u-row>
-        </div>
-
+        <u-row>
+          <u-input v-model="form.nofaktur" label="Nomor Faktur" :error="isError('nofaktur')"
+            :error-message="errorMessage('nofaktur')" />
+        </u-row>
+        <u-row>
+          <u-input-date label="Tanggal Faktur" type="date" v-model="form.tgl_faktur"
+            :error="errorMessage('tgl_faktur')" />
+        </u-row>
       </u-card>
 
       <!-- HEADER 2 -->
       <u-card class="col-span-3 h-full space-y-4">
+
         <u-row>
           <u-icon name="users" class="w-4 h-4" />
           <u-text class="font-bold">Informasi Order</u-text>
+        </u-row>
+        <u-row>
+          <div v-if="store?.orderSelected"
+            class="bg-primary/10 border border-primary rounded-xl shadow-sm p-4 transition-all duration-300 hover:shadow-md w-full">
+            <div class="flex flex-1 justify-between items-start">
+              <u-row flex1 class="w-full">
+                <u-icon name="file-search-2" class="w-5 h-5 text-primary" />
+                <u-text>
+                  {{ store.orderSelected?.nomor_order }}
+                </u-text>
+              </u-row>
+              <button @click="clearSelectedOrder" class="text-primary hover:text-danger " aria-label="Hapus">
+                <u-icon name="X" class="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+          <div v-else
+            class="bg-danger/10 border border-danger rounded-xl shadow-sm px-4 py-2 transition-all duration-300 hover:shadow-md w-full">
+            <u-grid cols="3">
+              <u-row flex1 class="col-span-2">
+                <u-icon name="file-search-2" class="w-4 h-4 text-primary" />
+                <div class="w-full">
+                  <u-text>
+                    Silahkan cari dan pilih Nomer Order di tombol samping
+                  </u-text>
+                </div>
+              </u-row>
+              <div class="text-right">
+                <u-btn label="Order" @click="modalOpendata = true" />
+              </div>
+            </u-grid>
+          </div>
         </u-row>
         <u-row>
           <div v-if="store?.supplierSelected"
@@ -76,15 +88,18 @@
             </u-row>
           </div>
         </u-row>
-        <u-grid cols="2">
+        <!-- <u-grid cols="2">
           <u-input class="col-span-1" v-model="form.nofaktur" label="Nomor Faktur" :error="isError('nofaktur')"
             :error-message="errorMessage('nofaktur')" />
           <u-input-date label="Tanggal Faktur" type="date" v-model="form.tgl_faktur"
             :error="errorMessage('tgl_faktur')" />
-        </u-grid>
+        </u-grid> -->
         <u-grid cols="2">
-          <u-input class="col-span-1" v-model="form.jenispajak" label="Jenis Pajak" :error="isError('jenispajak')"
-            :error-message="errorMessage('jenispajak')" />
+          <u-select label="Jenis Pajak" v-model="form.jenispajak" :options="optionJenispajaks"
+            :error="isError('jenispajak')" :error-message="errorMessage('jenispajak')" @update:modelValue="(val) => {
+              console.log('valjenispajak', val);
+              form.pajak = val === 'Exclude' ? 11 : 0
+            }" />
           <u-input class="col-span-1" v-model="form.pajak" label="Pajak" :error="isError('pajak')" type="number"
             :error-message="errorMessage('pajak')" />
         </u-grid>
@@ -103,29 +118,56 @@
           <u-icon name="baggage-claim" class="w-4 h-4" />
           <u-text class="font-bold">Informasi Item</u-text>
         </u-row>
-        <u-row v-if="store.orderSelected">
+        <u-row v-if="store.orderSelected && form.jenispajak">
           <u-list :items="store.orderSelected?.order_records">
             <template #item="{ item }">
-              <u-view padding="px-3 py-3">
+              <u-view flex1 class="w-full" padding="px-3 py-3">
                 <u-row flex1 class="w-full">
-                  <u-col gap="gap-3">
-                    <u-text size="sm" class="font-medium">{{ item.master?.nama }}</u-text>
-                    <u-row class="-mt-1" gap="gap-1">
-                      <u-text class="">Jumlah Pesan : {{ item?.jumlah_pesan }}</u-text>
-                      <u-text class="">{{ item?.satuan_k }}</u-text> |
-                      <u-text class="">{{ item?.satuan_b }}</u-text>
-                      <u-text class="">Isi {{ item?.isi }}</u-text>
+                  <u-grid cols="12" gap="gap-4">
+                    <div class="col-span-3">
+                      <u-text class="font-bold">Nama Barang</u-text>
+                      <u-text size="sm" class="font-medium">{{ item.master?.nama || '-'
+                        }}</u-text>
+                    </div>
+                    <div class="col-span-3 text-center">
+                      <u-text class="font-bold">Jumlah Pesan</u-text>
+                      <u-text size="sm" class="font-medium">{{ item.jumlah_pesan || '-' }}
+                        {{ item.satuan_k || '-'}}</u-text>
+                    </div>
+                    <div class="col-span-3 text-center">
+                      <u-text class="font-bold">Satuan</u-text>
+                      <u-text size="sm" class="font-medium">per{{ item.satuan_b || '-' }}
+                        isi {{ item.isi || '-'}} {{ item.satuan_k || '-' }}</u-text>
+                    </div>
+                    <div class="col-span-3 text-right">
+                      <u-text class="font-bold">Kode Obat</u-text>
+                      <u-text size="sm" class="font-medium">{{ item.kode_barang || '-' }}</u-text>
+                    </div>
+                    <div class="col-span-12">
+                      <u-separator spacing="-my-2"></u-separator>
+                    </div>
+                    <u-row class="col-span-4">
+                      <u-input v-model="form.jumlah_b" label="Penerimaan (Besar)" :error="isError('jumlah_b')"
+                        :error-message="errorMessage('jumlah_b')" type="number" />
                     </u-row>
-                  </u-col>
-                  <u-col gap="gap-3">
-                    <u-grid cols="2" gap="gap-2">
-                      <u-input class="col-span-1" v-model="form.jumlah_b" label="Jml Penerimaan (Besar)"
-                        :error="isError('jumlah_b')" :error-message="errorMessage('jumlah_b')" :autofocus="n === 0" />
-                      <u-input class="col-span-1" v-model="form.pajak" label="Pajak" :error="isError('pajak')"
-                        type="number" :error-message="errorMessage('pajak')" />
-                    </u-grid>
-                  </u-col>
-                </u-row>
+                    <u-row class="col-span-3">
+                      <u-input v-model="form.harga" label="Harga" :error="isError('harga')"
+                        :error-message="errorMessage('harga')" type="number" />
+                    </u-row>
+                    <u-row class="col-span-3">
+                      <u-input v-model="form.nobatch" label="Nobatch" :error="isError('nobatch')"
+                        :error-message="errorMessage('nobatch')" />
+                    </u-row>
+                    <u-row class="col-span-2">
+                      <u-input v-model="form.diskon_persen" label="Disc(%)" :error="isError('diskon_persen')"
+                        :error-message="errorMessage('diskon_persen')" />
+                    </u-row>
+                    <u-row center>
+                      <u-btn variant="secondary" label="Batal" @click="handleBatal" />
+                      <u-btn :loading="store.loadingSave" label="Simpan" @click.stop="handleSubmit($event, item)" />
+                    </u-row>
+                  </u-grid>
+                </u-row> 
 
               </u-view>
             </template>
@@ -134,49 +176,6 @@
         <u-row v-else>
           <u-empty title="Belum Ada Items" icon="baggage-claim" />
         </u-row>
-
-        <!-- <u-row class="relative -mt-4">
-          <div v-if="store?.barangSelected" ref="menuBarangRef"
-            class="bg-background border-1 border-primary rounded-xl shadow-sm p-4 transition-all duration-300 hover:shadow-md w-full absolute z-10 -top-4">
-            <u-grid cols="12" gap="gap-4">
-              <div class="col-span-4">
-                <u-text class="font-bold">Nama Barang</u-text>
-                <u-text>{{ store.barangSelected?.nama || '-' }}</u-text>
-              </div>
-              <div class="col-span-4 text-center">
-                <u-text class="font-bold">Satuan</u-text>
-                <u-text>{{ store.barangSelected?.satuan_k || '-' }} | {{ store.barangSelected?.satuan_b || '-' }}, {{
-                  store.barangSelected?.isi || 0 }}</u-text>
-              </div>
-              <div class="col-span-4 text-right">
-                <u-text class="font-bold">Kode</u-text>
-                <u-text>{{ store.barangSelected?.kode || '-' }}</u-text>
-              </div>
-
-              <div class="col-span-12">
-                <u-separator spacing="-my-2"></u-separator>
-              </div>
-
-              <u-row class="col-span-4">
-                <u-input ref="inpJumlahRef" v-model="form.jumlah_pesan" label="jumlah_pesan" type="number"
-                  :error="isError('jumlah_pesan')" :error-message="errorMessage('jumlah_pesan')" />
-              </u-row>
-              <u-row right class="col-span-8 ">
-                <u-btn variant="secondary" label="Batal" @click="handleBatal" />
-                <u-btn :loading="store.loadingSave" label="Simpan" @click.stop="handleSubmit" />
-              </u-row>
-            </u-grid>
-          </div>
-        </u-row>
-        <u-row>
-          <u-empty v-if="!store.form?.order_records?.length" title="Belum Ada Items" icon="baggage-claim" />
-          <u-list v-else :spaced="true" anim :items="store.form?.order_records">
-            <template #item="{ item }">
-              <ListRincian :item="item" :store="store" />
-            </template>
-          </u-list>
-        </u-row> -->
-
       </u-card>
 
       <u-col align="items-end" class="col-span-4">
@@ -203,6 +202,9 @@
 
 <script setup>
 import { ref, computed, nextTick, onMounted, onUnmounted, watch, defineAsyncComponent } from 'vue'
+import { useOrderStore } from '@/stores/template/register'
+import { getYearStartDate, getYearEndDate } from '@/utils/dateHelper'
+
 
 const ModalData = defineAsyncComponent(() => import('./ModalGetdata.vue'))
 const ListRincian = defineAsyncComponent(() => import('./ListRincian.vue'))
@@ -212,6 +214,8 @@ const props = defineProps({
   title: { type: String, default: 'Data' },
   mode: { type: String, default: 'add' }
 })
+const storeorder = useOrderStore()
+
 
 const searchSupplier = ref('')
 const searchBarang = ref('')
@@ -228,20 +232,20 @@ const form = ref({
   kode_suplier: '',
   jenispajak: '',
   pajak: '',
+  flag: '',
 
   // RINCIAN FORM
   kode_barang: '',
   nobatch: '',
-  jumlah_b: 0,
+  jumlah_b: '',
   jumlah_k: 0,
-  harga: 0,
-  diskon_persen: '',
+  harga: '',
+  diskon_persen: 0,
   isi: 0,
   satuan_k: '',
   satuan_b: '',
-  pajak_rupiah: '',
-  diskon_rupiah: '',
-  flag: '',
+  pajak_rupiah: 0,
+  diskon_rupiah: 0,
 })
 
 const error = computed(() => {
@@ -253,6 +257,32 @@ const error = computed(() => {
   return null
 })
 
+const optionJenispajaks = computed(() => {
+  return [
+    { value: 'Exclude', label: 'Exclude' },
+    { value: 'Include', label: 'Include' }
+  ]
+})
+
+const range = computed(() => {
+  return {
+    from: getYearStartDate(),
+    to: getYearEndDate()
+  }
+})
+
+onMounted(() => {
+  
+  initForm()
+  storeorder.per_page = 20
+  Promise.all([
+    storeorder.fetchAll(range),
+    console.log('Date ', range.value),
+    console.log('Mounted ', storeorder.items),
+    props.store.dataorder = storeorder.items
+  ])
+})
+
 function isError(field){
   return !!error.value?.[field]
 }
@@ -261,45 +291,45 @@ function errorMessage(field){
   return error.value?.[field]?.[0] ?? null
 } 
 
-const handleSelected = (item) => {
-  props.store.supplierSelected = item
-  form.value.kode_supplier = item?.kode ?? null
-  searchSupplier.value = ''
+// const handleSelected = (item) => {
+//   props.store.supplierSelected = item
+//   form.value.kode_supplier = item?.kode ?? null
+//   searchSupplier.value = ''
   
-}
-const handleSelectedBarang = (item) => {
+// }
+// const handleSelectedBarang = (item) => {
   
-  props.store.barangSelected = item
-  form.value.kode_barang = item?.kode ?? null
-  form.value.satuan_k = item?.satuan_k ?? null
-  form.value.satuan_b = item?.satuan_b ?? null
-  form.value.isi = item?.isi ?? null
-  searchBarang.value = ''
-  // console.log('handleSelectedBarang', form.value);
+//   props.store.barangSelected = item
+//   form.value.kode_barang = item?.kode ?? null
+//   form.value.satuan_k = item?.satuan_k ?? null
+//   form.value.satuan_b = item?.satuan_b ?? null
+//   form.value.isi = item?.isi ?? null
+//   searchBarang.value = ''
+//   // console.log('handleSelectedBarang', form.value);
 
-  // await nextTick()
-  // console.log('ref', inpJumlahRef.value);
-  // const el 
-  // inpJumlahRef.value?.inputRef?.focus()
-  handleFocus(inpJumlahRef)
+//   // await nextTick()
+//   // console.log('ref', inpJumlahRef.value);
+//   // const el 
+//   // inpJumlahRef.value?.inputRef?.focus()
+//   handleFocus(inpJumlahRef)
   
-}
+// }
 
-const handleFocus = async (e) => {
+// const handleFocus = async (e) => {
   
-  await nextTick()
-  const el = e?.value
-  // console.log('handleFocus', el);
-  el?.inputRef?.focus()
-  el?.inputRef?.select()
+//   await nextTick()
+//   const el = e?.value
+//   // console.log('handleFocus', el);
+//   el?.inputRef?.focus()
+//   el?.inputRef?.select()
   
-}
+// }
 
-function handleClickOutside(event) {
-  if (menuBarangRef.value && !menuBarangRef.value.contains(event.target)) {
-    clearSelectedBarang()
-  }
-}
+// function handleClickOutside(event) {
+//   if (menuBarangRef.value && !menuBarangRef.value.contains(event.target)) {
+//     clearSelectedBarang()
+//   }
+// }
 
 const onItemsLoaded = (items) => {
   // console.log('items', items);
@@ -317,34 +347,43 @@ const clearSelectedOrder = () => {
 }
 const clearSelectedBarang = () => {
   props.store.barangSelected = null
-  form.value.kode_barang = ''
-  form.value.satuan_k = ''
-  form.value.satuan_b = ''
-  form.value.isi = 0
-  form.value.jumlah_pesan = 1
+  form.value.harga = 0
+  form.value.jumlah_b = 0
+  
 }
 
-const handleSubmit = () => {
-  // console.log('form', form.value);
+const handleSubmit = (e, item) => {
+  e.preventDefault()
+  e.stopPropagation()
+  
+  form.value.satuan_b = item?.satuan_b
+  form.value.satuan_k = item?.satuan_k
+  form.value.isi = item?.isi
+  form.value.jumlah_k = form.value.jumlah_b * parseInt(item.isi)
+  form.value.kode_barang = item?.kode_barang
+  form.value.nopenerimaan = props.store.form?.nopenerimaan || ''
+  form.value.kode_suplier = props.store.supplierSelected?.kode || ''
+  form.value.noorder = props.store.orderSelected?.nomor_order || ''
+  form.value.flag = 0
+  console.log('form', form.value);
+  // console.log('item', item?.satuan_b);
   props.store.create(form.value)
-  .then(() => {
-    clearSelectedBarang()
-  })
+  // .then(() => {
+  //   clearSelectedBarang()
+  // })
 }
 
 const handleBatal = () => {
   clearSelectedBarang()
 }
 
-onMounted(() => {
-  // document.addEventListener('click', handleClickOutside)
-  initForm()
-})
+
 
 function initForm(){
   const today = new Date().toISOString().split('T')[0];
-  form.value.tgl_order = today
-  form.value.nomor_order = ''
+  form.value.tgl_penerimaan = today
+  form.value.tgl_faktur = today
+  form.value.noorder = ''
   props.store.init()
   clearSelectedBarang()
   clearSelectedOrder()
@@ -365,13 +404,27 @@ watch(() => ({ ...props.store.form }), (newForm, oldForm) => {
 
   if (newForm) {
     form.value = {
-      nomor_order: newForm?.nomor_order,
-      tgl_order: newForm?.tgl_order,
-      // kode_user: newForm?.kode_user,
-      kode_supplier: newForm?.kode_supplier
+      nopenerimaan: newForm?.nopenerimaan,
+      noorder: newForm?.noorder,
+      tgl_penerimaan: newForm?.tgl_penerimaan,
+      nofaktur: newForm?.nofaktur,
+      tgl_faktur: newForm?.tgl_faktur,
+      kode_suplier: newForm?.kode_suplier,
+      nama: newForm?.suplier?.nama
     }
   }
 
 }, { deep: true })
 
+// watch(() => props.store.orderSelected?.order_records, (newRecords) => {
+//   if (newRecords) {
+//     form.value.jumlah_k = newRecords.map(() => 0);
+//     form.value.harga = newRecords.map(() => 0);
+//     form.value.subtotal = newRecords.map(() => 0);
+//   } else {
+//     form.value.jumlah_k = [];
+//     form.value.harga = [];
+//     form.value.subtotal = [];
+//   }
+// }, { immediate: true })
 </script>

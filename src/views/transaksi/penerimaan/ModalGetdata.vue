@@ -4,11 +4,11 @@
             <u-row flex1 class="w-full justify-between">
                 <u-row padding="p-3" class="w-full">
                     <slot name="search">
-                        <u-input-search v-model="store.q" @update:modelValue="store.setSearch" :debounce="300" />
+                        <u-input-search v-model="props.store.q" @update:modelValue="props.store.setSearch" :debounce="300" />
                     </slot>
                 </u-row>
             </u-row>
-            <u-list :items="store.items" anim>
+            <u-list :items="props.store.dataorder" anim>
                 <template #item="{ item }">
                     <u-view padding="px-3 py-3" flex1 class="w-full cursor-pointer" @click="handlePilih(item)">
                         <u-row flex1 class="w-full">
@@ -42,7 +42,7 @@
 </template>
 <script setup>
 import { useWaktuLaluReactive } from '@/utils/dateHelper'
-import { useOrderStore } from '@/stores/template/register'
+// import { useOrderStore } from '@/stores/template/register'
 import { onMounted, ref } from 'vue'
 
 const emit = defineEmits(['close', 'save'])
@@ -52,15 +52,15 @@ const props = defineProps({
     title: { type: String, default: 'Data' },
 })
 
-const store = useOrderStore()
+// const store = useOrderStore()
 
 onMounted(() => {
-    console.log('Mounted ', store);
+    // console.log('Mounted ', store);
 
-    store.per_page = 20
-    Promise.all([
-        store.fetchAll()
-    ])
+    // store.per_page = 20
+    // Promise.all([
+    //     store.fetchAll()
+    // ])
 })
 
 
@@ -69,7 +69,7 @@ const handlePilih = (item) => {
     // props.store.initModeEdit(item)
     props.store.orderSelected = item
     props.store.supplierSelected = item?.supplier
-    console.log('Pilih item: ', item);
+    // console.log('Pilih item: ', item);
     emit('close', item)
     
 }
