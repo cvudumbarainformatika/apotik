@@ -11,23 +11,6 @@
       <div class="absolute z-10 -top-5 left-1/2 -translate-x-1/2 w-20 h-20 rounded-full border-1 border-primary flex items-center justify-center">
         <img src="/images/logo.svg" alt="Logo" class="w-full h-full" />
       </div>
-      <!-- <div class="hexagon-mask bg-black/30 shadow-2xl p-4 flex flex-col justify-center items-center w-full h-full transition ">
-        <div class="flex flex-col text-center gap-4 text-background">
-          <div class="mt-2 text-lg font-medium animate-fade-in" style="letter-spacing: 0.05em">SELAMAT DATANG</div>
-          <div class=" -mb-2 mt-2 text-xs font-thin animate-fade-in delay-200" style="letter-spacing: 0.2em">Harap login untuk melanjutkan</div>
-          <div class="flex flex-col gap-4 mt-4 transition animate-fade-in delay-200">
-            <u-input login label="Username" />
-            <u-input login label="Password" type="password" />
-            
-          </div>
-            <div class="animate-fade-in delay-500">
-              <u-checklist label="Ingat saya" />
-            </div>
-            <div class="animate-fade-in delay-500">
-              <u-btn variant="secondary" label="Sign in" class="mt-4 " />
-            </div>
-        </div>
-      </div> -->
       <div class="relative flex flex-col items-center justify-center w-full h-full gap-2 p-4">
         <img src="/images/box-login.svg" alt="Login" class="w-full h-full absolute top-0 left-0" />
           <div class="mt-2 text-background text-lg font-medium animate-fade-in" style="letter-spacing: 0.05em">SELAMAT DATANG</div>
@@ -44,7 +27,7 @@
             
           </div>
           <div class="animate-fade-in delay-500">
-              <u-checklist login label="Ingat saya" />
+              <!-- <u-checklist login label="Ingat saya" /> -->
           </div>
           <div class="animate-fade-in delay-500">
             <u-btn :loading="store.loading" @click="handleSubmit" variant="secondary" label="Sign in" class="mt-4 "/>

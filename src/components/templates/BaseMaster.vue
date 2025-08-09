@@ -41,7 +41,7 @@
           <u-load-spinner></u-load-spinner>
         </slot>
       </div>
-      <u-list v-else-if="store.items.length" :items="store.items">
+      <u-list v-else-if="store.items.length" :items="store.items" :loadingDeletes="store.loadingDeletes">
         <template #item="{ item }">
           <slot name="item" :item="item" />
         </template>

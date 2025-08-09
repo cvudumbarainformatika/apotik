@@ -14,7 +14,7 @@ export function createTemplateStore(storeId, config) {
       loading: true,
       loadingMore: false,
       loadingSave: false,
-      loadingDelete: false,
+      loadingDeletes: [],
       error: null,
 
       emptyTitle:`Belum Ada Data ${storeId}`,
@@ -163,8 +163,11 @@ export function createTemplateStore(storeId, config) {
       },
       async remove(id) {
         // return await api.delete(`${config.baseUrl}/${id}`)
+        const findIndex = this.items.findIndex(item => item.id === id)
+        if (findIndex !== -1) {
+          this.loadingDeletes = [findIndex]
+        }
         try {
-          this.loadingDelete = true
           const res = await api.post(`${config.baseUrl}/delete`, { id })
           console.log(`resp ${storeId} delete : `, res);
           if (res.status === 200) {
@@ -176,7 +179,7 @@ export function createTemplateStore(storeId, config) {
           console.log(`error ${storeId} delete : `, err);
           this.error = err
         } finally {
-          this.loadingDelete = false
+          this.loadingDeletes = []
         }
       },
       setPage(page) {

@@ -23,7 +23,11 @@ defineProps({
   mb: {
     type: [String, Number],
     default: 80,
-  }
+  },
+  loadingDeletes: {
+    type: Array, default: () => []
+  },
+
 })
 </script>
 
@@ -50,11 +54,35 @@ defineProps({
           spaced ? 'border border-primary/40 hover:border-light-primary rounded-md' : '',
         ]"
       >
-        <!-- If item slot provided, use it -->
-        <slot name="item" :item="item" :index="index">
-          <!-- Default rendering -->
+        <!-- <slot name="item" :item="item" :index="index">
           <div >{{ item }}</div>
-        </slot>
+        </slot> -->
+
+         <!-- Jika loading, gunakan slot loading -->
+        <!-- <template v-if="isItemLoading(item, index)">
+          <slot name="loading" :item="item" :index="index">
+            <div class="w-full h-6 bg-gray-200 animate-pulse rounded"></div>
+          </slot>
+        </template> -->
+
+        <!-- Jika item tertentu sedang loading -->
+        <template v-if="loadingDeletes.includes(index)">
+          <slot name="loading" :item="item" :index="index">
+            <!-- Default skeleton -->
+            <div class="w-full animate-pulse p-2">
+              <div class="h-4 bg-gray-300 rounded w-1/3 mb-2"></div>
+              <div class="h-4 bg-gray-200 rounded w-2/3"></div>
+            </div>
+          </slot>
+        </template>
+
+        <!-- Normal rendering -->
+        <template v-else>
+          <slot name="item" :item="item" :index="index">
+            <div>{{ item }}</div>
+          </slot>
+        </template>
+
       </li>
 
       <div v-if="mb" :style="`margin-bottom: ${mb}px`"></div>
