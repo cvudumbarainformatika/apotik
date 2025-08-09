@@ -12,7 +12,7 @@ export function createTemplateTransaksiStore(storeId, config) {
       items: [],
       meta:null,
       item: null,
-      loading: false,
+      loading: true,
       loadingMore: false,
       loadingSave: false,
       loadingDelete: false,

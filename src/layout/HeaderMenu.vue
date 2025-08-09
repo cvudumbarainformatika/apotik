@@ -1,7 +1,7 @@
 <template>
    <header class="absolute top-0 left-0 w-full h-[60px] px-4 pt-2 text-sm text-primary">
     <u-view flex1 class="gap-2 ">
-      <u-row class="">
+      <u-row class="cursor-pointer" @click="router.push('/profiles') ">
         <img src="/images/logo.svg" alt="Logo" class="w-10 h-10" />
         <div>Apotik Udumbara</div>
       </u-row>

@@ -1,6 +1,7 @@
 <script setup>
 import { ref, defineAsyncComponent, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useInactivityLogout } from './useInactivityLogout'
 
 import { useSatuanStore, useJabatanStore } from '@/stores/template/register'
 
@@ -9,6 +10,9 @@ const HeaderMenu = defineAsyncComponent(() => import('./HeaderMenu.vue'))
 
 const storeSatuan = useSatuanStore()
 const storeJabatan = useJabatanStore()
+
+
+useInactivityLogout()
 
 onMounted(() => {
   storeSatuan.per_page = 100

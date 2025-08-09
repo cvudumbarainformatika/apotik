@@ -39,6 +39,23 @@ const router = createRouter({
       children: [] // diisi dinamis nanti
     },
     
+    // INI PATH REQUIRES AUTH
+    {
+      path: '/profiles',
+      name: 'profiles',
+      meta: {
+        requiresAuth: true
+      },
+      component: () => import('@/layout/AdminLayout.vue'),
+      children: [
+        {
+          path: '',
+          name: 'profiles.index',
+          component: () => import('@/views/profiles/IndexPage.vue')
+        }
+      ] // diisi dinamis nanti
+    },
+    
   ]
 })
 

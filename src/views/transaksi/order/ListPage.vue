@@ -27,10 +27,6 @@
             <u-icon :name="item?.flag ? 'lock' : 'lock-open'" size="18" class="mb-1" :class="!item?.flag ? 'text-success' : 'text-danger'" />
             <u-text color="text-gray-500" style="font-size: 10px !important;">{{ useWaktuLaluReactive(item?.created_at) }}</u-text>
           </u-col>
-
-          <!-- <u-col align="items-end" gap="gap-0" class="w-full -mt-4 p-0" padding="p-0">
-            <u-text color="text-gray-400">{{ useWaktuLaluReactive(item?.created_at) }}</u-text>
-          </u-col> -->
         </u-row>
       </u-view>
     </template>
