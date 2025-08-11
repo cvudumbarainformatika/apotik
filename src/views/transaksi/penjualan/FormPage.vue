@@ -54,7 +54,7 @@
             not-found-subtext="Coba kata kunci lain" 
             :show-add-button="false"
             api-url="/api/v1/master/pelanggan/get-list" api-response-path="data.data" :api-params="{ per_page: 5 }"
-            :use-api="true" @select="handleSelectedPelanggan" @items-loaded="onItemsLoaded"
+            :use-api="true" @select="handleSelectedPelanggan"
           ></u-autocomplete>
         </u-row>
         <u-row>
@@ -104,7 +104,7 @@
             not-found-subtext="Coba kata kunci lain" 
             :show-add-button="false"
             api-url="/api/v1/master/supplier/get-list" api-response-path="data.data" :api-params="{ per_page: 10 }"
-            :use-api="true" @select="handleSelected" @items-loaded="onItemsLoaded"
+            :use-api="true" @select="handleSelectedDokter"
           ></u-autocomplete>
         </u-row>
         <u-row>
@@ -162,7 +162,7 @@
               not-found-subtext="Coba kata kunci lain" 
               :show-add-button="false"
               api-url="/api/v1/master/barang/get-list" api-response-path="data.data" :api-params="{ per_page: 10 }"
-              :use-api="true" @select="handleSelectedBarang" @items-loaded="onItemsLoadedBarang"
+              :use-api="true" @select="handleSelectedBarang" 
             >
               <template #item="{ item }">
                 <u-col gap="gap-1">
@@ -367,14 +367,14 @@ function handleClickOutside(event) {
   }
 }
 
-const onItemsLoaded = (items) => {
-  // console.log('items', items);
+// const onItemsLoaded = (items) => {
+//   // console.log('items', items);
   
-}
-const onItemsLoadedBarang = (items) => {
-  // console.log('items', items);
+// }
+// const onItemsLoadedBarang = (items) => {
+//   // console.log('items', items);
   
-}
+// }
 
 const clearSelectedSupplier = () => {
   props.store.supplierSelected = null
