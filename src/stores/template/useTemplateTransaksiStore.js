@@ -24,6 +24,8 @@ export function createTemplateTransaksiStore(storeId, config) {
       supplierSelected: null,
       barangSelected: null,
       orderSelected: null,
+      pelangganSelected: null,
+      dokterSelected: null,
 
       page: 1,
       per_page: 10,

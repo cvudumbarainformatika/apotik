@@ -50,7 +50,7 @@
             :debounce="300" :min-search-length="2" 
             item-key="id" 
             item-label="nama"
-            not-found-text="Data Supplier tidak ditemukan" 
+            not-found-text="Data Pelanggan tidak ditemukan" 
             not-found-subtext="Coba kata kunci lain" 
             :show-add-button="false"
             api-url="/api/v1/master/pelanggan/get-list" api-response-path="data.data" :api-params="{ per_page: 5 }"
@@ -58,16 +58,16 @@
           ></u-autocomplete>
         </u-row>
         <u-row>
-          <div v-if="store?.supplierSelected"
+          <div v-if="store?.pelangganSelected"
             class="bg-primary/10 border border-primary rounded-xl shadow-sm p-4 transition-all duration-300 hover:shadow-md w-full">
             <div class="flex flex-1 justify-between items-start">
               <u-row flex1 class="w-full">
                 <u-icon name="UserSearch" class="w-5 h-5 text-primary" />
                 <u-text>
-                  {{ store.supplierSelected?.nama }}
+                  {{ store.pelangganSelected?.nama }}
                 </u-text>
               </u-row>
-              <button @click="clearSelectedSupplier"
+              <button @click="clearSelectedPelanggan"
                 class="text-primary hover:text-danger " aria-label="Hapus">
                 <u-icon name="X" class="w-4 h-4" />
               </button>
@@ -96,28 +96,28 @@
           <u-text class="font-bold">Data Dokter</u-text>
         </u-row>
         <u-row>
-          <u-autocomplete v-model="searchSupplier" placeholder="Cari Supplier" 
+          <u-autocomplete v-model="searchDokter" placeholder="Cari Dokter" 
             :debounce="300" :min-search-length="2" 
             item-key="id" 
-            item-label="nama"
-            not-found-text="Data Supplier tidak ditemukan" 
+            item-label="nama_dokter"
+            not-found-text="Data Dokter tidak ditemukan" 
             not-found-subtext="Coba kata kunci lain" 
             :show-add-button="false"
-            api-url="/api/v1/master/supplier/get-list" api-response-path="data.data" :api-params="{ per_page: 10 }"
+            api-url="/api/v1/master/dokter/get-list" api-response-path="data.data" :api-params="{ per_page: 5 }"
             :use-api="true" @select="handleSelectedDokter"
           ></u-autocomplete>
         </u-row>
         <u-row>
-          <div v-if="store?.supplierSelected"
+          <div v-if="store?.dokterSelected"
             class="bg-primary/10 border border-primary rounded-xl shadow-sm p-4 transition-all duration-300 hover:shadow-md w-full">
             <div class="flex flex-1 justify-between items-start">
               <u-row flex1 class="w-full">
                 <u-icon name="UserSearch" class="w-5 h-5 text-primary" />
                 <u-text>
-                  {{ store.supplierSelected?.nama }}
+                  {{ store.dokterSelected?.nama_dokter }}
                 </u-text>
               </u-row>
-              <button @click="clearSelectedSupplier"
+              <button @click="clearSelectedDokter"
                 class="text-primary hover:text-danger " aria-label="Hapus">
                 <u-icon name="X" class="w-4 h-4" />
               </button>
@@ -161,7 +161,7 @@
               not-found-text="Data Barang tidak ditemukan" 
               not-found-subtext="Coba kata kunci lain" 
               :show-add-button="false"
-              api-url="/api/v1/master/barang/get-list" api-response-path="data.data" :api-params="{ per_page: 10 }"
+              api-url="/api/v1/transactions/penjualan/get-list-obat" api-response-path="data.data" :api-params="{ per_page: 10 }"
               :use-api="true" @select="handleSelectedBarang" 
             >
               <template #item="{ item }">
@@ -293,15 +293,22 @@ onUnmounted(() => {
 })
 
 const form = ref({
-  nomor_order: '',
-  tgl_order: '',
-  // kode_user: '',
-  kode_supplier: '',
+  nopenjualan: '',
+  kode_pelanggan: '',
+  kode_dokter: '',
   kode_barang: '',
+  jumlah_k: 1,
   satuan_k: '',
   satuan_b: '',
   isi: '',
-  jumlah_pesan: 1,
+  harga_jual: 0,
+  harga_beli: 0,
+  id_penerimaan_rinci: null,
+  nopenerimaan: null,
+  nobatch: null,
+  tgl_exprd: null,
+  id_stok: null,
+
 })
 
 const error = computed(() => {
@@ -322,15 +329,19 @@ function errorMessage(field){
 } 
 
 const handleSelectedPelanggan = (item) => {
-  props.store.supplierSelected = item
-  form.value.kode_supplier = item?.kode ?? null
-  searchSupplier.value = ''
+  // console.log('pelanggan', item);
+  
+  props.store.pelangganSelected = item
+  form.value.kode_pelanggan = item?.kode ?? null
+  searchPelanggan.value = ''
   
 }
 const handleSelectedDokter = (item) => {
-  props.store.supplierSelected = item
-  form.value.kode_supplier = item?.kode ?? null
-  searchSupplier.value = ''
+  // console.log('dokter', item);
+  
+  props.store.dokterSelected = item
+  form.value.kode_dokter = item?.kode ?? null
+  searchDokter.value = ''
   
 }
 const handleSelectedBarang = (item) => {
@@ -376,9 +387,13 @@ function handleClickOutside(event) {
   
 // }
 
-const clearSelectedSupplier = () => {
-  props.store.supplierSelected = null
-  form.value.kode_supplier = ''
+const clearSelectedPelanggan = () => {
+  props.store.pelangganSelected = null
+  // form.value.kode_supplier = ''
+}
+const clearSelectedDokter = () => {
+  props.store.dokterSelected = null
+  // form.value.kode_supplier = ''
 }
 const clearSelectedBarang = () => {
   props.store.barangSelected = null
@@ -454,7 +469,8 @@ function initForm(){
   form.value.nomor_order = ''
   props.store.init()
   clearSelectedBarang()
-  clearSelectedSupplier()
+  clearSelectedPelanggan()
+  clearSelectedDokter()
 } 
 
 onUnmounted(() => {

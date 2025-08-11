@@ -6,7 +6,7 @@
         <u-text color="text-gray-400">{{ item?.master?.kode || '-' }}</u-text>
       </u-col>
       <u-col align="items-end" class="col-span-2" gap="gap-0">
-        <u-text size="lg" class="font-bold" color="text-gray-500">{{ item?.jumlah_pesanan || 0 }}</u-text>
+        <u-text size="lg" class="font-bold" color="text-gray-500">{{ item?.jumlah_pesan || 0 }} {{ item?.satuan_b }}</u-text>
       </u-col>
     </u-grid>
   </u-view>
