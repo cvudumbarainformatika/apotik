@@ -23,6 +23,7 @@
             <u-input login label="Password" type="password" v-model="form.password" required
               :error="isError('password')"
               :error-message="errorMessage('password')"
+              @keydown.enter="handleSubmit"
             />
             
           </div>
@@ -52,7 +53,9 @@ const form = ref({
 })
 const { isError, errorMessage } = useFormError(form.value, store)
 
-async function handleSubmit() {
+async function handleSubmit(e) {
+    e.preventDefault()
+    e.stopPropagation()
     await store.login(form.value)
     await store.getProfile()
     .then(() => {

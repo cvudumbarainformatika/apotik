@@ -9,9 +9,6 @@ export const useAuthStore = defineStore('auth-store', {
     isError: false,
     error: null,
     loading: false,
-
-
-    
   }),
 
   persist: true,

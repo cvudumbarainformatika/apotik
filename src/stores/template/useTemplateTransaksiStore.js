@@ -33,8 +33,8 @@ export function createTemplateTransaksiStore(storeId, config) {
       sort: 'desc',
 
       range:{
-        start_date: getToday(),
-        end_date: getToday()
+        start_date: null,
+        end_date: null
       },
 
       hasMore: true,
