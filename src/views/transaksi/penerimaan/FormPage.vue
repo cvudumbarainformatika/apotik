@@ -117,7 +117,7 @@
                     <div class="col-span-3 text-center">
                       <u-text class="font-bold">Jumlah Pesan</u-text>
                       <u-text size="sm" class="font-medium">{{ item.jumlah_pesan || '-' }} {{ item.satuan_k || '-'
-                      }}</u-text>
+                        }}</u-text>
                     </div>
                     <div class="col-span-3 text-center">
                       <u-text class="font-bold">Satuan</u-text>
@@ -153,9 +153,8 @@
                     </u-row>
                     <u-row class="col-span-4">
                       <u-input-date label="Tanggal Expired" type="date"
-                        v-model="form.rincian[item.kode_barang].tgl_exprd"
-                        :error-message="errorMessage(`rincian.${item.kode_barang}.tgl_exprd`)"
-                        :error="isError(`rincian.${item.kode_barang}.tgl_exprd`)" />
+                        v-model="form.rincian[item.kode_barang].tgl_exprd" 
+                        :error="errorMessage(`rincian.${item.kode_barang}.tgl_exprd`)" />
                     </u-row>
                     <u-row class="col-span-8">
                       <u-btn variant="secondary" label="Batal" @click="handleBatal(item.kode_barang)" />
@@ -184,13 +183,16 @@
           <u-text>Nilai Total Penerimaan : </u-text>
           <u-text class="font-bold" size="sm">{{ formatRupiah(TotalPenerimaan) || 0 }}</u-text>
         </u-row>
-        <u-badge :variant="store.mode === 'add' ? 'success' : 'warning'">Mode {{ store.mode === 'add' ? 'Tambah' :
-          'Edit'
-        }}</u-badge>
-        <u-separator spacing="-my-1"></u-separator>
         <u-row>
+          <u-badge v-if="store.form?.flag" variant="danger">Terkunci</u-badge>
+          <u-badge v-else :variant="store.mode === 'add' ? 'success' : 'warning'">Mode {{ store.mode === 'add' ?
+            'Tambah' : 'Edit' }}</u-badge>
+        </u-row>
+        <u-separator spacing="-my-1"></u-separator>
+        <u-row class="z-99">
           <u-btn v-if="store.mode === 'edit'" variant="secondary" @click="initForm">Order Baru</u-btn>
-          <u-btn v-if="store.form">{{ store.form?.flag ? 'Buka Kunci' : 'Kunci Order' }}</u-btn>
+          <u-btn v-if="store.form" :loading="loadingLock" @click="handleKunci">{{ store.form?.flag ? 'Buka Kunci' :
+            'Kunci Order' }}</u-btn>
         </u-row>
       </u-col>
     </u-grid>
@@ -206,9 +208,13 @@ import { useOrderStore } from '@/stores/template/register'
 import { getYearStartDate, getYearEndDate } from '@/utils/dateHelper'
 import { formatRupiah } from '@/utils/numberHelper'
 import { useNotificationStore } from '@/stores/notification'
+import { api } from '@/services/api'
+
+
 const ModalData = defineAsyncComponent(() => import('./ModalGetdata.vue'))
 const props = defineProps({
   store: { type: Object, required: true },
+  items: { type: Array, default: () => [] },
   title: { type: String, default: 'Data' },
   mode: { type: String, default: 'add' }
 })
@@ -217,6 +223,7 @@ const notify = useNotificationStore().notify
 const modalOpendata = ref(false)
 const isSubmitting = ref(false)
 const skipWatch = ref(false)
+const loadingLock = ref(false)
 
 const form = ref({
   nopenerimaan: '',
@@ -270,7 +277,8 @@ const optionJenispajaks = computed(() => [
 
 const params = computed(() => ({
   from: getYearStartDate(),
-  to: getYearEndDate()
+  to: getYearEndDate(),
+  flag: '1'
 }))
 
 const listItems = computed(() => {
@@ -299,6 +307,42 @@ const listItems = computed(() => {
     master: item.master || null,
   }))
 })
+
+const handleKunci = async (e) => {
+  e.preventDefault()
+  e.stopPropagation()
+
+  // const flag = (props.store.form?.flag === '1' || props.store.form?.flag === 1)
+  const nopenerimaan = props.store.form?.nopenerimaan
+  const rincians = props?.store.form?.rincian
+  const payload = {
+    nopenerimaan,
+    payload : [{
+      nopenerimaan: rincians
+    }]
+  }
+  console.log('payload', payload)
+  loadingLock.value = true
+
+  // let resp
+  // try {
+  //   if (!flag) {
+  //     resp = await api.post(`api/v1/transactions/penerimaan/lock_penerimaan`, payload)
+  //   } 
+
+  //   console.log('resp', resp);
+  // } catch (error) {
+  //   console.log('error', error);
+
+  // } finally {
+  //   loadingLock.value = false
+  // }
+
+  // const data = resp?.data?.data
+  // props.store.form.flag = data?.flag
+  // props.store.initModeEdit(data)
+
+}
 
 onMounted(() => {
   initForm()
@@ -358,7 +402,6 @@ const handleSubmit = async (e, item) => {
   e.preventDefault()
   e.stopPropagation()
  
-  skipWatch.value = true
   isSubmitting.value = true
 
   const kode_barang = item.kode_barang
@@ -404,7 +447,7 @@ const handleSubmit = async (e, item) => {
   try {
     const a = form.value.rincian[kode_barang].jumlah_pesan
     const b = form.value.rincian[kode_barang].jumlah_b
-    console.log('ab', a,b)
+    // console.log('ab', a,b)
     if (parseInt(b) > parseInt(a)) {
       notify({ message: 'Penerimaan Lebih Besar Dari Jumlah Pesanan', type: 'error' })
     } 
@@ -415,8 +458,9 @@ const handleSubmit = async (e, item) => {
 
       props.store.mode = 'edit'
     }
-    form.value.nopenerimaan = props.store?.items[0]?.header?.nopenerimaan
+    // form.value.nopenerimaan = props.store?.items[0]?.header?.nopenerimaan
     form.value.rincian[kode_barang].loading = false
+    // console.log('fofo', props.items)
 
   } catch (err) {
     console.error('Error saat menyimpan:', err)
@@ -443,7 +487,7 @@ const handleBatal = (kode_barang) => {
       isi: form.value.rincian[kode_barang].isi || 1,
       jumlah_k: 0,
       kode_barang: kode_barang,
-      tgl_exprd: '',
+      tgl_exprd: null,
       pajak_rupiah: 0,
       diskon_rupiah: 0,
       loading: false,
@@ -462,9 +506,10 @@ watch(() => props.store.orderSelected, (newOrderSelected) => {
 
 
 watch(() => props.store.form, (newForm, oldForm) => {
-  if (skipWatch.value) {
-    return
-  }
+  console.log('newform', newForm)
+  // if (skipWatch.value) {
+  //   return
+  // }
 
   if (!newForm) return
 
@@ -474,10 +519,7 @@ watch(() => props.store.form, (newForm, oldForm) => {
     }
   }
   if (props.store.mode === 'edit') {
-    const initialLoad = !oldForm || (oldForm?.nopenerimaan !== newForm?.nopenerimaan)
-    if (!initialLoad) {
-      return
-    }
+    form.value.nopenerimaan = newForm?.nopenerimaan
 
     const orderRecords = Array.isArray(newForm?.rincian) ? newForm.rincian : (newForm?.order_records || [])
     props.store.orderSelected = {
@@ -490,7 +532,7 @@ watch(() => props.store.form, (newForm, oldForm) => {
     if (Array.isArray(newForm?.rincian)) {
       newForm.rincian.forEach(item => {
         rincianObj[item.kode_barang] = {
-          nama: item?.master?.nama || item?.nama || '',
+          nama: item?.barang?.nama || item?.nama || '',
           jumlah_pesan: item?.jumlah_pesan || '',
           jumlah_b: item?.jumlah_b || '',
           harga: item?.harga || '',

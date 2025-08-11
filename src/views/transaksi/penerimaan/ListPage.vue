@@ -12,7 +12,7 @@
                 <u-row flex1>
 
                   <u-text class="font-bold" color="text-gray-500">{{ item?.nopenerimaan }}</u-text>
-                  <u-text class="" color="text-primary">Rp. {{ formatRupiah(totalPenerimaan) }}</u-text>
+                  <u-text class="" color="text-primary">Rp. {{ formatRupiah(item?.totals) }}</u-text>
                 </u-row>
                 <u-row>
                   <u-icon size="14" name="file-check-2"></u-icon>
@@ -39,8 +39,8 @@
 
 <script setup>
 import { useWaktuLaluReactive } from '@/utils/dateHelper'
-import { computed } from 'vue';
-import { formatRupiah } from '../../../utils/numberHelper';
+import { computed, watch } from 'vue';
+import { formatRupiah } from '@/utils/numberHelper';
 const props = defineProps({
   store: { type: Object, required: true },
   items: { type: Array, default: ()=> [] },
@@ -49,19 +49,27 @@ const props = defineProps({
 
 const handleEdit = (item) => {
   console.log('handleEdit', item);
+  props.store.maxRight = false
   props.store.initModeEdit(item)
 }
 
-const totalPenerimaan = computed(() => {
-  const data = props.items?.map((x) => x.rincian).flat();
-  const totals = []
-  for (let i = 0; i < data.length; i++) {
-    const el = data[i];
-    const total = parseFloat(el?.subtotal)
-    totals.push(total);
-  }
-  console.log('totals', totals);
-  return totals
-});
+watch(
+  () => props.items,
+  (newItems) => {
+    const totalMap = newItems.reduce((acc, item) => {
+      const total = item.rincian?.reduce((sum, r) => {
+        return sum + (parseFloat(r.subtotal) || 0);
+      }, 0) || 0;
+
+      acc[item.nopenerimaan] = total;
+      return acc;
+    }, {});
+
+    newItems.forEach(item => {
+      item.totals = totalMap[item.nopenerimaan] || 0;
+    });
+  },
+  { deep: true, immediate: true }
+);
 
 </script>
