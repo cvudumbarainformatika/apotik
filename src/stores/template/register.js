@@ -49,7 +49,7 @@ export const useOrderStore = createTemplateTransaksiStore('order', {
 
 export const usePenerimaanStore = createTemplateTransaksiStore('penerimaan', {
   baseUrl: '/api/v1/transactions/penerimaan',
-  persist: true
+  persist: false
 })
 
 export const usePenjualanStore = createTemplateTransaksiStore('penjualan', {
