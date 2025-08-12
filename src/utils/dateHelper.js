@@ -52,12 +52,27 @@ export function formatWaktuLalu(dateInput) {
   const date = new Date(dateInput)
   const diff = (now - date) / 1000
 
-  if (diff < 60) return `${Math.floor(diff)} detik yang lalu`
-  if (diff < 3600) return `${Math.floor(diff / 60)} menit yang lalu`
-  if (diff < 86400) return `${Math.floor(diff / 3600)} jam yang lalu`
-  if (diff < 2592000) return `${Math.floor(diff / 86400)} hari yang lalu`
-  if (diff < 31104000) return `${Math.floor(diff / 2592000)} bulan yang lalu`
-  return `${Math.floor(diff / 31104000)} tahun yang lalu`
+  if (diff < 60) return `${Math.floor(diff)} detik yg lalu`
+  if (diff < 3600) return `${Math.floor(diff / 60)} menit yg lalu`
+  if (diff < 86400) return `${Math.floor(diff / 3600)} jam yg lalu`
+  if (diff < 2592000) return `${Math.floor(diff / 86400)} hari yg lalu`
+  if (diff < 31104000) return `${Math.floor(diff / 2592000)} bulan yg lalu`
+  return `${Math.floor(diff / 31104000)} tahun yg lalu`
+}
+
+export function formatWaktuSisa(dateInput) {
+  const now = new Date()
+  const date = new Date(dateInput)
+  const diff = (date - now) / 1000 // hitung selisih detik, positif kalau di masa depan
+
+  if (diff <= 0) return 'Sudah expired'
+
+  if (diff < 60) return `${Math.floor(diff)} detik lagi`
+  if (diff < 3600) return `${Math.floor(diff / 60)} menit lagi`
+  if (diff < 86400) return `${Math.floor(diff / 3600)} jam lagi`
+  if (diff < 2592000) return `${Math.floor(diff / 86400)} hari lagi`
+  if (diff < 31104000) return `${Math.floor(diff / 2592000)} bulan lagi`
+  return `${Math.floor(diff / 31104000)} tahun lagi`
 }
 
 /**

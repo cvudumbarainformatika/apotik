@@ -28,12 +28,26 @@
           </div>
         </u-row>
         <u-row >
-          <div 
+          <!-- <div 
             class="bg-primary/10 border border-primary rounded-xl shadow-sm p-2 transition-all duration-300 hover:shadow-md w-full">
             <div class="flex flex-1 justify-center items-center">
               <u-text class="font-medium" size="md" color="text-light-primary">{{ currentTime }}</u-text>
              
             </div>
+          </div> -->
+
+          <div
+            class="inline-flex rounded-lg overflow-hidden border border-light-primary bg-grady-primary w-full justify-center">
+            <u-grid cols="2" gap="gap-0">
+              <label
+              :class="['text-sm w-full font-medium text-center px-4 py-2 select-none transition-colors', jenis === 'umum' ? 'bg-grady-primary text-background ' : 'bg-secondary text-primary font-semibold shadow']">
+              Umum
+            </label>
+            <label
+              :class="['text-sm w-full font-medium text-center px-2 py-2 select-none transition-colors', jenis === 'resep' ? 'bg-grady-primary text-background ' : 'bg-secondary text-primary font-semibold shadow']">
+              Resep
+            </label>
+            </u-grid>
           </div>
         </u-row>
         
@@ -161,19 +175,31 @@
               not-found-text="Data Barang tidak ditemukan" 
               not-found-subtext="Coba kata kunci lain" 
               :show-add-button="false"
-              api-url="/api/v1/transactions/penjualan/get-list-obat" api-response-path="data.data" :api-params="{ per_page: 10 }"
+              api-url="/api/v1/transactions/penjualan/get-list-obat" api-response-path="data.data" :api-params="{ per_page: 5 }"
               :use-api="true" @select="handleSelectedBarang" 
             >
               <template #item="{ item }">
-                <u-col gap="gap-1">
-                  <u-text size="sm" class="font-medium">{{ item?.nama }}</u-text>
-                  <u-row class="-mt-1" gap="gap-1">
-                    <u-text class="">{{ item?.kode }}</u-text>, 
-                    <u-text class="">{{ item?.satuan_k }}</u-text> | 
-                    <u-text class="">{{ item?.satuan_b }}</u-text>
-                    <u-text class="">Isi {{ item?.isi }}</u-text>
+
+                <u-row flex1 class="w-full" gap="gap-2">
+                  <u-row flex1 class="w-full">
+                    <u-col gap="gap-1">
+                      <u-text size="sm" class="font-medium">{{ item?.nama }}</u-text>
+                      <u-row class="-mt-1" gap="gap-1">
+                        <u-text class="">{{ item?.kode }}</u-text>
+                      </u-row>
+                    </u-col>
                   </u-row>
-                </u-col>
+                  <u-row>
+                    <u-col align="items-end" gap="gap-1">
+                      <u-text class="-mb-1">Total Stok</u-text>
+                      <u-text size="lg" class="font-medium">
+                        {{ lihatStokAll(item) }}
+                      </u-text>
+                    </u-col>
+                  </u-row>
+                </u-row>
+
+                
               </template>
             </u-autocomplete>
           </u-row>
@@ -183,34 +209,57 @@
               ref="menuBarangRef"
               class="bg-background border-1 border-primary rounded-xl shadow-sm p-4 transition-all duration-300 hover:shadow-md w-full absolute z-10 -top-4">
               <u-grid cols="12" gap="gap-4">
-                <div class="col-span-4">
-                  <u-text class="font-bold">Nama Barang</u-text>
-                  <u-text>{{ store.barangSelected?.nama || '-' }}</u-text>
-                </div>
-                <div class="col-span-4 text-center">
-                  <u-text class="font-bold">Satuan</u-text>
-                  <u-text>{{ store.barangSelected?.satuan_k || '-' }} | {{ store.barangSelected?.satuan_b || '-' }}, {{ store.barangSelected?.isi || 0 }}</u-text>
-                </div>
-                <div class="col-span-4 text-right">
-                  <u-text class="font-bold">Kode</u-text>
-                  <u-text>{{ store.barangSelected?.kode || '-' }}</u-text>
+                <div class="col-span-6">
+                  <u-text class="font-medium" size="md">{{ store.barangSelected?.nama }}</u-text>
                 </div>
 
-                <div class="col-span-12">
-                  <u-separator spacing="-my-2"></u-separator>
+                <div class="col-span-6 flex items-center justify-end gap-2">
+                  <u-text>Total Stok : </u-text> <u-text class="font-bold" size="lg">  {{ lihatStokAll(store.barangSelected) }}</u-text>
                 </div>
-                
-                <u-row class="col-span-4">
-                  <u-input ref="inpJumlahRef" v-model="form.jumlah_pesan" label="jumlah_pesan" type="number"
-                    :error="isError('jumlah_pesan')"
-                    :error-message="errorMessage('jumlah_pesan')" 
-                  />
-                </u-row>
-                <u-row right class="col-span-8 ">
-                  <u-btn variant="secondary" label="Batal"  @click="handleBatal"/>
-                  <u-btn :loading="store.loadingSave" label="Simpan" @click.stop="handleSubmit"  />
-                </u-row>
+
+                <!-- <div class="col-span-12">
+                  <u-separator spacing="-my-2"></u-separator>
+                </div> -->
               </u-grid>
+              <u-col flex1 class="w-full" gap="gap-0">
+                <template v-for="(item, index) in store.barangSelected?.stok" :key="index">
+                  <u-row flex1 class="w-full bg-secondary"gap="gap-2" padding="px-2 py-3">
+                    <u-row flex1 class="w-full items-start">
+                      <u-text class="italic" label="Expired di : " />
+                      <div>
+                        <u-text class="font-medium italic">
+                          {{ item?.tgl_exprd }}
+                        </u-text>
+                        <u-text color="text-gray-500 italic">
+                          {{ formatWaktuSisa(item?.tgl_exprd) }}
+                        </u-text>
+                      </div>
+                    </u-row>
+                    <u-row gap="gap-3">
+                      <div class="flex flex-col">
+                        <div class="text-right">
+                          <div>
+                            <div class="text-xs">Harga : <b class="font-bold text-sm">Rp. {{ formatRupiah(getHargaJual()) }} </b></div>
+                          </div>
+                          <div>
+                            <div class="text-xs">Sisa Stok : <b class="font-bold text-md">{{  item?.jumlah_k }}</b></div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="w-20">
+                        <u-input type="number"  v-model.number="item.jumlah" label="Jumlah" @focus="handleFocusJumlah" />
+                      </div>
+
+                      <u-btn variant="secondary" size="sm" @click.stop="handleAdd(item)">Add</u-btn>
+                    </u-row>
+                  </u-row>
+                  <u-separator spacing=""></u-separator>
+                </template>
+                <u-row flex1 right class="w-full mt-2"  gap="gap-2">
+                  <u-btn @click="handleOk">OK</u-btn>
+                </u-row>
+              </u-col>
+
             </div>
           </u-row>
           <u-row>
@@ -252,6 +301,8 @@
 import { ref, computed, nextTick, onMounted, onUnmounted, watch, defineAsyncComponent } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { api } from '@/services/api'
+import { formatWaktuSisa } from '@/utils/dateHelper'
+import { formatRupiah } from '@/utils/numberHelper'
 
 
 const ListRincian = defineAsyncComponent(() => import('./ListRincian.vue'))
@@ -262,6 +313,16 @@ const props = defineProps({
   mode: { type: String, default: 'add' }
 })
 
+function lihatStokAll(item) {
+  // console.log('lihatStokAll', item);
+  const stocks = item?.stok
+
+  if (!stocks?.length) return 0
+
+  return stocks?.reduce((a, b) => parseInt(a) + parseInt(b.jumlah_k), 0)
+  
+}
+
 const auth = useAuthStore()
 
 const searchPelanggan = ref('')
@@ -270,6 +331,8 @@ const searchBarang = ref('')
 const menuBarangRef = ref(null)
 const inpJumlahRef = ref(null)
 const loadingLock = ref(false)
+
+const jenis = ref('umum')
 
 
 const currentTime = ref('')
@@ -328,8 +391,44 @@ function errorMessage(field){
   return error.value?.[field]?.[0] ?? null
 } 
 
+
+const handleOk = () => {
+  console.log('handleOk');
+  clearSelectedBarang()
+  
+}
+const handleAdd = async(item) => {
+  // console.log('handleAdd', item);
+  // console.log('handleAdd', props.store.barangSelected);
+
+  const selected = props?.store?.barangSelected ?? null
+
+  form.value.kode_barang = item?.kode_barang ?? null
+  form.value.jumlah_k = item?.jumlah ?? 0
+  form.value.satuan_k = item?.satuan_k ?? null
+  form.value.satuan_b = item?.satuan_b ?? null
+  form.value.isi = parseInt(item?.isi ?? 1)
+  form.value.harga_jual = getHargaJual()
+  form.value.harga_beli = parseInt(item?.harga_total ?? 0)
+  form.value.id_penerimaan_rinci = parseInt(item?.id_penerimaan_rinci)
+  form.value.nopenerimaan = item?.nopenerimaan ?? null
+  form.value.nobatch = item?.nobatch ?? null
+  form.value.tgl_exprd = item?.tgl_exprd ?? null
+  form.value.id_stok = item?.id ?? null
+
+  // console.log('form', form.value);
+  props.store.create(form.value)
+  
+}
+
+function getHargaJual() {
+  const selected = props?.store?.barangSelected ?? null
+  return form.value.kode_dokter ? parseInt(selected?.harga_jual_resep_k ?? 0) : parseInt(selected?.harga_jual_biasa_k ?? 0)
+}
+
 const handleSelectedPelanggan = (item) => {
   // console.log('pelanggan', item);
+
   
   props.store.pelangganSelected = item
   form.value.kode_pelanggan = item?.kode ?? null
@@ -339,25 +438,25 @@ const handleSelectedPelanggan = (item) => {
 const handleSelectedDokter = (item) => {
   // console.log('dokter', item);
   
+  
   props.store.dokterSelected = item
   form.value.kode_dokter = item?.kode ?? null
   searchDokter.value = ''
   
 }
 const handleSelectedBarang = (item) => {
-  
-  props.store.barangSelected = item
-  form.value.kode_barang = item?.kode ?? null
-  form.value.satuan_k = item?.satuan_k ?? null
-  form.value.satuan_b = item?.satuan_b ?? null
-  form.value.isi = item?.isi ?? null
-  searchBarang.value = ''
-  // console.log('handleSelectedBarang', form.value);
 
-  // await nextTick()
-  // console.log('ref', inpJumlahRef.value);
-  // const el 
-  // inpJumlahRef.value?.inputRef?.focus()
+  const stok = item?.stok
+  if (stok?.length) {
+    for (let i = 0; i < stok?.length; i++) {
+      const el = stok[i];
+      el.jumlah = 0
+    }
+  }
+
+  props.store.barangSelected = item
+  // console.log('handleSelectedBarang', item);
+  searchBarang.value = ''
   handleFocus(inpJumlahRef)
   
 }
@@ -369,6 +468,13 @@ const handleFocus = async (e) => {
   // console.log('handleFocus', el);
   el?.inputRef?.focus()
   el?.inputRef?.select()
+  
+}
+
+const handleFocusJumlah = async (e) => {
+  // console.log('handleFocusJumlah', e);
+  
+
   
 }
 

@@ -56,8 +56,8 @@ function handleInput(e) {
   }
 }
 
-function handleFocus() {
-  emit('focus')
+function handleFocus(e) {
+  emit('focus', e)
   isFocussed.value = true
 }
 
