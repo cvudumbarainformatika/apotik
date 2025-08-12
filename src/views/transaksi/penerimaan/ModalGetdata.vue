@@ -4,39 +4,47 @@
             <u-row flex1 class="w-full justify-between">
                 <u-row padding="p-3" class="w-full">
                     <slot name="search">
-                        <u-input-search v-model="props.store.q" @update:modelValue="props.store.setSearch" :debounce="300" />
+                        <u-input-search v-model="props.store.q" @update:modelValue="props.store.setSearch"
+                            :debounce="300" />
                     </slot>
                 </u-row>
             </u-row>
-            <u-list :items="props.store.dataorder" anim>
-                <template #item="{ item }">
-                    <u-view padding="px-3 py-3" flex1 class="w-full cursor-pointer" @click="handlePilih(item)">
-                        <u-row flex1 class="w-full">
-                            <u-row flex1>
-                                <u-col gap="gap-0" class="w-full">
-                                    <u-row flex1>
-                                        <u-text class="font-bold" color="text-gray-500">{{ item?.supplier?.nama
-                                            }}</u-text>
-                                        <u-text class="" color="text-primary">{{ item?.nomor_order }}</u-text>
-                                    </u-row>
-                                    <u-row>
-                                        <u-icon size="14" name="shopping-cart"></u-icon>
-                                        <u-text class="" color="text-gray-500">{{ item?.order_records?.length }}
-                                            items</u-text>
-                                    </u-row>
+            <template v-if="store.loading">
+                <u-view flex1 class="flex items-center justify-center w-full">
+                    <u-load-spinner />
+                </u-view>
+            </template>
+            <template v-else>
+                <u-list :items="props.store.dataorder" anim>
+                    <template #item="{ item }">
+                        <u-view padding="px-3 py-3" flex1 class="w-full cursor-pointer" @click="handlePilih(item)">
+                            <u-row flex1 class="w-full">
+                                <u-row flex1>
+                                    <u-col gap="gap-0" class="w-full">
+                                        <u-row flex1>
+                                            <u-text class="font-bold" color="text-gray-500">{{ item?.supplier?.nama
+                                                }}</u-text>
+                                            <u-text class="" color="text-primary">{{ item?.nomor_order }}</u-text>
+                                        </u-row>
+                                        <u-row>
+                                            <u-icon size="14" name="shopping-cart"></u-icon>
+                                            <u-text class="" color="text-gray-500">{{ item?.order_records?.length }}
+                                                items</u-text>
+                                        </u-row>
+                                    </u-col>
+                                </u-row>
+
+                                <u-col align="items-end" gap="gap-0" class="" padding="p-0">
+                                    <!-- <u-icon name="lock-open" size="18" class="mb-1"
+                                    :class="!item?.flag ? 'text-success' : 'text-danger'" /> -->
+                                    <u-text color="text-gray-500" style="font-size: 10px !important;">{{
+                                        useWaktuLaluReactive(item?.created_at) }}</u-text>
                                 </u-col>
                             </u-row>
-
-                            <u-col align="items-end" gap="gap-0" class="" padding="p-0">
-                                <!-- <u-icon name="lock-open" size="18" class="mb-1"
-                                    :class="!item?.flag ? 'text-success' : 'text-danger'" /> -->
-                                <u-text color="text-gray-500" style="font-size: 10px !important;">{{
-                                    useWaktuLaluReactive(item?.created_at) }}</u-text>
-                            </u-col>
-                        </u-row>
-                    </u-view>
-                </template>
-            </u-list>
+                        </u-view>
+                    </template>
+                </u-list>
+            </template>
         </template>
     </u-modal>
 </template>

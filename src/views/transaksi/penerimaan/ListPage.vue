@@ -8,16 +8,23 @@
               <u-avatar size="w-8 h-8" :label="item?.supplier?.nama"></u-avatar>
             </u-row> -->
             <u-row flex1>
-              <u-col gap="gap-0" class="w-full">
-                <u-row flex1>
-
-                  <u-text class="font-bold" color="text-gray-500">{{ item?.nopenerimaan }}</u-text>
-                  <u-text class="" color="text-primary">Rp. {{ formatRupiah(item?.totals) }}</u-text>
+              <u-col gap="gap-1" class="w-full">
+                <u-row flex1 class="w-full pt-1">
+                  <u-row flex1>
+                    <u-text class="font-bold text-light-primary text-xs" color="text-gray-500">
+                      {{ item?.nopenerimaan }}
+                    </u-text>
+                  </u-row>
+                  <u-row>
+                    <u-text color="text-primary">Rp. {{ formatRupiah(item?.totals) }}</u-text>
+                  </u-row>
                 </u-row>
+
                 <u-row>
                   <u-icon size="14" name="file-check-2"></u-icon>
                   <u-text class="" color="text-gray-500">{{ item?.suplier?.nama }}</u-text>
                 </u-row>
+
                 <u-row>
                   <u-text class="" color="text-gray-500">No Faktur :{{ item?.nofaktur }}</u-text>
                 </u-row>
@@ -51,7 +58,7 @@ const props = defineProps({
 
 
 const handleEdit = (item) => {
-  console.log('handleEdit', item);
+  // console.log('handleEdit', item);
   props.store.maxRight = false
   props.store.initModeEdit(item)
 }

@@ -4,7 +4,16 @@
             <FormPage :store="store" :title="title" :mode="store.mode" />
         </template>
         <template #kanan>
-            <ListPage :store="store" :items="store.items" />
+            <template v-if="store.loading">
+                <u-view flex1 class="flex items-center justify-center w-full">
+                    <u-load-spinner />
+                </u-view>
+            </template>
+            <template v-else>
+                <ListPage v-if="store.items.length" :store="store" :items="store.items" />
+                <u-empty :title="store.emptyTitle" subtitle="Belum Ada Data Order pada Periode Ini"
+                    v-else-if="!store.loading && !store.items.length" />
+            </template>
         </template>
     </base-transaksi>
 </template>

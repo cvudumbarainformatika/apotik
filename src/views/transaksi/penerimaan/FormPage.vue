@@ -199,6 +199,10 @@
 
     <modal-data v-if="modalOpendata" v-model="modalOpendata" title="Data Order" :store="store"
       @close="modalOpendata = false" />
+
+    <div v-if="store.form?.flag"
+      class="absolute top-0 left-0 right-0 w-full h-full rounded-2xl flex items-center justify-center p-4 bg-light-primary/10"
+      padding="p-0"></div>
   </u-col>
 </template>
 
@@ -284,7 +288,7 @@ const params = computed(() => ({
 const listItems = computed(() => {
   const rincian = form.value.rincian || {}
   const orderRecords = props.store.orderSelected?.order_records || []
-  console.log('orderRecords', orderRecords)
+  // console.log('orderRecords', orderRecords)
   if (Object.keys(rincian).length > 0) {
     return Object.values(rincian)
   }
@@ -428,7 +432,7 @@ const clearSelectedOrder = () => {
 }
 
 const initializeRincian = (orderRecords) => {
-  console.log('oreder', orderRecords)
+  // console.log('orderRecords', orderRecords)
   const today = new Date().toISOString().split('T')[0]
   const rincian = {}
   orderRecords.forEach(item => {
@@ -587,8 +591,8 @@ watch(
       const rincianObj = {}
       filteredOrders.forEach(orderItem => {
         const savedItem = newForm?.rincian?.find(r => r.kode_barang === orderItem.kode_barang)
-        console.log('orderItem', orderItem)
-        console.log('savedItem', savedItem)
+        // console.log('orderItem', orderItem)
+        // console.log('savedItem', savedItem)
         rincianObj[orderItem.kode_barang] = {
           nama: savedItem?.barang?.nama || orderItem?.master?.nama,
           jumlah_pesan: savedItem?.jumlah_pesan ?? orderItem?.jumlah_pesan ?? null,
@@ -620,7 +624,7 @@ watch(
         flag: newForm?.flag,
         rincian: rincianObj
       }
-      console.log('newsss', form.value)
+      // console.log('new form value', form.value)
 
       props.store.orderSelected = {
         order_records: filteredOrders,
