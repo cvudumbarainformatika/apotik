@@ -18,6 +18,9 @@
                   <u-icon size="14" name="file-check-2"></u-icon>
                   <u-text class="" color="text-gray-500">{{ item?.suplier?.nama }}</u-text>
                 </u-row>
+                <u-row>
+                  <u-text class="" color="text-gray-500">No Faktur :{{ item?.nofaktur }}</u-text>
+                </u-row>
               </u-col>
             </u-row>
           </u-row>

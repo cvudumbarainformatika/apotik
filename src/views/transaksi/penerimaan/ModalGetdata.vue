@@ -68,8 +68,9 @@ onMounted(() => {
 const handlePilih = (item) => {
     // props.store.initModeEdit(item)
     props.store.orderSelected = item
+    props.store.orderSelected.order_records = item.order_records
     props.store.supplierSelected = item?.supplier
-    // console.log('Pilih item: ', item);
+    console.log('Pilih item: ', props.store.orderSelected.order_records);
     emit('close', item)
     
 }
