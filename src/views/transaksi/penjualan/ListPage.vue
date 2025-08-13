@@ -10,13 +10,12 @@
             <u-row flex1>
               <u-col gap="gap-0" class="w-full">
                 <u-row flex1>
-
+                  <u-text class="" color="text-primary">{{ item?.nopenjualan }}</u-text>
                   <u-text class="font-bold" color="text-gray-500">{{ item?.supplier?.nama }}</u-text>
-                  <u-text class="" color="text-primary">{{ item?.nomor_order }}</u-text>
                 </u-row>
                 <u-row>
                   <u-icon size="14" name="shopping-cart"></u-icon>
-                  <u-text class="" color="text-gray-500">{{ item?.order_records?.length }} items</u-text>
+                  <u-text class="" color="text-gray-500">{{ new Set(item?.rinci?.map(r => r?.kode_barang))?.size }} items</u-text>
                 </u-row>
                 
               </u-col>
@@ -24,8 +23,8 @@
           </u-row>
 
           <u-col align="items-end" gap="gap-0" class="" padding="p-0">
-            <u-icon :name="item?.flag ? 'lock' : 'lock-open'" size="18" class="mb-1" :class="!item?.flag ? 'text-success' : 'text-danger'" />
             <u-text color="text-gray-500" style="font-size: 10px !important;">{{ useWaktuLaluReactive(item?.created_at) }}</u-text>
+            <u-text class="font-bold" size="md" color="text-primary"><span class="text-xs font-light">Rp. </span>{{ formatRupiah(getTotal(item?.rinci)) }}</u-text>
           </u-col>
         </u-row>
       </u-view>
@@ -35,6 +34,7 @@
 
 <script setup>
 import { useWaktuLaluReactive } from '@/utils/dateHelper'
+import { formatRupiah } from '@/utils/numberHelper'
 const props = defineProps({
   store: { type: Object, required: true },
   items: { type: Array, default: ()=> [] },
@@ -44,6 +44,14 @@ const props = defineProps({
 const handleEdit = (item) => {
   props.store.maxRight = false
   props.store.initModeEdit(item)
+}
+
+const getTotal = (items) => {
+  let total = 0
+  items.forEach(item => {
+    total += parseInt(item?.subtotal || 0)
+  });
+  return total
 }
 
 </script>

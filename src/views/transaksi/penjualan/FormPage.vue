@@ -162,7 +162,7 @@
     <u-grid cols="12">
 
       <!-- List Items -->
-        <u-card class="col-span-9 h-full space-y-4">
+        <u-card class="col-span-8 h-full space-y-4">
           <u-row>
             <u-icon name="baggage-claim" class="w-4 h-4" />
             <u-text class="font-bold">Informasi Item</u-text>
@@ -246,35 +246,39 @@
                           </div>
                         </div>
                       </div>
-                      <div class="w-20">
-                        <u-input type="number"  v-model.number="item.jumlah" label="Jumlah" @focus="handleFocusJumlah" />
+                      <div class="w-20" :class="{ 'animate-shake': parseInt(item?.jumlah) > parseInt(item?.jumlah_k) }">
+                        <u-input type="number" v-model.number="item.jumlah" label="Jumlah" @focus="handleFocusJumlah" 
+                          :error="parseInt(item?.jumlah) > parseInt(item?.jumlah_k)"
+                        />
                       </div>
 
-                      <u-btn variant="secondary" size="sm" @click.stop="handleAdd(item)">Add</u-btn>
+                      <u-btn :disabled="parseInt(item?.jumlah) > parseInt(item?.jumlah_k)" 
+                        :loading="store.loadingSave"
+                        variant="secondary" size="sm" @click.stop="handleAdd(item)">Add</u-btn>
                     </u-row>
                   </u-row>
                   <u-separator spacing=""></u-separator>
                 </template>
                 <u-row flex1 right class="w-full mt-2"  gap="gap-2">
-                  <u-btn @click="handleOk">OK</u-btn>
+                  <u-btn  @click="handleOk">Tutup</u-btn>
                 </u-row>
               </u-col>
 
             </div>
           </u-row>
           <u-row>
-            <u-empty v-if="!store.form?.order_records?.length" title="Belum Ada Items" icon="baggage-claim" />
-            <u-list v-else :spaced="true" anim :items="store.form?.order_records">
-              <template #item="{ item }">
-                <ListRincian :item="item" :store="store" />
+            <u-empty v-if="!store.form?.rinci?.length" title="Belum Ada Items" icon="baggage-claim" />
+            <u-list v-else :spaced="true" anim :items="groupedItems">
+              <template #item="{ item, index, isHovered }">
+                <ListRincian :item="item" :store="store" :is-hovered="isHovered" />
               </template>
             </u-list>
           </u-row>
 
         </u-card>
 
-        <u-col align="items-end" class="col-span-3">
-          <u-text class="font-bold" size="sm">Summary Penjualan</u-text>
+        <u-col align="items-end" class="col-span-4">
+          <u-text class="font-bold" size="sm">Ringkasan Penjualan</u-text>
           <u-separator spacing="-my-2"></u-separator>
           <u-row>
             <u-text>Total Item : </u-text>
@@ -286,8 +290,8 @@
           </u-row>
           <u-separator spacing="-my-1"></u-separator>
           <u-row class="z-99">
-            <u-btn v-if="store.mode === 'edit'" variant="secondary" @click="initForm">Order Baru</u-btn>
-            <u-btn v-if="store.form" :loading="loadingLock" @click="handleKunci">{{ store.form?.flag ? 'Buka Kunci' : 'Kunci Order' }}</u-btn>
+            <u-btn v-if="store.mode === 'edit'" variant="secondary" @click="initForm">Baru</u-btn>
+            <u-btn v-if="store.form" variant="primary" @click="initForm">Bayar & Cetak</u-btn>
           </u-row>
         </u-col>
     </u-grid>
@@ -357,6 +361,7 @@ onUnmounted(() => {
 
 const form = ref({
   nopenjualan: '',
+  tgl_penjualan: null,
   kode_pelanggan: '',
   kode_dokter: '',
   kode_barang: '',
@@ -374,6 +379,25 @@ const form = ref({
 
 })
 
+watch(() => ({ ...props.store.form }), (newForm, oldForm) => {
+  console.log('🔥 watch form', newForm, oldForm);
+  
+  for (const key in newForm) {
+    if (newForm[key] !== oldForm[key]) {
+      props.store.clearFieldError(key)
+    }
+  }
+
+  if (newForm) {
+    for (const key in newForm) {
+      if (key in form.value) {
+        form.value[key] = newForm[key]
+      }
+    }
+  }
+
+}, { deep: true })
+
 const error = computed(() => {
   const err = props.store.error
   const status = err?.status === 422
@@ -390,6 +414,36 @@ function isError(field){
 function errorMessage(field){
   return error.value?.[field]?.[0] ?? null
 } 
+
+const groupedItems = computed(() => {
+  const map = new Map()
+
+  const items = props?.store?.form?.rinci ?? []
+  items.forEach(item => {
+    const key = item.kode_barang
+    if (!map.has(key)) {
+      map.set(key, {
+        kode_barang: item?.kode_barang,
+        nama: item?.master?.nama,
+        satuan_k: item?.satuan_k,
+        jumlah_k: Number(item?.jumlah_k),
+        harga_jual: Number(item?.harga_jual),
+        subtotal: Number(item?.subtotal),
+        created_at: item?.created_at
+      })
+    } else {
+      const existing = map.get(key)
+      existing.jumlah_k += Number(item.jumlah_k)
+      existing.subtotal += Number(item.subtotal)
+      // update created_at jika lebih baru
+      if (new Date(item.created_at) > new Date(existing.created_at)) {
+        existing.created_at = item.created_at
+      }
+    }
+  })
+
+  return Array.from(map.values())
+})
 
 
 const handleOk = () => {
@@ -455,7 +509,7 @@ const handleSelectedBarang = (item) => {
   }
 
   props.store.barangSelected = item
-  // console.log('handleSelectedBarang', item);
+  console.log('handleSelectedBarang form', item);
   searchBarang.value = ''
   handleFocus(inpJumlahRef)
   
@@ -473,10 +527,8 @@ const handleFocus = async (e) => {
 
 const handleFocusJumlah = async (e) => {
   // console.log('handleFocusJumlah', e);
-  
-
-  
 }
+
 
 function handleClickOutside(event) {
   if (menuBarangRef.value && !menuBarangRef.value.contains(event.target)) {
@@ -583,26 +635,7 @@ onUnmounted(() => {
   // document.removeEventListener('click', handleClickOutside)
 })
 
-watch(() => ({ ...props.store.form }), (newForm, oldForm) => {
-  // console.log('🔥 watch form', newForm, oldForm);
-  
-  for (const key in newForm) {
-    if (newForm[key] !== oldForm[key]) {
-      props.store.clearFieldError(key)
-    }
-  }
 
-  if (newForm) {
-    form.value = {
-      nomor_order: newForm?.nomor_order ?? '',
-      tgl_order: newForm?.tgl_order ?? '',
-      // kode_user: newForm?.kode_user,
-      kode_supplier: newForm?.kode_supplier ?? '',
-      
-    }
-  }
-
-}, { deep: true })
 
 watch(() => props.store.maxRight, (newMax, oldMax) => {
   // if (!newMax) {
@@ -614,3 +647,18 @@ watch(() => props.store.maxRight, (newMax, oldMax) => {
 }, { deep: true })
 
 </script>
+
+<style scoped>
+@keyframes shake {
+  0% { transform: translateX(0); }
+  20% { transform: translateX(-4px); }
+  40% { transform: translateX(4px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+  100% { transform: translateX(0); }
+}
+
+.animate-shake {
+  animation: shake 0.3s ease-in-out;
+}
+</style>

@@ -1,4 +1,5 @@
 <script setup>
+import { ref } from 'vue'
 defineProps({
   items: {
     type: Array,
@@ -29,6 +30,15 @@ defineProps({
   },
 
 })
+
+const hoverIndex = ref(null)
+
+const emit = defineEmits(['item-hover' ])
+const onItemHover = (index) => {
+  // console.log('index hover', index);
+  hoverIndex.value = index
+  emit('item-hover', index)
+}
 </script>
 
 <template>
@@ -48,6 +58,8 @@ defineProps({
       <li
         v-for="(item, index) in items"
         :key="item"
+        @mouseenter="onItemHover(index)"
+        @mouseleave="onItemHover(null)"
         :class="[
           `flex items-center flex-1 bg-background hover:bg-secondary  transition-all duration-300  hover:shadow-lg relative ${anim ? 'hover:translate-y-[2px]'  : ''}`,
           striped && index % 2 === 1 ? 'bg-gray-50' : '',
@@ -78,7 +90,7 @@ defineProps({
 
         <!-- Normal rendering -->
         <template v-else>
-          <slot name="item" :item="item" :index="index">
+          <slot name="item" :item="item" :index="index" :isHovered="index === hoverIndex">
             <div>{{ item }}</div>
           </slot>
         </template>

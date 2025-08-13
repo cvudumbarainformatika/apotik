@@ -37,6 +37,8 @@ onMounted(() => {
   // console.log('Mounted ', title.value);
   
   store.per_page = 20
+  store.range.start_date = null
+  store.range.end_date = null
   Promise.all([
     store.fetchAll()
   ])

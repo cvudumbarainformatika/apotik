@@ -149,3 +149,14 @@ export function getYearEndDate() {
   const now = new Date()
   return toLocalDateString(new Date(now.getFullYear(), 11, 31))
 }
+
+export function formatJamMenit(dateInput = new Date(), timeZone = 'Asia/Jakarta') {
+  return new Intl.DateTimeFormat('id-ID', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+    timeZone
+  })
+    .format(new Date(dateInput))
+    .replace('.', ':'); // ubah titik jadi :
+}
