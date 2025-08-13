@@ -116,6 +116,14 @@ export const useMenuStore = defineStore('menu-store', {
             name: 'transaksi.penjualan',
             view: '/src/views/transaksi/penjualan',
             component: 'IndexPage',
+          },
+           {
+            title: 'Stock List',
+            icon: 'layers',
+            url: 'admin/transaksi/stock',
+            name: 'transaksi.stock',
+            view: '/src/views/transaksi/stock',
+            component: 'IndexPage',
           }
         ]
       },

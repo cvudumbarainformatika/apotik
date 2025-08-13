@@ -5,26 +5,34 @@
         <u-col gap = gap-1>
           <u-grid cols=12>
             <u-row class="col-span-1">
-              <span>Kode</span>
+              <span>No Penerimaan</span>
             </u-row>
             <u-row class="col-span-11">
-              <span>: {{ item?.kode }}</span>
+              <span>: {{ item?.stoks.nopenerimaan }}</span>
             </u-row>
           </u-grid>
           <u-grid cols=12>
             <u-row class="col-span-1">
-              <span>Nama</span>
+              <span>No Order</span>
             </u-row>
             <u-row class="col-span-11">
-              <span>: {{ item?.nama_dokter }}</span>
+              <span>: {{ item?.stoks.noorder }}</span>
             </u-row>
           </u-grid>
           <u-grid cols=12>
             <u-row class="col-span-1">
-              <span>Alamat</span>
+              <span>Kode Barang</span>
             </u-row>
             <u-row class="col-span-11">
-              <span>: {{ item?.alamat }}</span>
+              <span>: {{ item?.barangs.kode }}</span>
+            </u-row>
+          </u-grid>
+          <u-grid cols=12>
+            <u-row class="col-span-1">
+              <span>Nama Barang</span>
+            </u-row>
+            <u-row class="col-span-11">
+              <span>: {{ item?.barangs.nama }}</span>
             </u-row>
           </u-grid>
         </u-col>
