@@ -23,7 +23,7 @@
         <u-row gap="gap-2">
           <u-text color="text-primary" class="italic">{{ formatJamMenit(item?.created_at) }}</u-text>
           <!-- <u-icon v-if="isHovered" name="pencil" size="18" class="mb-0 text-light-primary cursor-pointer" @click="handleSelectedBarang(item)"  /> -->
-          <u-icon v-if="isHovered" name="delete" size="18" class="mb-0 text-danger cursor-pointer"  />
+          <u-icon v-if="isHovered" name="delete" size="18" class="mb-0 text-danger cursor-pointer" @click.stop="handleDelete(item)" />
         </u-row>
           <u-row gap="gap-1">
             <u-text>Rp. </u-text>
@@ -37,6 +37,7 @@
 
 <script setup>
 import { ref } from 'vue'
+import { api } from '@/services/api'
 import { formatRupiah } from '@/utils/numberHelper'
 import { formatJamMenit } from '@/utils/dateHelper'
 
@@ -47,6 +48,8 @@ const props = defineProps({
   store: { type: Object, required: true },
   isHovered: { type: Boolean, default: false },
 })
+
+const loadingHapusItem = ref(false)
 
 
 const handleSelectedBarang = (item) => {
@@ -63,6 +66,36 @@ const handleSelectedBarang = (item) => {
   // // console.log('handleSelectedBarang', item);
   // searchBarang.value = ''
   // handleFocus(inpJumlahRef)
+  
+}
+
+const handleDelete = async (item) => {
+
+
+  const payload = {
+    kode_barang: item?.kode_barang ?? null,
+    nopenjualan: props.store.form?.nopenjualan,
+  }
+
+  
+
+  // console.log('handleDelete payload', props.store.form.rinci);
+
+  try {
+    const resp = await api.post(`api/v1/transactions/penjualan/hapus`, payload)
+
+    // console.log('resp hapus', resp);
+    const rincian = props?.store?.form?.rinci?.filter(el => el?.kode_barang !== item?.kode_barang)
+    props.store.form.rinci = rincian
+
+    props.store.fetchAll()
+
+  } catch (error) {
+    console.log('error', error);
+  } finally {
+    loadingHapusItem.value = false
+  }
+
   
 }
 </script>

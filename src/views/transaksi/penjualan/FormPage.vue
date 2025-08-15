@@ -222,7 +222,7 @@
                 </div> -->
               </u-grid>
               <u-col flex1 class="w-full" gap="gap-0">
-                <template v-for="(item, index) in store.barangSelected?.stok" :key="index">
+                <template v-for="(item, index) in store.barangSelected?.stok" :key="item?.id">
                   <u-row flex1 class="w-full bg-secondary"gap="gap-2" padding="px-2 py-3">
                     <u-row flex1 class="w-full items-start">
                       <u-text class="italic" label="Expired di : " />
@@ -252,7 +252,7 @@
                         />
                       </div>
 
-                      <u-btn :disabled="parseInt(item?.jumlah) > parseInt(item?.jumlah_k)" 
+                      <u-btn :disabled="(parseInt(item?.jumlah) > parseInt(item?.jumlah_k)) || parseInt(item?.jumlah) === 0" 
                         :loading="store.loadingSave"
                         variant="secondary" size="sm" @click.stop="handleAdd(item)">Add</u-btn>
                     </u-row>
@@ -277,27 +277,57 @@
 
         </u-card>
 
-        <u-col align="items-end" class="col-span-4">
+        <u-col align="items-end" class="col-span-4" gap="gap-1">
           <u-text class="font-bold" size="sm">Ringkasan Penjualan</u-text>
-          <u-separator spacing="-my-2"></u-separator>
+          <u-separator spacing="my-1"></u-separator>
           <u-row>
+            <u-text>Total Penjualan : </u-text>
+            <u-text class="font-bold" size="lg" color="text-light-primary">{{ formatRupiah(totalPenjualan) || 0 }}</u-text>
+          </u-row>
+          <u-row class="-mt-2">
             <u-text>Total Item : </u-text>
-            <u-text class="font-bold" size="sm">{{ store.form?.order_records?.length || 0 }}</u-text>
+            <u-text class="font-bold" size="lg">{{ groupedItems?.length || 0 }}</u-text>
+          </u-row>
+          <u-row class="">
+            <u-badge v-if="store.form?.flag" :variant="store.form?.flag ? 'success' : 'warning'">Complete</u-badge>
+            <u-badge v-else :variant="store.mode === 'add' ? 'success' : 'warning'"> {{ store.mode === 'add' ? 'Baru' : 'Draft' }}</u-badge>
+          </u-row>
+          <u-separator v-if="store.mode === 'edit'" spacing="my-2"></u-separator>
+
+
+          <!-- Radiogroup container -->
+          <div
+            v-if="store.mode === 'edit'"
+            class="grid grid-cols-2 gap-2 mb-2"
+            role="radiogroup"
+            aria-label="Cara Bayar"
+          >
+            <u-radio v-model="formBayar.cara_bayar" value="TUNAI" label="TUNAI" />
+            <u-radio v-model="formBayar.cara_bayar" value="QRIS" label="QRIS" />
+          </div>
+
+
+
+
+          <u-row v-if="store.mode === 'edit'" class="w-full">
+            <u-input v-model.number="formBayar.jumlah_bayar" label="Pembayaran" :error="errorPembayaran"/>
           </u-row>
           <u-row>
-            <u-badge v-if="store.form?.flag" variant="danger">Terkunci</u-badge>
-            <u-badge v-else :variant="store.mode === 'add' ? 'success' : 'warning'">Mode {{ store.mode === 'add' ? 'Tambah' : 'Edit' }}</u-badge>
+            <u-text>Kembali : Rp. </u-text>
+            <u-text class="font-bold" size="lg" color="text-danger">{{ formatRupiah(kembali) || 0 }}</u-text>
           </u-row>
-          <u-separator spacing="-my-1"></u-separator>
-          <u-row class="z-99">
+          <u-separator spacing="my-2"></u-separator>
+          <u-row class="z-9">
             <u-btn v-if="store.mode === 'edit'" variant="secondary" @click="initForm">Baru</u-btn>
-            <u-btn v-if="store.form" variant="primary" @click="initForm">Bayar & Cetak</u-btn>
+            <u-btn v-if="store.form && !errorPembayaran && !store.form?.flag" variant="primary" @click="simpanPenjualan">Simpan</u-btn>
           </u-row>
         </u-col>
     </u-grid>
 
     <div v-if="store.form?.flag" class="absolute top-0 left-0 right-0 w-full h-full rounded-2xl flex items-center justify-center p-4 bg-light-primary/10" padding="p-0"></div>
-  
+    <!-- MODAL NOTA PENJUALAN -->
+    <modal-nota v-if="modalNota" v-model="modalNota" title="Nota Penjualan" :store="store" :form-bayar="formBayar" :form="form"
+      @close="handleCloseModalNota" />
   </u-col>
 </template>
 
@@ -307,6 +337,7 @@ import { useAuthStore } from '@/stores/auth'
 import { api } from '@/services/api'
 import { formatWaktuSisa } from '@/utils/dateHelper'
 import { formatRupiah } from '@/utils/numberHelper'
+import ModalNota from './ModalNota.vue'
 
 
 const ListRincian = defineAsyncComponent(() => import('./ListRincian.vue'))
@@ -335,6 +366,7 @@ const searchBarang = ref('')
 const menuBarangRef = ref(null)
 const inpJumlahRef = ref(null)
 const loadingLock = ref(false)
+const modalNota = ref(false)
 
 const jenis = ref('umum')
 
@@ -379,6 +411,12 @@ const form = ref({
 
 })
 
+const formBayar = ref({
+    diskon: 0,
+    jumlah_bayar: 0,
+    cara_bayar: 'TUNAI'
+})
+
 watch(() => ({ ...props.store.form }), (newForm, oldForm) => {
   console.log('🔥 watch form', newForm, oldForm);
   
@@ -394,6 +432,12 @@ watch(() => ({ ...props.store.form }), (newForm, oldForm) => {
         form.value[key] = newForm[key]
       }
     }
+
+    formBayar.value.diskon = newForm?.diskon || 0
+    formBayar.value.jumlah_bayar = newForm?.jumlah_bayar || 0
+    formBayar.value.cara_bayar = newForm?.cara_bayar || 'TUNAI'
+
+
   }
 
 }, { deep: true })
@@ -414,6 +458,23 @@ function isError(field){
 function errorMessage(field){
   return error.value?.[field]?.[0] ?? null
 } 
+
+
+const totalPenjualan = computed(() => {
+  const items = props?.store?.form?.rinci ?? []
+  return items.reduce((a, b) => a + Number(b?.subtotal), 0)
+})
+
+const kembali = computed(() => {
+  if (formBayar.value.jumlah_bayar < totalPenjualan.value) {
+    return 0
+  } 
+  return formBayar.value.jumlah_bayar - totalPenjualan.value
+})
+
+const errorPembayaran = computed(() => {
+  return formBayar.value.jumlah_bayar < totalPenjualan.value
+})
 
 const groupedItems = computed(() => {
   const map = new Map()
@@ -504,7 +565,16 @@ const handleSelectedBarang = (item) => {
   if (stok?.length) {
     for (let i = 0; i < stok?.length; i++) {
       const el = stok[i];
-      el.jumlah = 0
+      el.jumlah = 0 // ini menambah elemen jumlah
+
+      const idStok = el?.id ?? null
+      if (idStok) {
+        const keeping = item?.penjualan_rinci.filter(el => el.id_stok === idStok)
+        const totalKeeping = keeping?.reduce((a, b) => parseInt(a) + parseInt(b.jumlah_k), 0)
+        console.log('keeping', totalKeeping);
+        
+      }
+
     }
   }
 
@@ -562,46 +632,39 @@ const clearSelectedBarang = () => {
   form.value.jumlah_pesan = 1
 }
 
-const handleSubmit = (e) => {
-  e.preventDefault()
-  e.stopPropagation()
-  // console.log('form', form.value);
-  props.store.create(form.value)
-  .then(() => {
-    clearSelectedBarang()
-  })
-}
 
-const handleBatal = () => {
-  clearSelectedBarang()
-}
 
-const handleKunci = async (e) => {
+const simpanPenjualan = async (e) => {
   e.preventDefault()
   e.stopPropagation()
   // console.log('store', props.store.items);
-  // console.log('store form', props.store.form);
 
-  const flag = (props.store.form?.flag === '1' || props.store.form?.flag === 1)
-  const nomor_order = props.store.form?.nomor_order
   const payload = {
-    nomor_order
+    id: props.store.form?.id,
+    diskon: formBayar.value.diskon ?? 0,
+    jumlah_bayar: formBayar.value.jumlah_bayar ?? 0,
+    kembali: kembali.value ?? 0,
+    cara_bayar: formBayar.value.cara_bayar ?? null,
   }
+  // console.log('store form', payload);
 
+  
+  // modalNota.value = true
   loadingLock.value = true
 
   let resp
   try {
-    if (!flag) {
-      resp = await api.post(`api/v1/transactions/order/lock-order`, payload)
-    } else {
-      resp = await api.post(`api/v1/transactions/order/unlock-order`, payload)
-    }
+    // if (!flag) {
+    resp = await api.post(`api/v1/transactions/penjualan/bayar`, payload)
+    // } else {
+    //   resp = await api.post(`api/v1/transactions/order/unlock-order`, payload)
+    // }
 
-    // console.log('resp', resp);
+    console.log('resp bayar', resp);
+    modalNota.value = true
   } catch (error) {
     console.log('error', error);
-    
+    modalNota.value = false
   } finally {
     loadingLock.value = false
   }
@@ -614,6 +677,13 @@ const handleKunci = async (e) => {
   
 
   
+}
+
+const handleCloseModalNota = () => {
+  modalNota.value = false
+
+  // initForm()
+  window.location.reload()
 }
 
 onMounted(() => {
@@ -629,6 +699,9 @@ function initForm(){
   clearSelectedBarang()
   clearSelectedPelanggan()
   clearSelectedDokter()
+  formBayar.value.diskon = 0
+  formBayar.value.jumlah_bayar = 0
+  formBayar.value.cara_bayar = 'TUNAI'
 } 
 
 onUnmounted(() => {

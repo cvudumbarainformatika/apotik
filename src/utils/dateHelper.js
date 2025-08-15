@@ -87,7 +87,7 @@ export function useWaktuLaluReactive(dateInput) {
     updateInterval: 60,
     messages: {
         justNow: 'baru saja',
-        past: (n) => n.match(/\d/) ? `${n} yg lalu` : n,
+        past: (n) => n.match(/\d/) ? `${n} lalu` : n,
         future: (n) => n.match(/\d/) ? `dalam ${n}` : n,
         second: (n) => `${n} dtk`,
         minute: (n) => `${n} mnt`,

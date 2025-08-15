@@ -54,7 +54,7 @@ export const usePenerimaanStore = createTemplateTransaksiStore('penerimaan', {
 
 export const usePenjualanStore = createTemplateTransaksiStore('penjualan', {
   baseUrl: '/api/v1/transactions/penjualan',
-  persist: true
+  persist: false
 })
 
 export const useStockStore = createTemplateTransaksiStore('stok', {
