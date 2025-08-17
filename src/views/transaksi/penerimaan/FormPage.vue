@@ -401,7 +401,7 @@ function initForm() {
     diskon_rupiah: '',
     rincian: {},
   }
-
+  props.store.init()
   // if (props.store.mode === 'add') {
   props.store.orderSelected = null
   props.store.supplierSelected = null
