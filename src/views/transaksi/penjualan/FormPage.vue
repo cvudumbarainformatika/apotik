@@ -117,7 +117,7 @@
             not-found-text="Data Dokter tidak ditemukan" 
             not-found-subtext="Coba kata kunci lain" 
             :show-add-button="false"
-            api-url="/api/v1/master/dokter/get-list" api-response-path="data.data" :api-params="{ per_page: 5 }"
+            api-url="/api/v1/master/dokter/get-list" api-response-path="data" :api-params="{ per_page: 5 }"
             :use-api="true" @select="handleSelectedDokter"
           ></u-autocomplete>
         </u-row>

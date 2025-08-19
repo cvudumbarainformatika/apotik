@@ -69,7 +69,7 @@
             <u-text class="font-bold">Informasi Item Retur PBF</u-text>
           </u-row>
           <u-row>
-            <u-autocomplete v-model="searchBarang" placeholder="Cari No Transaksi Penerimaan" 
+            <u-autocomplete v-model="searchPenerimaan" placeholder="Cari No Transaksi Penerimaan" 
               :debounce="300" :min-search-length="5" 
               item-key="id" 
               item-label="nama"
@@ -77,16 +77,15 @@
               not-found-subtext="Coba kata kunci lain" 
               :show-add-button="false"
               api-url="/api/v1/transactions/returpembelian/get-pembelian" api-response-path="data.data" :api-params="{ per_page: 10 }" search-key="nopenerimaan"
-              :use-api="true" @select="handleSelectedBarang" @items-loaded="onItemsLoadedBarang"
+              :use-api="true" @select="handleSelectedPenerimaan" @items-loaded="onItemsLoadedBarang"
             >
               <template #item="{ item }">
                 <u-col gap="gap-1">
-                  <u-text size="sm" class="font-medium">{{ item?.nama }}</u-text>
+                  <u-text size="sm" class="font-medium">{{ item?.suplier?.nama }} ({{ item?.nopenerimaan }})</u-text>
                   <u-row class="-mt-1" gap="gap-1">
-                    <u-text class="">{{ item?.kode }}</u-text>, 
-                    <u-text class="">{{ item?.satuan_k }}</u-text> | 
-                    <u-text class="">{{ item?.satuan_b }}</u-text>
-                    <u-text class="">Isi {{ item?.isi }}</u-text>
+                    <u-icon name="box" class="w-4 h-4" />
+                    <u-text class="">{{ item?.rincian?.length }}</u-text>
+                    <u-text>items</u-text>
                   </u-row>
                 </u-col>
               </template>
@@ -94,37 +93,77 @@
           </u-row>
 
           <u-row class="relative -mt-4">
-            <div v-if="store?.barangSelected"
+            <div v-if="store?.penerimaanSelected"
               ref="menuBarangRef"
               class="bg-background border-1 border-primary rounded-xl shadow-sm p-4 transition-all duration-300 hover:shadow-md w-full absolute z-10 -top-4">
               <u-grid cols="12" gap="gap-4">
                 <div class="col-span-4">
-                  <u-text class="font-bold">Nama Barang</u-text>
-                  <u-text>{{ store.barangSelected?.nama || '-' }}</u-text>
+                  <u-text class="font-bold">Nama Supplier (PBF)</u-text>
+                  <u-text>{{ store.penerimaanSelected?.suplier?.nama || '-' }}</u-text>
                 </div>
                 <div class="col-span-4 text-center">
-                  <u-text class="font-bold">Satuan</u-text>
-                  <u-text>{{ store.barangSelected?.satuan_k || '-' }} | {{ store.barangSelected?.satuan_b || '-' }}, {{ store.barangSelected?.isi || 0 }}</u-text>
+                  <!-- <u-text class="font-bold">Satuan</u-text>
+                  <u-text>{{ store.barangSelected?.satuan_k || '-' }} | {{ store.barangSelected?.satuan_b || '-' }}, {{ store.barangSelected?.isi || 0 }}</u-text> -->
                 </div>
                 <div class="col-span-4 text-right">
-                  <u-text class="font-bold">Kode</u-text>
-                  <u-text>{{ store.barangSelected?.kode || '-' }}</u-text>
+                  <u-text class="font-bold">No Penerimaan</u-text>
+                  <u-text>{{ store.penerimaanSelected?.nopenerimaan || '-' }}</u-text>
                 </div>
 
                 <div class="col-span-12">
-                  <u-separator spacing="-my-2"></u-separator>
+                  <u-separator spacing="-mt-1 mb-1"></u-separator>
+                  <u-col flex1 class="w-full" gap="gap-0">
+                    <template v-if="store.penerimaanSelected?.rincian?.length">
+                      <template v-for="(item, index) in store.penerimaanSelected?.rincian" :key="item.id">
+                        <u-row flex1 class="w-full bg-secondary"gap="gap-2" padding="px-2 py-3">
+                          <u-col flex1 class="w-full" gap="gap-1">
+                            <u-row flex1 class="w-full items-start">
+                              <u-text class="font-bold" :label="item.barang?.nama || '-'" />
+                            </u-row>
+                            <u-row>
+                                <u-text class="font-medium italic">
+                                  {{ item?.jumlah_b }}
+                                </u-text>
+                                <u-text class="font-medium italic">
+                                  ({{ item?.satuan_b }})
+                                </u-text>
+                              </u-row>
+                          </u-col>
+                          <u-row gap="gap-3">
+                            <div class="flex flex-col">
+                              <!-- <div class="text-right">
+                                <div>
+                                  <div class="text-xs">Harga : <b class="font-bold text-sm">Rp. {{ formatRupiah(item?.harga) }} </b></div>
+                                </div>
+                                <div>
+                                  <div class="text-xs">Sisa Stok : <b class="font-bold text-md">{{  item?.jumlah_k }}</b></div>
+                                </div>
+                              </div> -->
+                            </div>
+                            <div class="w-24" :class="{ 'animate-shake': parseInt(item?.jumlah) > parseInt(item?.jumlah_k) }">
+                              <u-input type="number" v-model.number="item.jumlah" label="Jumlah" @focus="handleFocusJumlah" 
+                                :error="parseInt(item?.jumlah) > parseInt(item?.jumlah_k)"
+                              />
+                            </div>
+
+                            <u-btn :disabled="(parseInt(item?.jumlah) > parseInt(item?.jumlah_b)) || parseInt(item?.jumlah) === 0" 
+                              :loading="store.loadingSave"
+                              variant="secondary" size="sm" @click.stop="handleRetur(item)">Rtr</u-btn>
+                          </u-row>
+                        </u-row>
+                      <u-separator spacing=""></u-separator>
+                      </template>
+
+                    </template>
+                     <u-row flex1 right class="w-full mt-2"  gap="gap-2">
+                        <u-btn  @click="handleOk">Tutup</u-btn>
+                      </u-row>
+                  </u-col>
+
+
                 </div>
                 
-                <u-row class="col-span-4">
-                  <u-input ref="inpJumlahRef" v-model="form.jumlah_pesan" label="jumlah_pesan" type="number"
-                    :error="isError('jumlah_pesan')"
-                    :error-message="errorMessage('jumlah_pesan')" 
-                  />
-                </u-row>
-                <u-row right class="col-span-8 ">
-                  <u-btn variant="secondary" label="Batal"  @click="handleBatal"/>
-                  <u-btn :loading="store.loadingSave" label="Simpan" @click.stop="handleSubmit"  />
-                </u-row>
+                
               </u-grid>
             </div>
           </u-row>
@@ -152,7 +191,7 @@
               <u-text class="font-bold">Informasi Retur PBF</u-text>
             </u-row>
             <u-row >
-              <u-input-date type="date" v-model="form.tgl_order" :error="errorMessage('tgl_order')"  />
+              <u-input-date type="date" v-model="form.tglretur" :error="errorMessage('tglretur')"  />
             </u-row>
             <u-row >
               <u-input v-model="form.nomor_order" label="Nomor Retur (Auto)" 
@@ -189,6 +228,7 @@
 
 <script setup>
 import { ref, computed, nextTick, onMounted, onUnmounted, watch, defineAsyncComponent } from 'vue'
+import { formatRupiah } from '@/utils/numberHelper'
 
 import { api } from '@/services/api'
 
@@ -202,20 +242,33 @@ const props = defineProps({
 })
 
 const searchSupplier = ref('')
-const searchBarang = ref('')
+const searchPenerimaan = ref('')
 const menuBarangRef = ref(null)
 const inpJumlahRef = ref(null)
 const loadingLock = ref(false)
 
 const form = ref({
-  nomor_order: '',
-  tgl_order: '',
-  kode_supplier: '',
-  kode_barang: '',
-  satuan_k: '',
-  satuan_b: '',
-  isi: '',
-  jumlah_pesan: 1,
+  noretur: null,
+  nopenerimaan: null,
+  nofaktur: null,
+  tglretur: null,
+  kode_supplier: null,
+  kode_barang: null,
+  nobatch: null,
+  id_penerimaan_rinci: null,
+  isi: null,
+  satuan_k: null,
+  satuan_b: null,
+  jumlah_b: 0,
+  jumlah_k: 0,
+  harga: 0,
+  pajak_rupiah: 0,
+  diskon_persen: 0,
+  diskon_rupiah: 0,
+  tgl_exprd: null,
+  harga_total: 0,
+  subtotal: 0,
+  jenispajak: null,
 })
 
 const error = computed(() => {
@@ -241,14 +294,34 @@ const handleSelected = (item) => {
   searchSupplier.value = ''
   
 }
-const handleSelectedBarang = (item) => {
+const handleSelectedPenerimaan = (item) => {
+
+
+  const stok = item?.rincian
+  if (stok?.length) {
+    for (let i = 0; i < stok?.length; i++) {
+      const el = stok[i];
+      el.jumlah = 0 // ini menambah elemen jumlah
+
+      // const idStok = el?.id ?? null
+      // if (idStok) {
+      //   const keeping = item?.penjualan_rinci.filter(el => el.id_stok === idStok)
+      //   const totalKeeping = keeping?.reduce((a, b) => parseInt(a) + parseInt(b.jumlah_k), 0)
+      //   console.log('keeping', totalKeeping);
+        
+      // }
+
+    }
+  }
+
+
   
-  props.store.barangSelected = item
-  form.value.kode_barang = item?.kode ?? null
-  form.value.satuan_k = item?.satuan_k ?? null
-  form.value.satuan_b = item?.satuan_b ?? null
-  form.value.isi = item?.isi ?? null
-  searchBarang.value = ''
+  props.store.penerimaanSelected = item
+  // form.value.kode_barang = item?.kode ?? null
+  // form.value.satuan_k = item?.satuan_k ?? null
+  // form.value.satuan_b = item?.satuan_b ?? null
+  // form.value.isi = item?.isi ?? null
+  searchPenerimaan.value = ''
   // console.log('handleSelectedBarang', form.value);
 
   // await nextTick()
@@ -256,6 +329,12 @@ const handleSelectedBarang = (item) => {
   // const el 
   // inpJumlahRef.value?.inputRef?.focus()
   handleFocus(inpJumlahRef)
+  
+}
+
+const handleOk = () => {
+  console.log('handleOk');
+  clearSelectedBarang()
   
 }
 
@@ -285,26 +364,53 @@ const onItemsLoadedBarang = (items) => {
 }
 
 const clearSelectedSupplier = () => {
-  props.store.supplierSelected = null
-  form.value.kode_supplier = ''
+  // props.store.supplierSelected = null
+  // form.value.kode_supplier = ''
 }
 const clearSelectedBarang = () => {
-  props.store.barangSelected = null
-  form.value.kode_barang = ''
-  form.value.satuan_k = ''
-  form.value.satuan_b = ''
-  form.value.isi = 0
-  form.value.jumlah_pesan = 1
+  props.store.penerimaanSelected = null
+  // form.value.kode_barang = ''
+  // form.value.satuan_k = ''
+  // form.value.satuan_b = ''
+  // form.value.isi = 0
+  // form.value.jumlah_pesan = 1
 }
 
-const handleSubmit = (e) => {
-  e.preventDefault()
-  e.stopPropagation()
+const handleRetur = (e) => {
+  // e.preventDefault()
+  // e.stopPropagation()
   // console.log('form', form.value);
+  // props.store.create(form.value)
+  // .then(() => {
+  //   clearSelectedBarang()
+  // })
+  for (const key in form.value) {
+    if (key in e) {
+      form.value[key] = e[key]
+    }
+  }
+
+  form.value.id_penerimaan_rinci = e?.id ?? null
+  form.value.jenispajak = props.store.penerimaanSelected?.jenispajak ?? null
+  form.value.kode_supplier = props.store.penerimaanSelected?.kode_suplier ?? null
+  form.value.nofaktur = props.store.penerimaanSelected?.nofaktur ?? null
+
+  // console.log('form', form.value);
+  // console.log('handleRetur', e);
+  // console.log('store', props.store.penerimaanSelected);
+
   props.store.create(form.value)
   .then(() => {
     clearSelectedBarang()
   })
+  
+  console.log('handleRetur', form.value);
+  
+
+}
+
+const handleFocusJumlah = async (e) => {
+  // console.log('handleFocusJumlah', e);
 }
 
 const handleBatal = () => {
@@ -358,8 +464,8 @@ onMounted(() => {
 
 function initForm(){
   const today = new Date().toISOString().split('T')[0];
-  form.value.tgl_order = today
-  form.value.nomor_order = ''
+  form.value.tglretur = today
+  form.value.nopenerimaan = ''
   props.store.init()
   clearSelectedBarang()
   clearSelectedSupplier()
@@ -380,10 +486,10 @@ watch(() => ({ ...props.store.form }), (newForm, oldForm) => {
 
   if (newForm) {
     form.value = {
-      nomor_order: newForm?.nomor_order ?? '',
-      tgl_order: newForm?.tgl_order ?? '',
-      // kode_user: newForm?.kode_user,
-      kode_supplier: newForm?.kode_supplier ?? '',
+      // nomor_order: newForm?.nomor_order ?? '',
+      // tgl_order: newForm?.tgl_order ?? '',
+      // // kode_user: newForm?.kode_user,
+      // kode_supplier: newForm?.kode_supplier ?? '',
       
     }
   }
