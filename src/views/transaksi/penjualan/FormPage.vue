@@ -418,7 +418,7 @@ const formBayar = ref({
 })
 
 watch(() => ({ ...props.store.form }), (newForm, oldForm) => {
-  console.log('🔥 watch form', newForm, oldForm);
+  // console.log('🔥 watch form', newForm, oldForm);
   
   for (const key in newForm) {
     if (newForm[key] !== oldForm[key]) {
@@ -432,10 +432,15 @@ watch(() => ({ ...props.store.form }), (newForm, oldForm) => {
         form.value[key] = newForm[key]
       }
     }
+    if (props.store.mode === 'add') {
+      form.value.nopenjualan = null
+    }
 
     formBayar.value.diskon = newForm?.diskon || 0
     formBayar.value.jumlah_bayar = newForm?.jumlah_bayar || 0
     formBayar.value.cara_bayar = newForm?.cara_bayar || 'TUNAI'
+
+    console.log('🔥 watch form', form.value, newForm);
 
 
   }

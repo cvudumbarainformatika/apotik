@@ -124,6 +124,14 @@ export const useMenuStore = defineStore('menu-store', {
             name: 'transaksi.stock',
             view: '/src/views/transaksi/stock',
             component: 'IndexPage',
+          },
+           {
+            title: 'Retur Pembelian',
+            icon: 'layers',
+            url: 'admin/transaksi/returpembelian',
+            name: 'transaksi.stock',
+            view: '/src/views/transaksi/returpembelian',
+            component: 'IndexPage',
           }
         ]
       },

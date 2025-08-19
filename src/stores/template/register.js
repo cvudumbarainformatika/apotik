@@ -63,4 +63,9 @@ export const useStockStore = createTemplateTransaksiStore('stok', {
   persist: true
 })
 
+export const useReturPembelianStore = createTemplateTransaksiStore('retur-pembelian', {
+  baseUrl: '/api/v1/transactions/returpenjualan',
+  persist: false
+})
+
 // dan seterusnya...
