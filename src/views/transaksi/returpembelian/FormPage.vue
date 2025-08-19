@@ -404,12 +404,12 @@ const handleRetur = (e) => {
   // console.log('handleRetur', e);
   // console.log('store', props.store.penerimaanSelected);
 
-  // props.store.create(form.value)
-  // .then(() => {
-  //   clearSelectedBarang()
-  // })
+  props.store.create(form.value)
+  .then(() => {
+    clearSelectedBarang()
+  })
   
-  console.log('handleRetur', form.value);
+  // console.log('handleRetur', form.value);
   
 
 }
