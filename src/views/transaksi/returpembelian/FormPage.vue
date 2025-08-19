@@ -498,7 +498,7 @@ watch(() => ({ ...props.store.form }), (newForm, oldForm) => {
     }
 
 
-    const onlyDate = newForm?.tglretur.split(" ")[0] 
+    const onlyDate = newForm?.tglretur?.split(" ")[0] 
     form.value.tglretur = onlyDate
 
 
