@@ -262,6 +262,7 @@ const form = ref({
   jumlah_b: 0,
   jumlah_k: 0,
   harga: 0,
+  harga_b: 0,
   pajak_rupiah: 0,
   diskon_persen: 0,
   diskon_rupiah: 0,
@@ -269,6 +270,8 @@ const form = ref({
   harga_total: 0,
   subtotal: 0,
   jenispajak: null,
+  pajak: 0,
+  jumlahretur_b: 0,
 })
 
 const error = computed(() => {
@@ -394,6 +397,7 @@ const handleRetur = (e) => {
   form.value.jenispajak = props.store.penerimaanSelected?.jenispajak ?? null
   form.value.kode_supplier = props.store.penerimaanSelected?.kode_suplier ?? null
   form.value.nofaktur = props.store.penerimaanSelected?.nofaktur ?? null
+  form.value.jumlahretur_b = e.jumlah ?? null
 
   // console.log('form', form.value);
   // console.log('handleRetur', e);
@@ -404,7 +408,7 @@ const handleRetur = (e) => {
     clearSelectedBarang()
   })
   
-  console.log('handleRetur', form.value);
+  // console.log('handleRetur', form.value);
   
 
 }
