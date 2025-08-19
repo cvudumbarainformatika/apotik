@@ -96,6 +96,7 @@ const props = defineProps({
   useApi: { type: Boolean, default: false },
   itemKey: { type: String, default: 'id' },
   itemLabel: { type: String, default: 'nama' },
+  searchKey: { type: String, default: 'q' },
  
 })
 
@@ -153,7 +154,7 @@ const fetchFromApi = async (query) => {
   try {
     const params = {
       ...props.apiParams,
-      q: query
+      [props.searchKey || 'q']: query
     }
 
     const response = await api.get(props.apiUrl, { params })

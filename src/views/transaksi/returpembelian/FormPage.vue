@@ -3,25 +3,9 @@
     <u-grid cols="5">
 
       <!-- HEADER 1 -->
-      <u-card class="col-span-2 h-full min-h-[100px] space-y-4">
-        <u-row>
-          <u-icon name="layers" class="w-4 h-4" />
-          <u-text class="font-bold">Informasi Order</u-text>
-        </u-row>
-        <u-row >
-          <u-input-date type="date" v-model="form.tgl_order" :error="errorMessage('tgl_order')"  />
-        </u-row>
-        <u-row >
-          <u-input v-model="form.nomor_order" label="Nomor Order (Auto)" 
-            readonly
-            :error="isError('no_order')"
-            :error-message="errorMessage('no_order')" 
-          />
-        </u-row>
-      </u-card>
-
+      
       <!-- HEADER 2 -->
-      <u-card class="col-span-3 h-full space-y-4">
+      <!-- <u-card class="col-span-3 h-full space-y-4">
         <u-row>
           <u-icon name="users" class="w-4 h-4" />
           <u-text class="font-bold">Informasi Supplier</u-text>
@@ -69,7 +53,7 @@
           </div>
           
         </u-row>
-      </u-card>
+      </u-card> -->
 
       
       
@@ -82,17 +66,17 @@
         <u-card class="col-span-8 h-full space-y-4">
           <u-row>
             <u-icon name="baggage-claim" class="w-4 h-4" />
-            <u-text class="font-bold">Informasi Item</u-text>
+            <u-text class="font-bold">Informasi Item Retur PBF</u-text>
           </u-row>
           <u-row>
-            <u-autocomplete v-model="searchBarang" placeholder="Cari Barang" 
-              :debounce="300" :min-search-length="2" 
+            <u-autocomplete v-model="searchBarang" placeholder="Cari No Transaksi Penerimaan" 
+              :debounce="300" :min-search-length="5" 
               item-key="id" 
               item-label="nama"
-              not-found-text="Data Barang tidak ditemukan" 
+              not-found-text="Data Penerimaan tidak ditemukan" 
               not-found-subtext="Coba kata kunci lain" 
               :show-add-button="false"
-              api-url="/api/v1/master/barang/get-list" api-response-path="data.data" :api-params="{ per_page: 10 }"
+              api-url="/api/v1/transactions/returpembelian/get-pembelian" api-response-path="data.data" :api-params="{ per_page: 10 }" search-key="nopenerimaan"
               :use-api="true" @select="handleSelectedBarang" @items-loaded="onItemsLoadedBarang"
             >
               <template #item="{ item }">
@@ -155,11 +139,35 @@
 
         </u-card>
 
+
+
+        
+
+
         <u-col align="items-end" class="col-span-4">
-          <u-text class="font-bold" size="sm">Summary Order</u-text>
+
+          <u-card class="w-full space-y-4">
+            <u-row>
+              <u-icon name="layers" class="w-4 h-4" />
+              <u-text class="font-bold">Informasi Retur PBF</u-text>
+            </u-row>
+            <u-row >
+              <u-input-date type="date" v-model="form.tgl_order" :error="errorMessage('tgl_order')"  />
+            </u-row>
+            <u-row >
+              <u-input v-model="form.nomor_order" label="Nomor Retur (Auto)" 
+                readonly
+                :error="isError('no_order')"
+                :error-message="errorMessage('no_order')" 
+              />
+            </u-row>
+        </u-card>
+
+
+          <u-text class="font-bold" size="sm">Ringkasan Retur Pembelian</u-text>
           <u-separator spacing="-my-2"></u-separator>
           <u-row>
-            <u-text>Total Item Order : </u-text>
+            <u-text>Total Item Retur : </u-text>
             <u-text class="font-bold" size="sm">{{ store.form?.order_records?.length || 0 }}</u-text>
           </u-row>
           <u-row>
@@ -168,7 +176,7 @@
           </u-row>
           <u-separator spacing="-my-1"></u-separator>
           <u-row class="z-99">
-            <u-btn v-if="store.mode === 'edit'" variant="secondary" @click="initForm">Order Baru</u-btn>
+            <u-btn v-if="store.mode === 'edit'" variant="secondary" @click="initForm">Retur Baru</u-btn>
             <u-btn v-if="store.form" :loading="loadingLock" @click="handleKunci">{{ store.form?.flag ? 'Buka Kunci' : 'Kunci Order' }}</u-btn>
           </u-row>
         </u-col>
@@ -202,7 +210,6 @@ const loadingLock = ref(false)
 const form = ref({
   nomor_order: '',
   tgl_order: '',
-  // kode_user: '',
   kode_supplier: '',
   kode_barang: '',
   satuan_k: '',
