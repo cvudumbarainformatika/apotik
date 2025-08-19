@@ -26,7 +26,7 @@
               <th class="border text-left p-1">Nama Barang</th>
               <th class="border text-left p-1">Jumlah Barang</th>
               <th class="border text-right p-1">Harga Barang (Rp)</th>
-              <th class="border text-right p-1">Disc</th>
+              <th class="border text-right p-1">Disc (Rp)</th>
               <th class="border text-right p-1">Subtotal (Rp)</th>
             </tr>
           </thead>
