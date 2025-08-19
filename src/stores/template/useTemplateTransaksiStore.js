@@ -141,6 +141,7 @@ export function createTemplateTransaksiStore(storeId, config) {
             this.error = null
           // }
 
+          notify({ message: res.data.message ?? 'Berhasil Menyimpan data', type: 'success' })
           
         } catch (err) {
           console.log(`error ${storeId} create : `, err);

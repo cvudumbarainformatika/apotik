@@ -11,12 +11,16 @@
               <u-col gap="gap-0" class="w-full">
                 <u-row flex1>
 
-                  <u-text class="font-bold" color="text-gray-500">{{ item?.supplier?.nama }}</u-text>
-                  <u-text class="" color="text-primary">{{ item?.nomor_order }}</u-text>
+                  <u-text class="font-bold" color="text-gray-500">{{ item?.noretur }}</u-text>
+                  <!-- <u-text class="" color="text-primary">{{ item?.nomor_order }}</u-text> -->
                 </u-row>
                 <u-row>
                   <u-icon size="14" name="shopping-cart"></u-icon>
-                  <u-text class="" color="text-gray-500">{{ item?.order_records?.length }} items</u-text>
+                  <u-text class="" color="text-gray-500">{{ item?.rincian?.length }} items</u-text>
+                </u-row>
+                <u-row class="mt-1">
+                  <u-icon size="14" name="users"></u-icon>
+                  <u-text class="font-bold" color="text-gray-500">{{ item?.suplier?.nama }}</u-text>
                 </u-row>
                 
               </u-col>

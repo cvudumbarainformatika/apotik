@@ -168,8 +168,8 @@
             </div>
           </u-row>
           <u-row>
-            <u-empty v-if="!store.form?.order_records?.length" title="Belum Ada Items" icon="baggage-claim" />
-            <u-list v-else :spaced="true" anim :items="store.form?.order_records">
+            <u-empty v-if="!store.form?.rincian?.length" title="Belum Ada Items" icon="baggage-claim" />
+            <u-list v-else :spaced="true" anim :items="store.form?.rincian">
               <template #item="{ item }">
                 <ListRincian :item="item" :store="store" />
               </template>
@@ -395,6 +395,7 @@ const handleRetur = (e) => {
 
   form.value.id_penerimaan_rinci = e?.id ?? null
   form.value.jenispajak = props.store.penerimaanSelected?.jenispajak ?? null
+  form.value.pajak = props.store.penerimaanSelected?.pajak ?? null
   form.value.kode_supplier = props.store.penerimaanSelected?.kode_suplier ?? null
   form.value.nofaktur = props.store.penerimaanSelected?.nofaktur ?? null
   form.value.jumlahretur_b = e.jumlah ?? null
@@ -403,12 +404,12 @@ const handleRetur = (e) => {
   // console.log('handleRetur', e);
   // console.log('store', props.store.penerimaanSelected);
 
-  props.store.create(form.value)
-  .then(() => {
-    clearSelectedBarang()
-  })
+  // props.store.create(form.value)
+  // .then(() => {
+  //   clearSelectedBarang()
+  // })
   
-  // console.log('handleRetur', form.value);
+  console.log('handleRetur', form.value);
   
 
 }
@@ -469,6 +470,7 @@ onMounted(() => {
 function initForm(){
   const today = new Date().toISOString().split('T')[0];
   form.value.tglretur = today
+  form.value.noretur = ''
   form.value.nopenerimaan = ''
   props.store.init()
   clearSelectedBarang()
@@ -489,13 +491,26 @@ watch(() => ({ ...props.store.form }), (newForm, oldForm) => {
   }
 
   if (newForm) {
-    form.value = {
-      // nomor_order: newForm?.nomor_order ?? '',
-      // tgl_order: newForm?.tgl_order ?? '',
-      // // kode_user: newForm?.kode_user,
-      // kode_supplier: newForm?.kode_supplier ?? '',
-      
+    for (const key in newForm) {
+      if (key in form.value) {
+        form.value[key] = newForm[key]
+      }
     }
+
+
+    const onlyDate = newForm?.tglretur.split(" ")[0] 
+    form.value.tglretur = onlyDate
+
+
+    if (props.store.mode === 'add') {
+      initForm()
+    }
+
+   
+
+    console.log('🔥 watch form', form.value, newForm);
+
+
   }
 
 }, { deep: true })

@@ -432,6 +432,8 @@ watch(() => ({ ...props.store.form }), (newForm, oldForm) => {
         form.value[key] = newForm[key]
       }
     }
+
+    
     if (props.store.mode === 'add') {
       form.value.nopenjualan = null
     }

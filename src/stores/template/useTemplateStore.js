@@ -124,6 +124,7 @@ export function createTemplateStore(storeId, config) {
 
             this.error = null
             this.modalFormOpen = false
+            notify({ message: res.data.message ?? 'Berhasil Menyimpan data', type: 'success' })
           }
 
           

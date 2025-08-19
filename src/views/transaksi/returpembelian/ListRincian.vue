@@ -2,11 +2,11 @@
   <u-view flex1 class="w-full">
     <u-grid cols="4">
       <u-col class="col-span-2" gap="gap-0">
-        <u-text>{{ item?.master?.nama || '-' }}</u-text>
-        <u-text color="text-gray-400">{{ item?.master?.kode || '-' }}</u-text>
+        <u-text class="font-bold">{{ item?.barang?.nama || '-' }}</u-text>
+        <u-text color="text-gray-400">{{ item?.barang?.kode || '-' }}</u-text>
       </u-col>
       <u-col align="items-end" class="col-span-2" gap="gap-0">
-        <u-text size="lg" class="font-bold" color="text-gray-500">{{ item?.jumlah_pesan || 0 }} {{ item?.satuan_b }}</u-text>
+        <u-text size="lg" class="font-bold" color="text-gray-500">{{ item?.jumlah_pesan || 0 }} <span class="text-xs">{{ item?.satuan_b }}</span></u-text>
       </u-col>
     </u-grid>
   </u-view>
