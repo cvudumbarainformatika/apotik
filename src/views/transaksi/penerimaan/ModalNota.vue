@@ -26,7 +26,7 @@
               <th class="border text-left p-1">Nama Barang</th>
               <th class="border text-left p-1">Jumlah Barang</th>
               <th class="border text-right p-1">Harga Barang (Rp)</th>
-              <th class="border text-right p-1">Disc (Rp)</th>
+              <th class="border text-right p-1">Disc (%)</th>
               <th class="border text-right p-1">Subtotal (Rp)</th>
             </tr>
           </thead>
@@ -110,7 +110,7 @@ const groupedItems = computed(() => {
         satuan_k: item?.satuan_k,
         jumlah_k: Number(item?.jumlah_k),
         harga: Number(item?.harga),
-        diskon: Number(item?.diskon_rupiah),
+        diskon: Number(item?.diskon_persen),
         subtotal: Number(item?.subtotal),
         created_at: item?.created_at
       })
