@@ -189,10 +189,12 @@
             'Tambah' : 'Edit' }}</u-badge>
         </u-row>
         <u-separator spacing="-my-1"></u-separator>
-        <u-row class="z-99">
-          <u-btn v-if="store.mode === 'edit'" variant="secondary" @click="initForm">Penerimaan Baru</u-btn>
+        <u-row class="z-50">
+          <u-btn v-if="store.mode === 'edit'" variant="secondary" @click="initForm">Baru</u-btn>
           <u-btn v-if="store.form" :loading="loadingLock" @click="handleKunci">{{ store.form?.flag ? 'Buka Kunci' :
-            'Kunci Penerimaaan' }}</u-btn>
+            'Kunci' }}
+          </u-btn>
+          <u-btn v-if="store.mode === 'edit'" variant="secondary" @click="openModalCetak">Cetak</u-btn>
         </u-row>
       </u-col>
     </u-grid>
@@ -202,7 +204,10 @@
 
     <div v-if="store.form?.flag"
       class="absolute top-0 left-0 right-0 w-full h-full rounded-2xl flex items-center justify-center p-4 bg-light-primary/10"
-      padding="p-0"></div>
+      padding="p-0">
+    </div>
+    <modal-cetak v-if="modalCetak" v-model="modalCetak" title="Penerimaan" :store="store"
+      :form="form" @close="handleCloseModalNota" />
   </u-col>
 </template>
 
@@ -213,7 +218,7 @@ import { getYearStartDate, getYearEndDate } from '@/utils/dateHelper'
 import { formatRupiah } from '@/utils/numberHelper'
 import { useNotificationStore } from '@/stores/notification'
 import { api } from '@/services/api'
-
+import ModalCetak from './ModalNota.vue'
 
 const ModalData = defineAsyncComponent(() => import('./ModalGetdata.vue'))
 const props = defineProps({
@@ -228,6 +233,7 @@ const modalOpendata = ref(false)
 const isSubmitting = ref(false)
 const skipWatch = ref(false)
 const loadingLock = ref(false)
+const modalCetak = ref(false)
 
 const form = ref({
   nopenerimaan: '',
@@ -257,6 +263,19 @@ const form = ref({
   rincian: {},
 })
 
+const openModalCetak = () => {
+  // if (!store.form?.nopenerimaan) {
+  //   notify({ message: 'Penerimaan belum terkunci', type: 'error' })
+  //   return
+  // }
+  modalCetak.value = true
+}
+const handleCloseModalNota = () => {
+  modalCetak.value = false
+
+  // initForm()
+  window.location.reload()
+}
 const error = computed(() => {
   const err = props.store.error
   const status = err?.status === 422
@@ -645,8 +664,8 @@ const TotalPenerimaan = computed(() => {
   if (props.store.mode === 'add') {
     return 0
   } else {
-    const rincian = form.value.rincian || {}
-    return Object.values(rincian).reduce((sum, x) => sum + (parseFloat(x?.harga * x?.jumlah_b) || 0), 0)
+    const items = props?.store?.form?.rincian ?? []
+    return items.reduce((a, b) => a + Number(b?.subtotal), 0)
   }
 })
 
