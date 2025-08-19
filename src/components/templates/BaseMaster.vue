@@ -23,7 +23,8 @@
 
         <u-row class="gap-2">
           <slot name="actions">
-            <u-btn-icon tooltip="Tambah Data" @click="onAdd" />
+            <!-- <u-btn-icon tooltip="Tambah Data" @click="onAdd" /> -->
+            <u-btn-icon v-if="showAddButton" tooltip="Tambah Data" @click="onAdd" />
             <u-btn-icon icon="rotate-cw" tooltip="Refresh" @click="onRefresh" />
           </slot>
         </u-row>
@@ -64,6 +65,7 @@ const props = defineProps({
   store: { type: Object, required: true },
   title: { type: String, default: 'Data' },
   isLoadMore: { type: Boolean, default: true },
+  showAddButton: { type: Boolean, default: true }, // baris ini Tambahkan agar bisa memilih false/true
   onAdd: Function, // ✅ supaya tidak error saat dipanggil
   onRefresh: Function // ✅ hanya dipanggil kalau diberikan
 })
