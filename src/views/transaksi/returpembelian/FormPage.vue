@@ -194,7 +194,7 @@
               <u-input-date type="date" v-model="form.tglretur" :error="errorMessage('tglretur')"  />
             </u-row>
             <u-row >
-              <u-input v-model="form.nomor_order" label="Nomor Retur (Auto)" 
+              <u-input v-model="form.noretur" label="Nomor Retur (Auto)" 
                 readonly
                 :error="isError('no_order')"
                 :error-message="errorMessage('no_order')" 
