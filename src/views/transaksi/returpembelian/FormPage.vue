@@ -406,7 +406,7 @@ const handleRetur = (e) => {
 
   props.store.create(form.value)
   .then(() => {
-    clearSelectedBarang()
+    // clearSelectedBarang()
   })
   
   // console.log('handleRetur', form.value);
