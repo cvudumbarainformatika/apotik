@@ -361,7 +361,7 @@ const handleKunci = async (e) => {
       satuan_k: item.satuan_k,
       jumlah_b: parseInt(item.jumlah_b),
       jumlah_k: parseInt(item.jumlah_k),
-      harga_b: parseFloat(item.harga_b),
+      harga: parseFloat(item.harga),
       pajak_rupiah: parseFloat(item.pajak_rupiah),
       diskon_persen: parseInt(item.diskon_persen),
       harga_total: parseFloat(item.harga_total),
