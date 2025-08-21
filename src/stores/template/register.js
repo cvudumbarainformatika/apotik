@@ -59,7 +59,7 @@ export const usePenjualanStore = createTemplateTransaksiStore('penjualan', {
 
 export const useStockStore = createTemplateTransaksiStore('stok', {
   baseUrl: '/api/v1/transactions/stok',
-  createUrl: '/tambah',
+  // createUrl: '/tambah',
   persist: true
 })
 
