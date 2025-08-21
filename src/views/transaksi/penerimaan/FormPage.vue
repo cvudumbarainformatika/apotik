@@ -1,5 +1,5 @@
 <template>
-  <u-col class="w-full pb-4 pt-1 px-2">
+  <u-col class="w-full pb-4 pt-1 px-2 relative">
     <u-grid cols="5">
       <!-- HEADER 1 -->
       <u-card class="col-span-2 h-full min-h-[100px] space-y-4">
@@ -116,7 +116,7 @@
                     </div>
                     <div class="col-span-3 text-center">
                       <u-text class="font-bold">Jumlah Pesan</u-text>
-                      <u-text size="sm" class="font-medium">{{ item.jumlah_pesan || '-' }} {{ item.satuan_k || '-'
+                      <u-text size="sm" class="font-medium">{{ item.jumlah_pesan || '-' }} {{ item.satuan_b || '-'
                         }}</u-text>
                     </div>
                     <div class="col-span-3 text-center">
@@ -137,9 +137,9 @@
                         :error-message="errorMessage(`rincian.${item.kode_barang}.jumlah_b`)" type="number" />
                     </u-row>
                     <u-row class="col-span-3">
-                      <u-input v-model="form.rincian[item.kode_barang].harga" label="Harga"
-                        :error="isError(`rincian.${item.kode_barang}.harga`)"
-                        :error-message="errorMessage(`rincian.${item.kode_barang}.harga`)" type="number" />
+                      <u-input v-model="form.rincian[item.kode_barang].harga_b" label="Harga"
+                        :error="isError(`rincian.${item.kode_barang}.harga_b`)"
+                        :error-message="errorMessage(`rincian.${item.kode_barang}.harga_b`)" type="number" />
                     </u-row>
                     <u-row class="col-span-3">
                       <u-input v-model="form.rincian[item.kode_barang].nobatch" label="Nobatch"
@@ -156,10 +156,16 @@
                         v-model="form.rincian[item.kode_barang].tgl_exprd"
                         :error="errorMessage(`rincian.${item.kode_barang}.tgl_exprd`)" />
                     </u-row>
-                    <u-row class="col-span-8">
-                      <u-btn variant="secondary" label="Batal" @click="handleBatal(item.kode_barang)" />
-                      <u-btn :loading="form.rincian[item.kode_barang]?.loading" label="Simpan"
-                        @click.stop="handleSubmit($event, item)" />
+                    <u-row class="col-span-8 z-80">
+                      <template v-if="!item.saved">
+                        <u-btn variant="secondary" label="Batal" @click="handleBatal(item.kode_barang)" />
+                        <u-btn :loading="item.loading" label="Simpan"
+                          @click.stop="handleSubmit($event, item)" />
+                      </template>
+                      <template v-else>
+                        <u-btn :loading="item.loading" variant="secondary" label="Hapus"
+                          @click.stop="handleHapusRinci($event, item)" />
+                      </template>
                     </u-row>
                   </u-grid>
                 </u-row>
@@ -202,12 +208,12 @@
     <modal-data v-if="modalOpendata" v-model="modalOpendata" title="Data Order" :store="store"
       @close="modalOpendata = false" />
 
+
+    <modal-cetak v-if="modalCetak" v-model="modalCetak" title="Penerimaan" :store="store" :form="form"
+      @close="handleCloseModalNota" />
     <div v-if="store.form?.flag"
       class="absolute top-0 left-0 right-0 w-full h-full rounded-2xl flex items-center justify-center p-4 bg-light-primary/10"
-      padding="p-0">
-    </div>
-    <modal-cetak v-if="modalCetak" v-model="modalCetak" title="Penerimaan" :store="store"
-      :form="form" @close="handleCloseModalNota" />
+      padding="p-0"></div>
   </u-col>
 </template>
 
@@ -234,6 +240,7 @@ const isSubmitting = ref(false)
 const skipWatch = ref(false)
 const loadingLock = ref(false)
 const modalCetak = ref(false)
+const loadingHapusItem = ref(true)
 
 const form = ref({
   nopenerimaan: '',
@@ -251,7 +258,7 @@ const form = ref({
   nobatch: '',
   jumlah_b: '',
   jumlah_k: '',
-  harga: '',
+  harga_b: '',
   diskon_persen: '',
   isi: '',
   satuan_k: '',
@@ -316,7 +323,7 @@ const listItems = computed(() => {
     nama: item.master?.nama || item.nama || '',
     jumlah_pesan: item.jumlah_pesan || '',
     jumlah_b: item.jumlah_b || '',
-    harga: item.harga || '',
+    harga_b: item.harga_b || '',
     nobatch: item.nobatch || '',
     diskon_persen: item.diskon_persen || 0,
     satuan_b: item.satuan_b || item.master?.satuan_b || '',
@@ -327,6 +334,7 @@ const listItems = computed(() => {
     pajak_rupiah: parseInt(item.pajak_rupiah) || 0,
     diskon_rupiah: parseInt(item.diskon_rupiah) || 0,
     loading: false,
+    saved: false,
     master: item.master || null,
   }))
 })
@@ -353,7 +361,7 @@ const handleKunci = async (e) => {
       satuan_k: item.satuan_k,
       jumlah_b: parseInt(item.jumlah_b),
       jumlah_k: parseInt(item.jumlah_k),
-      harga: parseFloat(item.harga),
+      harga_b: parseFloat(item.harga_b),
       pajak_rupiah: parseFloat(item.pajak_rupiah),
       diskon_persen: parseInt(item.diskon_persen),
       harga_total: parseFloat(item.harga_total),
@@ -411,7 +419,7 @@ function initForm() {
     nobatch: '',
     jumlah_b: '',
     jumlah_k: '',
-    harga: '',
+    harga_b: '',
     diskon_persen: '',
     isi: '',
     satuan_k: '',
@@ -428,8 +436,16 @@ function initForm() {
 }
 
 const clearSelectedOrder = () => {
-  props.store.orderSelected = null
-  props.store.supplierSelected = null
+
+  
+  // props.store.orderSelected = {
+  //   nomor_order: null,
+  //   order_records: []
+  // }
+  props.store.init()
+  // console.log('clearSelectedOrder', props.store.orderSelected)
+  // props.store.orderSelected = null
+  // props.store.supplierSelected = null
   props.store.mode = 'add'
   form.value.noorder = ''
   form.value.nopenerimaan = ''
@@ -440,7 +456,7 @@ const clearSelectedOrder = () => {
   form.value.nobatch = ''
   form.value.jumlah_b = ''
   form.value.jumlah_k = ''
-  form.value.harga = ''
+  form.value.harga_b = ''
   form.value.diskon_persen = ''
   form.value.isi = ''
   form.value.satuan_k = ''
@@ -459,7 +475,7 @@ const initializeRincian = (orderRecords) => {
       nama: item.master?.nama || item.nama || '',
       jumlah_pesan: item.jumlah_pesan || '',
       jumlah_b: item.jumlah_pesan || '',
-      harga: item.harga || '',
+      harga_b: item.harga_b || '',
       nobatch: item.nobatch || '',
       diskon_persen: item.diskon_persen || 0,
       satuan_b: item.satuan_b || item.master?.satuan_b || '',
@@ -471,6 +487,7 @@ const initializeRincian = (orderRecords) => {
       diskon_rupiah: parseInt(item.diskon_rupiah) || 0,
       tgl_exprd: today,
       loading: false,
+      saved: false,
       master: item.master || null,
     }
   })
@@ -492,7 +509,7 @@ const handleSubmit = async (e, item) => {
   form.value.nobatch = rincianItem.nobatch || ''
   form.value.jumlah_b = rincianItem.jumlah_b || ''
   form.value.jumlah_k = (parseInt(rincianItem.jumlah_b) || 0) * (parseInt(item.isi || item.master?.isi) || 1)
-  form.value.harga = rincianItem.harga || ''
+  form.value.harga_b = rincianItem.harga_b || ''
   form.value.diskon_persen = rincianItem.diskon_persen || 0
   form.value.isi = parseInt(item.isi || item.master?.isi) || 1
   form.value.satuan_k = item.satuan_k || item.master?.satuan_k || ''
@@ -507,7 +524,7 @@ const handleSubmit = async (e, item) => {
     nama: item.barang?.nama || item.nama || '',
     jumlah_pesan: item.jumlah_pesan || '',
     jumlah_b: parseInt(rincianItem.jumlah_b) || '',
-    harga: rincianItem.harga || '',
+    harga_b: rincianItem.harga_b || '',
     nobatch: rincianItem.nobatch || '',
     diskon_persen: rincianItem.diskon_persen || 0,
     satuan_b: item.satuan_b || item.master?.satuan_b || '',
@@ -519,6 +536,7 @@ const handleSubmit = async (e, item) => {
     diskon_rupiah: parseInt(rincianItem.diskon_rupiah) || 0,
     tgl_exprd: rincianItem.tgl_exprd || '',
     loading: true,
+    saved: true,
   }
 
   try {
@@ -534,6 +552,7 @@ const handleSubmit = async (e, item) => {
       notify({ message: 'Penerimaan Lebih Besar Dari Jumlah Pesanan', type: 'error' })
     } 
     else {
+      console.log('form.value', form.value)
       await props.store.create(form.value)
       // props.store.supplierSelected = suplier
       // props.store.orderSelected = orderan
@@ -542,6 +561,7 @@ const handleSubmit = async (e, item) => {
     }
     // form.value.nopenerimaan = props.store?.items[0]?.header?.nopenerimaan
     form.value.rincian[kode_barang].loading = false
+    form.value.rincian[kode_barang].saved = true
     // console.log('fofo', props.items)
 
   } catch (err) {
@@ -561,8 +581,8 @@ const handleBatal = (kode_barang) => {
     form.value.rincian[kode_barang] = {
       nama: form.value.rincian[kode_barang].nama || '',
       jumlah_pesan: form.value.rincian[kode_barang].jumlah_pesan || '',
-      jumlah_b: '',
-      harga: '',
+      jumlah_b: form.value.rincian[kode_barang].jumlah_pesan || '',
+      harga_b: '',
       nobatch: '',
       diskon_persen: 0,
       satuan_b: form.value.rincian[kode_barang].satuan_b || '',
@@ -574,15 +594,57 @@ const handleBatal = (kode_barang) => {
       pajak_rupiah: 0,
       diskon_rupiah: 0,
       loading: false,
+      saved: false,
       master: form.value.rincian[kode_barang].master || null,
     }
   }
 }
 
+const handleHapusRinci = async (e, item) => {
+  e.preventDefault()
+  e.stopPropagation()
+ 
+  const rincian = props.store.form.rincian.find(x => x.kode_barang === item.kode_barang)
+  const id = rincian?.id || null
+
+  const params = {
+    nopenerimaan: props.store.form.nopenerimaan,
+    id
+  }
+  rincian.loading = true
+  try {
+    const resp = await api.post(`api/v1/transactions/penerimaan/delete`, params)
+    if (resp.data.success === true) {
+      rincian.harga_b = null
+      rincian.nobatch = null
+      rincian.diskon_persen = 0
+      rincian.jumlah_k = 0
+      rincian.pajak_rupiah = 0
+      rincian.diskon_rupiah = 0
+      form.value.rincian[item.kode_barang].saved = false
+      
+      notify({ message: resp.data.message ?? 'Data Berhasil dihapus', type: 'success' })
+    }
+    item.saved = false
+    console.log('afterxx', item.saved)
+    props.store.fetchAll()
+    TotalPenerimaan
+    
+    console.log('resp', resp);
+  } catch (error) {
+    console.log('error', error);
+    notify({ message: error.message ?? 'Gagal Hapus data', type: 'error' })
+  } finally {
+    rincian.loading = false
+  }
+
+
+}
+
 watch(() => props.store.orderSelected, (newOrderSelected) => {
   if (newOrderSelected?.order_records) {
     initializeRincian(newOrderSelected.order_records)
-    console.log('newsorder', newOrderSelected?.order_records)
+   
   } else {
     form.value.rincian = {}
   }
@@ -592,7 +654,6 @@ watch(() => props.store.orderSelected, (newOrderSelected) => {
 watch(
   () => ({ ...props.store.form }),
   (newForm, oldForm) => {
-    console.log('props orderan', props.store.dataorder)
     if (!newForm) return
 
     for (const key in newForm) {
@@ -600,23 +661,26 @@ watch(
         props.store.clearFieldError(key)
       }
     }
-
+    console.log('newForm', newForm)
     if (newForm) {
       const filteredOrders = props.store.dataorder
         ?.filter(o => o.nomor_order === newForm?.noorder)
         ?.flatMap(o => o.order_records) || []
       const today = new Date().toISOString().split('T')[0]
 
+      // const filters = form.value.rincian[kode_barang].saved = true
+      // console.log('filters', filters)
       const rincianObj = {}
       filteredOrders.forEach(orderItem => {
         const savedItem = newForm?.rincian?.find(r => r.kode_barang === orderItem.kode_barang)
-        // console.log('orderItem', orderItem)
-        // console.log('savedItem', savedItem)
+        const existing = form.value?.rincian?.[orderItem.kode_barang]
+
+        console.log('savedItem', savedItem)
         rincianObj[orderItem.kode_barang] = {
           nama: savedItem?.barang?.nama || orderItem?.master?.nama,
           jumlah_pesan: savedItem?.jumlah_pesan ?? orderItem?.jumlah_pesan ?? null,
           jumlah_b: savedItem?.jumlah_b ?? orderItem.jumlah_pesan,
-          harga: savedItem?.harga ?? null,
+          harga_b: savedItem?.harga_b ?? null,
           nobatch: savedItem?.nobatch ?? null,
           diskon_persen: savedItem?.diskon_persen ?? 0,
           satuan_b: savedItem?.satuan_b ?? orderItem?.satuan_b ?? null,
@@ -627,7 +691,8 @@ watch(
           tgl_exprd: savedItem?.tgl_exprd ?? today,
           pajak_rupiah: parseInt(savedItem?.pajak_rupiah ?? 0),
           diskon_rupiah: parseInt(savedItem?.diskon_rupiah ?? 0),
-          loading: false
+          loading: existing?.loading ?? false,
+          saved: existing?.saved ?? (savedItem ? true : false) 
         }
       })
 
@@ -643,12 +708,11 @@ watch(
         flag: newForm?.flag,
         rincian: rincianObj
       }
-      // console.log('new form value', form.value)
+    }
 
-      props.store.orderSelected = {
-        order_records: filteredOrders,
-        nomor_order: newForm?.noorder || ''
-      }
+    if (!props.store.orderSelected && newForm?.noorder) {
+      const order = props.store.dataorder?.find(o => o.nomor_order === newForm?.noorder)
+      props.store.orderSelected = order || null
     }
 
     if (!props.store.supplierSelected && newForm?.suplier) {
@@ -664,6 +728,13 @@ const TotalPenerimaan = computed(() => {
   if (props.store.mode === 'add') {
     return 0
   } else {
+    // const items = Object.values(form.value?.rincian ?? {})
+    // return items.reduce((a, b) => {
+    //   const subtotal = Number(b?.jumlah_b ?? 0) * Number(b?.harga_b ?? 0)
+    //   return a + subtotal
+    // }, 0)
+    // const items = Object.values(form.value?.rincian ?? {})
+    // return items.reduce((a, b) => a + Number(b?.subtotal ?? 0), 0)
     const items = props?.store?.form?.rincian ?? []
     return items.reduce((a, b) => a + Number(b?.subtotal), 0)
   }

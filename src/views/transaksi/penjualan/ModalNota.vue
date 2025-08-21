@@ -1,21 +1,22 @@
 <template>
-  <u-modal persistent :title="`${title}`" @close="emit('close')" >
+  <u-modal persistent :title="`${title}`" @close="emit('close')">
     <template #default>
-      <div id="printArea" ref="printArea" class="w-[58mm] max-w-full bg-white text-black mx-auto font-mono p-1 thermal-58">
+      <div id="printArea" ref="printArea"
+        class="w-[58mm] max-w-full bg-white text-black mx-auto font-mono p-1 thermal-58">
         <div class="text-center">
           <div class="text-sm font-semibold tracking-wide">NAMA TOKO</div>
           <div class="text-[10px] leading-tight">ALAMAT TOKO</div>
           <div class="text-[10px]">TELEPON TOKO</div>
           <div class="w-full border-t border-dashed border-black my-1"></div>
         </div>
-         <div class="flex justify-between text-[10px] mt-1">
+        <div class="flex justify-between text-[10px] mt-1">
           <div>{{ form?.nopenjualan }}</div>
           <div class="text-right">{{ formatDateIndo(form?.tgl_penjualan) }}</div>
-         </div>
-         <div class="flex justify-between text-[10px] mt-1">
+        </div>
+        <div class="flex justify-between text-[10px] mt-1">
           <div>{{ user?.nama || '-' }}</div>
           <div class="text-right"> Jam : {{ formatTimeOnly(form?.tgl_penjualan) }}</div>
-         </div>
+        </div>
         <div class="w-full border-t border-dashed border-black my-1"></div>
 
         <div class="text-[11px]">
@@ -37,17 +38,21 @@
         <div class="text-[12px]">
           <!-- <div class="flex justify-between"><span>Subtotal</span><span>5.000.000</span></div> -->
           <!-- <div class="flex justify-between"><span>Pajak</span><span>20.000</span></div> -->
-          <div class="flex justify-between font-semibold text-sm"><span>Total</span><span>{{ formatRupiah(totalPenjualan) }}</span></div>
-          <div class="flex justify-between"><span>Bayar ({{ formBayar?.cara_bayar }})</span><span>{{ formatRupiah(formBayar?.jumlah_bayar) }}</span></div>
-          <div class="flex justify-between" :class="{ 'font-semibold': kembali >= 0 }"><span>Kembali</span><span>{{ formatRupiah(kembali) }}</span></div>
+          <div class="flex justify-between font-semibold text-sm"><span>Total</span><span>{{
+              formatRupiah(totalPenjualan) }}</span></div>
+          <div class="flex justify-between"><span>Bayar ({{ formBayar?.cara_bayar }})</span><span>{{
+              formatRupiah(formBayar?.jumlah_bayar) }}</span></div>
+          <div class="flex justify-between" :class="{ 'font-semibold': kembali >= 0 }"><span>Kembali</span><span>{{
+              formatRupiah(kembali) }}</span></div>
         </div>
 
-       
+
 
         <div class="mt-2 text-center text-[10px] leading-snug">
           <div class="w-full border-t border-dashed border-black my-1"></div>
           <p class="mt-1">Terimakasih atas kunjungan anda</p>
           <p class="opacity-60">Simpan struk ini sebagai bukti transaksi.</p>
+          <p class="mt-1 opacity-80">&copy; 2025 CV Udumbara Informatika</p>
         </div>
 
       </div>
@@ -55,7 +60,7 @@
     <template #footer>
       <u-row flex1 class="w-full" right>
         <u-btn variant="secondary" label="Batal" @click="$emit('close')" />
-        <u-btn v-print="printObj"  label="Cetak" type="button"  />
+        <u-btn v-print="printObj" label="Cetak" type="button" />
       </u-row>
     </template>
   </u-modal>

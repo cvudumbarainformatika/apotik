@@ -10,9 +10,10 @@
         </div>
         <div class="text-center">
           <div class="text-[12px] font-semibold tracking-wide">DATA PENERIMAAN</div>
+          <div class="text-[12px] tracking-wide">{{ form?.nopenerimaan }}</div>
         </div>
         <div class="flex justify-between text-[11px] mt-1">
-          <div>Nomor {{ form?.nopenerimaan }}</div>
+          <div>No Faktur {{ form?.nofaktur }}</div>
           <div class="text-right">{{ formatDateIndo(form?.tgl_penerimaan) }}</div>
         </div>
         <div class="flex justify-between text-[11px] mt-1">
@@ -41,15 +42,36 @@
           </tbody>
 
         </table>
-        
+
 
         <div class="w-full border-t border-dotted border-black my-1"></div>
 
         <div class="text-[12px]">
           <!-- <div class="flex justify-between"><span>Subtotal</span><span>5.000.000</span></div> -->
           <!-- <div class="flex justify-between"><span>Pajak</span><span>20.000</span></div> -->
-          <div class="flex justify-between font-semibold text-sm"><span>Total</span><span>{{
-              formatRupiah(totalPenerimaan) }}</span></div>
+          <div class="flex justify-between font-semibold text-sm">
+            <span>Total</span>
+            <span>{{ formatRupiah(totalPenerimaan) }}</span>
+          </div>
+
+          <div class="flex justify-between font-semibold text-[12px]">
+            <div class="row w-full text-center">
+              <div class="col-12 px-2">Supplier</div>
+              <div class="col-12 px-2"> {{ store.form?.suplier?.nama }} </div>
+              <div class="col-12 px-2 pt-8"> </div>
+              <div class="col my-1 px-20">
+                <div class="border-t border-dashed border-black"></div>
+              </div>
+
+            </div>
+            <div class="col w-full text-center">
+              <div class="col-12 px-2">Diterima Oleh</div>
+              <div class="col-12 px-2 pt-12"> </div>
+              <div class="col my-1 px-20">
+                <div class="border-t border-dashed border-black"></div>
+              </div>
+            </div>
+          </div>
           <!-- <div class="flex justify-between"><span>Bayar ({{ formBayar?.cara_bayar }})</span><span>{{
               formatRupiah(formBayar?.jumlah_bayar) }}</span></div>
           <div class="flex justify-between" :class="{ 'font-semibold': kembali >= 0 }"><span>Kembali</span><span>{{
@@ -58,7 +80,7 @@
 
 
 
-        <div class="mt-2 text-center text-[10px] leading-snug">
+        <div class="mt-2 pt-6 text-center text-[10px] leading-snug">
           <div class="w-full border-t border-dashed border-black my-1"></div>
           <!-- <p class="mt-1">Terimakasih atas kunjungan anda</p>
         <p class="opacity-60">Simpan struk ini sebagai bukti transaksi.</p> -->
@@ -96,7 +118,7 @@ const { user } = storeToRefs(auth)
 
 const printType = ref('a4') // 'a4' | 'thermal-58 | 'thermal-80' | 'thermal-100'
 
-
+console.log('form', props?.store?.form)
 const groupedItems = computed(() => {
   const map = new Map()
   console.log('store', props.store?.form)
