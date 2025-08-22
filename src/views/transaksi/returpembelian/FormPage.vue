@@ -140,13 +140,13 @@
                                 </div>
                               </div> -->
                             </div>
-                            <div class="w-24" :class="{ 'animate-shake': parseInt(item?.jumlah) > parseInt(item?.jumlah_k) }">
+                            <div class="w-24" :class="{ 'animate-shake': parseInt(item?.jumlah) > parseInt(item?.jumlah_b) }">
                               <u-input type="number" v-model.number="item.jumlah" label="Jumlah" @focus="handleFocusJumlah" 
-                                :error="parseInt(item?.jumlah) > parseInt(item?.jumlah_k)"
+                                :error="parseInt(item?.jumlah) > parseInt(item?.jumlah_b)"
                               />
                             </div>
 
-                            <u-btn :disabled="(parseInt(item?.jumlah) > parseInt(item?.jumlah_b)) || parseInt(item?.jumlah) === 0" 
+                            <u-btn :disabled="(parseInt(item?.jumlah) > parseInt(item?.jumlah_b)) || parseInt(item?.jumlah_b) === 0" 
                               :loading="store.loadingSave"
                               variant="secondary" size="sm" @click.stop="handleRetur(item)">Rtr</u-btn>
                           </u-row>
