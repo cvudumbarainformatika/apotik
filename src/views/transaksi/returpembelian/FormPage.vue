@@ -214,15 +214,19 @@
             <u-badge v-else :variant="store.mode === 'add' ? 'success' : 'warning'">Mode {{ store.mode === 'add' ? 'Tambah' : 'Edit' }}</u-badge>
           </u-row>
           <u-separator spacing="-my-1"></u-separator>
-          <u-row class="z-99">
+          <u-row class="z-9">
             <u-btn v-if="store.mode === 'edit'" variant="secondary" @click="initForm">Retur Baru</u-btn>
-            <u-btn v-if="store.form" :loading="loadingLock" @click="handleKunci">{{ store.form?.flag ? 'Buka Kunci' : 'Kunci' }}</u-btn>
+            <u-btn v-if="store.form" :loading="loadingLock" @click.stop="handleKunci">{{ store.form?.flag ? 'Cetak' : 'Kunci' }}</u-btn>
           </u-row>
         </u-col>
     </u-grid>
 
     <div v-if="store.form?.flag" class="absolute top-0 left-0 right-0 w-full h-full rounded-2xl flex items-center justify-center p-4 bg-light-primary/10" padding="p-0"></div>
-  
+    
+
+    <!-- Cetak -->
+    <modal-cetak v-model="modalCetak" title="Retur Pembelian" :store="store"
+      @close="modalCetak = false" />
   </u-col>
 </template>
 
@@ -233,7 +237,7 @@ import { useNotificationStore } from '@/stores/notification'
 const notify = useNotificationStore().notify
 
 import { api } from '@/services/api'
-
+import ModalCetak from './ModalCetak.vue'
 
 const ListRincian = defineAsyncComponent(() => import('./ListRincian.vue'))
 
@@ -248,6 +252,7 @@ const searchPenerimaan = ref('')
 const menuBarangRef = ref(null)
 const inpJumlahRef = ref(null)
 const loadingLock = ref(false)
+const modalCetak = ref(false)
 
 const form = ref({
   noretur: null,
@@ -416,6 +421,8 @@ const handleRetur = (e) => {
 
 }
 
+
+
 const handleFocusJumlah = async (e) => {
   // console.log('handleFocusJumlah', e);
 }
@@ -430,7 +437,17 @@ const handleKunci = async (e) => {
   console.log('store', props.store.items);
   console.log('store form', props.store.form);
 
+
+  
+
   const flag = (props.store.form?.flag === '1' || props.store.form?.flag === 1)
+  
+  if (flag) {
+    modalCetak.value = true
+    return 
+  }
+
+
   const noretur = props.store.form?.noretur
   const payload = {
     noretur
@@ -467,6 +484,10 @@ const handleKunci = async (e) => {
 
   
 }
+
+
+
+
 
 onMounted(() => {
   // document.addEventListener('click', handleClickOutside)
