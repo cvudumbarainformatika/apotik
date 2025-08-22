@@ -9,7 +9,7 @@
           />
         </u-row>
         <u-row flex1 class="w-full">
-          <u-row flex1>
+          <u-row>
             <u-input v-model="form.tlp" label="Telepon" 
               :error="isError('tlp')"
               :error-message="errorMessage('tlp')" 
@@ -19,6 +19,10 @@
             <u-input v-model="form.rekening" label="Rekening" 
               :error="isError('rekening')"
               :error-message="errorMessage('rekening')" 
+            />
+            <u-input v-model="form.bank" label="Bank" 
+              :error="isError('bank')"
+              :error-message="errorMessage('bank')" 
             />
           </u-row>
         </u-row>
@@ -56,6 +60,7 @@ const form = ref({
   nama: '',
   tlp: '',
   rekening: '',
+  bank: '',
   alamat: '',
 })
 

@@ -22,6 +22,13 @@
                 <div class="font-bold">{{ item?.rekening }}</div>
                 
               </u-row>
+              <u-row flex1 class="text-xs">
+                <div>Rek : </div>
+                <div class="font-bold">{{ item?.rekening }}</div>
+                <div>BANK : </div>
+                <div class="font-bold">{{ item?.bank || '-' }}</div>
+                
+              </u-row>
               <u-row flex1 class="w-full text-xs">
                 <div>Alamat : </div>
                 <div class="font-light">{{ item?.alamat }}</div>
