@@ -216,7 +216,7 @@
           <u-separator spacing="-my-1"></u-separator>
           <u-row class="z-99">
             <u-btn v-if="store.mode === 'edit'" variant="secondary" @click="initForm">Retur Baru</u-btn>
-            <u-btn v-if="store.form" :loading="loadingLock" @click="handleKunci">{{ store.form?.flag ? 'Buka Kunci' : 'Kunci Order' }}</u-btn>
+            <u-btn v-if="store.form" :loading="loadingLock" @click="handleKunci">{{ store.form?.flag ? 'Buka Kunci' : 'Kunci' }}</u-btn>
           </u-row>
         </u-col>
     </u-grid>
@@ -425,26 +425,26 @@ const handleBatal = () => {
 const handleKunci = async (e) => {
   e.preventDefault()
   e.stopPropagation()
-  // console.log('store', props.store.items);
-  // console.log('store form', props.store.form);
+  console.log('store', props.store.items);
+  console.log('store form', props.store.form);
 
   const flag = (props.store.form?.flag === '1' || props.store.form?.flag === 1)
-  const nomor_order = props.store.form?.nomor_order
+  const noretur = props.store.form?.noretur
   const payload = {
-    nomor_order
+    noretur
   }
 
   loadingLock.value = true
 
   let resp
   try {
-    if (!flag) {
-      resp = await api.post(`api/v1/transactions/order/lock-order`, payload)
-    } else {
-      resp = await api.post(`api/v1/transactions/order/unlock-order`, payload)
-    }
-
-    // console.log('resp', resp);
+    // if (!flag) {
+    //   resp = await api.post(`api/v1/transactions/returpembelian/lock-retur-pembelian`, payload)
+    // } else {
+    //   resp = await api.post(`api/v1/transactions/returpembelian/unlock-order`, payload)
+    // }
+    resp = await api.post(`api/v1/transactions/returpembelian/lock-retur-lock_retur_pembelian`, payload)
+    console.log('resp', resp);
   } catch (error) {
     console.log('error', error);
     
