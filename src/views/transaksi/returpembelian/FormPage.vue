@@ -447,6 +447,10 @@ const handleKunci = async (e) => {
     console.log('resp', resp);
   } catch (error) {
     console.log('error', error);
+    notify({
+      type: 'error',
+      message: error?.response?.data?.message
+    })
     
   } finally {
     loadingLock.value = false
