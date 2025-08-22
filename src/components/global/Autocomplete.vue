@@ -169,7 +169,7 @@ const fetchFromApi = async (query) => {
     for (const segment of pathSegments) {
       // console.log('segment', segment);
       data = data[segment]
-      // console.log('data', data);
+      console.log('data', data);
       if (!data) break
     }
 

@@ -535,7 +535,7 @@ watch(() => ({ ...props.store.form }), (newForm, oldForm) => {
 
    
 
-    console.log('🔥 watch form', form.value, newForm);
+    // console.log('🔥 watch form', form.value, newForm);
 
 
   }
@@ -546,8 +546,8 @@ watch(() => props.store.maxRight, (newMax, oldMax) => {
   // if (!newMax) {
   //   initForm()
   // }
-  console.log('newMax', newMax);
-  console.log('form', form.value);
+  // console.log('newMax', newMax);
+  // console.log('form', form.value);
   
 }, { deep: true })
 

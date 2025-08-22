@@ -117,7 +117,7 @@
             not-found-text="Data Dokter tidak ditemukan" 
             not-found-subtext="Coba kata kunci lain" 
             :show-add-button="false"
-            api-url="/api/v1/master/dokter/get-list" api-response-path="data" :api-params="{ per_page: 5 }"
+            api-url="/api/v1/master/dokter/get-list" api-response-path="data.data" :api-params="{ per_page: 5 }"
             :use-api="true" @select="handleSelectedDokter"
           ></u-autocomplete>
         </u-row>
@@ -368,7 +368,9 @@ const inpJumlahRef = ref(null)
 const loadingLock = ref(false)
 const modalNota = ref(false)
 
-const jenis = ref('umum')
+const jenis = computed(() => {
+  return (form?.value?.kode_dokter !== null && form?.value?.kode_dokter !== '') ? 'resep' : 'umum'
+})
 
 
 const currentTime = ref('')
@@ -442,7 +444,7 @@ watch(() => ({ ...props.store.form }), (newForm, oldForm) => {
     formBayar.value.jumlah_bayar = newForm?.jumlah_bayar || 0
     formBayar.value.cara_bayar = newForm?.cara_bayar || 'TUNAI'
 
-    console.log('🔥 watch form', form.value, newForm);
+    // console.log('🔥 watch form', form.value, newForm);
 
 
   }
@@ -558,7 +560,7 @@ const handleSelectedPelanggan = (item) => {
   
 }
 const handleSelectedDokter = (item) => {
-  // console.log('dokter', item);
+  console.log('dokter', item);
   
   
   props.store.dokterSelected = item
@@ -628,7 +630,7 @@ const clearSelectedPelanggan = () => {
 }
 const clearSelectedDokter = () => {
   props.store.dokterSelected = null
-  // form.value.kode_supplier = ''
+  form.value.kode_dokter = ''
 }
 const clearSelectedBarang = () => {
   props.store.barangSelected = null
