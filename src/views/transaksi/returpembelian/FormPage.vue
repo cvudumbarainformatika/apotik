@@ -229,6 +229,8 @@
 <script setup>
 import { ref, computed, nextTick, onMounted, onUnmounted, watch, defineAsyncComponent } from 'vue'
 import { formatRupiah } from '@/utils/numberHelper'
+import { useNotificationStore } from '@/stores/notification'
+const notify = useNotificationStore().notify
 
 import { api } from '@/services/api'
 
