@@ -88,6 +88,11 @@ const handleDelete = async (item) => {
     const rincian = props?.store?.form?.rinci?.filter(el => el?.kode_barang !== item?.kode_barang)
     props.store.form.rinci = rincian
 
+
+    // console.log('handleDelete resp', props.store.form.rinci);
+    if (props?.store?.form?.rinci?.length === 0) {
+      props.store.init()
+    }
     props.store.fetchAll()
 
   } catch (error) {
