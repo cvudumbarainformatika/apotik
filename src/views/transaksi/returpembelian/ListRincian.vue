@@ -57,9 +57,9 @@ const handleDelete = async (item) => {
   try {
     const resp = await api.post(`api/v1/transactions/returpembelian/delete`, payload)
 
-    console.log('resp hapus', resp);
-    // const rincian = props?.store?.form?.rinci?.filter(el => el?.kode_barang !== item?.kode_barang)
-    // props.store.form.rinci = rincian
+    // console.log('resp hapus', resp);
+    const rincian = props?.store?.form?.rincian?.filter(el => el?.id !== item?.id)
+    props.store.form.rincian = rincian
 
 
     notify({ message: resp.data.message ?? 'Data Berhasil dihapus', type: 'success' })
