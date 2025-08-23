@@ -4,7 +4,7 @@
     <div class="flex items-center gap-3">
 
 
-      <div class="text-secondary dark:text-secondary">
+      <div class="text-dark dark:text-secondary">
         <span class="text-xs">Periode {{ formatDateRange(tempRange.start_date, tempRange.end_date) }}</span>
       </div>
       <u-btn-icon @click="showDialog = true" variant="primary" size="sm" :title="label"

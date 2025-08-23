@@ -9,19 +9,15 @@
     </u-view>
     <u-separator />
     <u-view>
-      
+
       <u-row flex1 class="w-full justify-between">
         <u-row>
           <slot name="search">
-            <u-input-search
-              v-model="store.q"
-              @update:modelValue="store.setSearch"
-              :debounce="500"
-            />
+            <u-input-search v-model="store.q" @update:modelValue="store.setSearch" :debounce="500" />
           </slot>
         </u-row>
 
-        <u-row class="gap-2">
+        <u-row>
           <slot name="actions">
             <!-- <u-btn-icon tooltip="Tambah Data" @click="onAdd" /> -->
             <u-btn-icon v-if="showAddButton" tooltip="Tambah Data" @click="onAdd" />
@@ -29,15 +25,19 @@
           </slot>
         </u-row>
       </u-row>
+      <u-row right justify-self-end class="gap-2">
+        <u-date-range v-if="showDateButton" v-model="store.range" @update:modelValue="store.setRange"
+          default-period="month" />
+      </u-row>
     </u-view>
 
     <!-- Content -->
-    
+
     <u-view ref="uViewRef" class="w-full relative" flex1 scrollY>
       <!-- <div class="absolute inset-0 top-12">
         <u-load-spinner></u-load-spinner>
       </div> -->
-      <div v-if="store.loading && !store.items.length" class="w-full" >
+      <div v-if="store.loading && !store.items.length" class="w-full">
         <slot name="loading">
           <u-load-spinner></u-load-spinner>
         </slot>
@@ -47,13 +47,14 @@
           <slot name="item" :item="item" />
         </template>
       </u-list>
-      <u-empty :title="store.emptyTitle" :subtitle="store.emptySubtitle" v-else-if="!store.loading && !store.items.length" />
+      <u-empty :title="store.emptyTitle" :subtitle="store.emptySubtitle"
+        v-else-if="!store.loading && !store.items.length" />
       <!-- ⬇️ Loading indicator ketika fetchMore aktif dan ketika mode loadMore -->
       <u-load-spinner v-if="store.loadingMore && isLoadMore" />
     </u-view>
 
     <!-- modal form -->
-     <slot name="modal-form" />
+    <slot name="modal-form" />
   </u-page>
 </template>
 
@@ -66,8 +67,9 @@ const props = defineProps({
   title: { type: String, default: 'Data' },
   isLoadMore: { type: Boolean, default: true },
   showAddButton: { type: Boolean, default: true }, // baris ini Tambahkan agar bisa memilih false/true
+  showDateButton: { type: Boolean, default: false },
   onAdd: Function, // ✅ supaya tidak error saat dipanggil
-  onRefresh: Function // ✅ hanya dipanggil kalau diberikan
+  onRefresh: Function, // ✅ hanya dipanggil kalau diberikan
 })
 
 const emit = defineEmits(['close', 'save'])
