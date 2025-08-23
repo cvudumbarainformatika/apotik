@@ -1,40 +1,41 @@
 <template>
   <div class="relative flex items-center justify-center min-h-screen w-full">
-    
-      <!-- Gradient Glow Border -->
-      <div
-        class="absolute inset-0 rounded-2xl bg-gradient-to-tr from-primary to-secondary opacity-30 blur-2xl animate-pulse">
-      </div>
+    <!-- Gradient Glow Border -->
+    <div
+      class="absolute inset-0 rounded-2xl bg-gradient-to-tr from-primary to-secondary opacity-30 blur-2xl animate-pulse">
+    </div>
 
     <div class="relative w-[500px] sm:w-[420px] h-[420px] animate-floating">
       <!-- Logo di luar mask -->
-      <div class="absolute z-10 -top-5 left-1/2 -translate-x-1/2 w-20 h-20 rounded-full border-1 border-primary flex items-center justify-center">
+      <div
+        class="absolute z-10 -top-5 left-1/2 -translate-x-1/2 w-20 h-20 rounded-full border-1 border-primary flex items-center justify-center">
         <img src="/images/logo.svg" alt="Logo" class="w-full h-full" />
       </div>
       <div class="relative flex flex-col items-center justify-center w-full h-full gap-2 p-4">
         <img src="/images/box-login.svg" alt="Login" class="w-full h-full absolute top-0 left-0" />
-          <div class="mt-2 text-background text-lg font-medium animate-fade-in" style="letter-spacing: 0.05em">SELAMAT DATANG</div>
-          <div class=" -mb-1 mt-4 text-background text-xs font-thin animate-fade-in delay-200" style="letter-spacing: 0.2em">Harap login untuk melanjutkan</div>
-          <div class="flex flex-col gap-4 my-4 w-full px-12 transition animate-fade-in delay-200">
-            <u-input login label="Username" v-model="form.login" required
-              :error="isError('login')"
-              :error-message="errorMessage('login')"
-            />
-            <u-input login label="Password" type="password" v-model="form.password" required
-              :error="isError('password')"
-              :error-message="errorMessage('password')"
-              @keydown.enter="handleSubmit"
-            />
-            
-          </div>
-          <div class="animate-fade-in delay-500">
-              <!-- <u-checklist login label="Ingat saya" /> -->
-          </div>
-          <div class="animate-fade-in delay-500">
-            <u-btn :loading="store.loading" @click="handleSubmit" variant="secondary" label="Sign in" class="mt-4 "/>
-          </div>
+        <div class="mt-2 -mb-2 text-background text-lg font-medium animate-fade-in" style="letter-spacing: 0.05em">
+          SELAMAT
+          DATANG</div>
+        <div class="mt-0 text-background text-lg animate-fade-in" style="letter-spacing: 0.05em">Sistem
+          Informasi Apotik</div>
+        <div class=" -mb-2 mt-3 text-background text-xs font-thin animate-fade-in delay-200"
+          style="letter-spacing: 0.2em">Harap login untuk melanjutkan</div>
+        <div class="flex flex-col gap-4 my-4 w-full px-12 transition animate-fade-in delay-200">
+          <u-input login label="Username" v-model="form.login" required :error="isError('login')"
+            :error-message="errorMessage('login')" />
+          <u-input login label="Password" type="password" v-model="form.password" required :error="isError('password')"
+            :error-message="errorMessage('password')" @keydown.enter="handleSubmit" />
+
+        </div>
+        <!-- <div class="animate-fade-in delay-500">
+          <u-checklist login label="Ingat saya" />
+        </div> -->
+        <div class="animate-fade-in delay-500">
+          <u-btn :loading="store.loading" @click="handleSubmit" variant="secondary" label="Sign in" class="mt-2 " />
+        </div>
+
       </div>
-      
+
     </div>
   </div>
 </template>
