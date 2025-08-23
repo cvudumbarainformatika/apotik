@@ -12,7 +12,7 @@
             <u-text size="lg" class="font-bold" color="text-gray-500">{{ item?.jumlahretur_b || 0 }} </u-text>
             <span class="text-xs font-normal">{{ item?.satuan_b }}</span>
           </u-col>
-          <div v-if="isHovered" class="ml-2">
+          <div v-if="isHovered && !loadingHapusItem" class="ml-2">
             <u-icon size="20" name="delete" class="mb-0 text-danger cursor-pointer" @click.stop="handleDelete(item)" />
           </div>
         </u-row>
@@ -36,7 +36,9 @@ const props = defineProps({
 })
 
 
-console.log('item', props.item);
+// console.log('item', props.item);
+console.log('store', props.store.form);
+
 const loadingHapusItem = ref(false)
 
 const notify = useNotificationStore().notify

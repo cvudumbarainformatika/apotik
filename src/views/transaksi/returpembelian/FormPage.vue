@@ -205,9 +205,13 @@
 
           <u-text class="font-bold" size="sm">Ringkasan Retur Pembelian</u-text>
           <u-separator spacing="-my-2"></u-separator>
+          <u-row class="-mb-2">
+            <u-text>No. Penerimaan : {{ store.penerimaanSelected?.nopenerimaan }}</u-text>
+            <u-text class="font-bold" size="sm">{{ store.form?.nopenerimaan || '-' }}</u-text>
+          </u-row>
           <u-row>
             <u-text>Total Item Retur : </u-text>
-            <u-text class="font-bold" size="sm">{{ store.form?.order_records?.length || 0 }}</u-text>
+            <u-text class="font-bold" size="sm">{{ store.form?.rincian?.length || 0 }}</u-text>
           </u-row>
           <u-row>
             <u-badge v-if="store.form?.flag" variant="danger">Terkunci</u-badge>
