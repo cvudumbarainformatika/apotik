@@ -170,8 +170,8 @@
           <u-row>
             <u-empty v-if="!store.form?.rincian?.length" title="Belum Ada Items" icon="baggage-claim" />
             <u-list v-else :spaced="true" anim :items="store.form?.rincian">
-              <template #item="{ item }">
-                <ListRincian :item="item" :store="store" />
+              <template #item="{ item, index, isHovered }">
+                <ListRincian :item="item" :store="store" :is-hovered="isHovered" />
               </template>
             </u-list>
           </u-row>
