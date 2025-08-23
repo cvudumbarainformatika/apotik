@@ -303,7 +303,7 @@
             aria-label="Cara Bayar"
           >
             <u-radio v-model="formBayar.cara_bayar" value="TUNAI" label="TUNAI" />
-            <u-radio v-model="formBayar.cara_bayar" value="QRIS" label="QRIS" />
+            <u-radio v-model="formBayar.cara_bayar" value="TRANSFER" label="TRANSFER" />
           </div>
 
 

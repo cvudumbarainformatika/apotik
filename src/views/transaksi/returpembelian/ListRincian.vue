@@ -37,7 +37,7 @@ const props = defineProps({
 
 
 // console.log('item', props.item);
-console.log('store', props.store.form);
+// console.log('store', props.store.form);
 
 const loadingHapusItem = ref(false)
 
