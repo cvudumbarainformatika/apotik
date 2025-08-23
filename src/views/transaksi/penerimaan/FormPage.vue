@@ -156,7 +156,7 @@
                         v-model="form.rincian[item.kode_barang].tgl_exprd"
                         :error="errorMessage(`rincian.${item.kode_barang}.tgl_exprd`)" />
                     </u-row>
-                    <u-row class="col-span-8 z-80">
+                    <u-row class="col-span-8">
                       <template v-if="!item.saved">
                         <u-btn variant="secondary" label="Batal" @click="handleBatal(item.kode_barang)" />
                         <u-btn :loading="item.loading" label="Simpan"
@@ -197,9 +197,7 @@
         <u-separator spacing="-my-1"></u-separator>
         <u-row class="z-50">
           <u-btn v-if="store.mode === 'edit'" variant="secondary" @click="initForm">Baru</u-btn>
-          <u-btn v-if="store.form" :loading="loadingLock" @click="handleKunci">{{ store.form?.flag ? 'Buka Kunci' :
-            'Kunci' }}
-          </u-btn>
+          <u-btn v-if="store.form && store.form?.flag !== '1'" :loading="loadingLock" @click="handleKunci">{{ 'Kunci' }}</u-btn>
           <u-btn v-if="store.mode === 'edit'" variant="secondary" @click="openModalCetak">Cetak</u-btn>
         </u-row>
       </u-col>
@@ -342,8 +340,9 @@ const listItems = computed(() => {
 const handleKunci = async (e) => {
   e.preventDefault()
   e.stopPropagation()
-
+  
   const flag = (props.store.form?.flag === '1' || props.store.form?.flag === 1)
+  console.log('handleKunci', flag)
   const nopenerimaan = props.store.form?.nopenerimaan
   const rincians = props.store.form?.rincian
   
@@ -379,6 +378,7 @@ const handleKunci = async (e) => {
   try {
     if (!flag) {
       resp = await api.post(`api/v1/transactions/penerimaan/lock_penerimaan`, payload)
+      props.store.initModeEdit(data)
     } 
 
     console.log('resp', resp);
@@ -391,7 +391,7 @@ const handleKunci = async (e) => {
 
   const data = resp?.data?.data
   props.store.form.flag = data?.flag
-  props.store.initModeEdit(data)
+  
 
 }
 
@@ -675,7 +675,7 @@ watch(
         const savedItem = newForm?.rincian?.find(r => r.kode_barang === orderItem.kode_barang)
         const existing = form.value?.rincian?.[orderItem.kode_barang]
 
-        console.log('savedItem', savedItem)
+        
         rincianObj[orderItem.kode_barang] = {
           nama: savedItem?.barang?.nama || orderItem?.master?.nama,
           jumlah_pesan: savedItem?.jumlah_pesan ?? orderItem?.jumlah_pesan ?? null,
@@ -708,6 +708,8 @@ watch(
         flag: newForm?.flag,
         rincian: rincianObj
       }
+
+      console.log('savedItem', form.value)
     }
 
     if (!props.store.orderSelected && newForm?.noorder) {
