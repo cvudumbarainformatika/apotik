@@ -1,10 +1,13 @@
 <template>
   <div class="relative flex items-center justify-center min-h-screen w-full">
+    <!-- Copyright -->
+     <div class="absolute bottom-4 text-xs text-background text-center">
+       &copy; 2025 CV Udumbara Informatika
+     </div>
     <!-- Gradient Glow Border -->
     <div
       class="absolute inset-0 rounded-2xl bg-gradient-to-tr from-primary to-secondary opacity-30 blur-2xl animate-pulse">
     </div>
-
     <div class="relative w-[500px] sm:w-[420px] h-[420px] animate-floating">
       <!-- Logo di luar mask -->
       <div
@@ -16,7 +19,7 @@
         <div class="mt-2 -mb-2 text-background text-lg font-medium animate-fade-in" style="letter-spacing: 0.05em">
           SELAMAT
           DATANG</div>
-        <div class="mt-0 text-background text-lg animate-fade-in" style="letter-spacing: 0.05em">Sistem
+        <div class="mt-0 text-background text-lg animate-fade-in" style="letter-spacing: 0.05em">di Sistem
           Informasi Apotik</div>
         <div class=" -mb-2 mt-3 text-background text-xs font-thin animate-fade-in delay-200"
           style="letter-spacing: 0.2em">Harap login untuk melanjutkan</div>
