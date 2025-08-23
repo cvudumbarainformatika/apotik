@@ -45,7 +45,9 @@ const handleDelete = async (item) => {
 
 
   const payload = {
+    noretur: props.store.form?.noretur,
     id_penerimaan_rinci: item?.id_penerimaan_rinci ?? null,
+    id: item?.id ?? null
   }
 
   
