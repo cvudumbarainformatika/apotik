@@ -1,140 +1,212 @@
 <script setup>
-import { ref, onMounted } from 'vue'
-import { useBarangStore } from '@/stores/template/register'
+import { ref, onMounted, computed, defineAsyncComponent } from 'vue'
+import { formatRupiah } from '@/utils/numberHelper'
 
-defineProps({
-  msg: String,
-})
-
-const store = useBarangStore()
-
-const count = ref(0)
-const form = ref({
-  email: '',
-  password: '',
-  error: '',
-  status: ''
-})
-
-const errorSelect = ref(true)
-const errorMessageSelect = ref('coba error select')
-const options = ref([
-  { value: '1', label: 'Tampilkan' },
-  { value: '2', label: 'Sembunyikan' }
-])
-
-const users = ref([
-  { name: 'coba', address: 'Alamat coba', phone: '08123456789' },
-  { name: 'coba2', address: 'Alamat coba 2', phone: '08123456789' },
-  { name: 'coba3', address: 'Alamat coba 3', phone: '08123456789' }
-])
-
-
-const handleSelect = (val) => {
-  console.log('handleSelect', val);
-  
-}
+const LineChart = defineAsyncComponent(() => import('@/components/templates/chart/LineChart.vue'))
+const BaseChart = defineAsyncComponent(() => import('@/components/templates/chart/BaseChart.vue'))
 
 onMounted(() => {
-  store.fetchAll()
+  // store.fetchAll()
+})
+
+const stats = computed(() => {
+  return [
+    { 
+      label: 'Total Penjualan', 
+      jumlah: formatRupiah(9000000), 
+      persentase: '+' + '%',
+      trend: '📈 📉' 
+    },
+    { 
+      label: 'Trans Penjualan', 
+      jumlah: formatRupiah(256), 
+      persentase: '+' + '%',
+      trend: '📈 📉' 
+    },
+    { 
+      label: 'Total Pembelian', 
+      jumlah: formatRupiah(6000000), 
+      persentase: '+' + '%',
+      trend: '📈 📉' 
+    },
+    { 
+      label: 'Trans Pembelian', 
+      jumlah: formatRupiah(50), 
+      persentase: '+' + '%',
+      trend: '📈 📉' 
+    },
+  ]
 })
 
 </script>
 
 <template>
   <u-page>
-    <u-view class="">
-      <u-row flex1 class="">
-        <u-row>
-          <u-input-search />
-          <u-btn-icon tooltip="Tambah Data" />
-          <u-btn-icon icon="rotate-cw" tooltip="Refresh" />
-        </u-row>
-      </u-row>
-    </u-view>
+    
     <u-view flex1 scrollY>
       <u-col flex1  class="">
         <!-- <div class="font-medium">Color Palette</div> -->
-         <u-title label="Color Palette" />
-          <u-grid cols="4">
-            <div class="bg-primary text-white p-4 h-[100px]">primary</div>
-            <div class="bg-light-primary text-white p-4">light-primary</div>
-            <div class="bg-secondary text-dark p-4">secondary</div>
-            <div class="bg-background text-black p-4">background</div>
-            <div class="bg-danger text-white p-4 h-[100px]">danger</div>
-            <div class="bg-success text-white p-4 h-[100px]">dark</div>
-            <div class="bg-grady-primary text-white p-4 h-[100px]">grady-primary</div>
-            <div class="bg-grady-secondary text-black p-4 h-[100px]">grady-secondary</div>
-          </u-grid>
+         <u-title class="text-lg" label="Dashboard" />
+          <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-4 w-full">
+            <u-card v-for="(stat, i) in stats" :key="i" >
+              <u-text size="xs" class="font-normal">{{ stat?.label }}</u-text>
+              <u-row>
+                <u-text size="xs" class="font-normal">Rp. </u-text>
+                <u-text size="xl" class="font-bold">{{ stat?.jumlah }} </u-text>
+              </u-row>
+              <u-row>
+                <u-text size="md" class="font-bold"> + 10% </u-text>
+                <u-text size="xl" class="font-bold"> 📈 📉</u-text>
+              </u-row>
+            </u-card>
+          </div>
 
 
-          <u-title label="Buttons (u-btn)" />
-          
-          <!-- <div class="w-full space-y-2 "> -->
-            <u-row flex1 class="w-full">
-              <u-btn label="Primary" fullWidth />
-              <u-btn variant="secondary" label="Secondary" />
-              <u-btndrop label="Menu" :items="['Profile', 'Settings', 'Logout']" @select="handleSelect" />
-              <u-btndrop label="Menu Dropdown Panjang" :items="['Profile', 'Settings', 'Logout']" @select="handleSelect" />
-            </u-row>
-           
+          <!-- Charts Section -->
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+        <u-card padding="p-0" class="col-span-1 md:col-span-7 w-full">
 
-          <u-title label="Input (u-input)" />
-          <u-col class="w-full">
-            <u-input label="Email" type="email" v-model="form.email"/>
-            <u-input label="Password" type="password" v-model="form.password" />
-            <u-input label="Percobaan Error" type="text" v-model="form.error" error error-message="Harap diisi" />
-          </u-col>
-          <u-title class="">Select (u-select)</u-title>
-          <u-col  class="w-full">
-              <u-select label="Uselect" v-model="form.status"
-                :options="options" 
-                @update:modelValue="(val)=> {
-                  console.log('val',val);
-                  
-                }"
-              />
-              <u-select label="Uselect" v-model="form.status"
-                :options="options" :error="errorSelect" :error-message="errorMessageSelect"
-              />
-          </u-col>
-          <u-title>List (u-list)</u-title>
-          <u-row flex1 class="">
-            <u-row>
-              <u-input-search />
-              <u-btn-icon tooltip="Tambah Data" />
-              <u-btn-icon icon="rotate-cw" tooltip="Refresh" />
-            </u-row>
+          <u-row class="px-4 pt-4">
+            <u-text size="md" class="font-light" color="text-gray-500">Grafik Penjualan & Pembelian Perbulan</u-text>
           </u-row>
 
-          <u-list :items="users">
-            <template #item="{ item }">
-              <u-col gap="gap-1" class="w-full px-4 py-1">
-                <u-view padding="0" flex1 class="w-full">
-                  <u-row class=" ">
-                    <div class="font-bold">Header</div>
-                  </u-row>
-                  <u-row flex1 right class="">
-                    bbb
-                  </u-row>
-                </u-view>
-                <u-separator />
-                <u-view padding="0" flex1 class="w-full">
-                  <u-row class="">
-                    <u-col gap="gap-1">
-                      <div class="">Header</div>
-                      <div class="text-sm text-light-primary">Sub Header</div>
-                    </u-col>
-                  </u-row>
-                  <u-row flex1 right class="">
-                    <u-btndrop label="Menu" :items="['Profile', 'Settings', 'Logout']" />
-                  </u-row>
-                </u-view>
-              </u-col>
-            </template>
-          </u-list>
-          <!-- <div class="my-[100px]">Kenapa gak bisa </div> -->
+          <div class="">
+            <base-chart 
+              type="bar" 
+              :labels="['Jn', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Des']"
+              :datasets="[
+                { 
+                  data: [10, 20, 30, 120, 50, 60, 70, 80, 90, 100, 110, 20],
+                  label: 'Penjualan',
+                  borderColor: '#0044B8',
+                  backgroundColor: '#0044B880',
+                  borderRadius: 5,
+                  borderWidth: 1,
+                  tension: 0.4
+                },
+                { 
+                  data: [110, 120, 10, 20, 50, 80, 30, 50, 60, 20, 10, 20],
+                  label: 'Pembelian',
+                  borderColor: '#E9053E',
+                  backgroundColor: '#E9053E80',
+                  borderRadius: 5,
+                  borderWidth: 1,
+                  tension: 0.4
+                }
+              ]"
+              height-class="h-80"
+            />
+            <!-- <div v-if="chartData?.labels?.length">
+              <LineCart :chart-data="chartData" :chart-options="chartOptions" />
+            </div>
+            <div v-else class="text-center text-gray-400 text-sm py-8">
+              Belum ada data grafik untuk ditampilkan
+            </div> -->
+          </div>
+        </u-card>
+        
 
+        <u-card padding="p-0" class="col-span-1 md:col-span-5 w-full">
+          <u-row class="px-4 pt-4">
+            <u-text size="md" class="font-light" color="text-gray-500">Grafik Penjualan & Pembelian (5 Hari Terakhir)</u-text>
+          </u-row>
+
+          <div class="">
+            <BaseChart 
+              type="line" 
+              :labels="['2025-01-01', '2025-01-02', '2025-01-03', '2025-01-04', '2025-01-05']"
+              :datasets="[
+                { 
+                  data: [2000000, 3000000, 9000000, 10000000, 11000000],
+                  label: 'Penjualan',
+                  borderColor: '#0044B8',
+                  tension: 0.4
+                },
+                { 
+                  data: [5000000, 200000, 1000000, 600000, 1000],
+                  label: 'Pembelian',
+                  borderColor: '#E9053E',
+                  tension: 0.4
+                }
+              ]"
+              height-class="h-80"
+            />
+            <!-- <div v-if="chartData?.labels?.length">
+              <LineCart :chart-data="chartData" :chart-options="chartOptions" />
+            </div>
+            <div v-else class="text-center text-gray-400 text-sm py-8">
+              Belum ada data grafik untuk ditampilkan
+            </div> -->
+          </div>
+        
+        </u-card>
+
+        <u-card padding="p-0" class="col-span-1 md:col-span-4 w-full">
+          <u-row class="px-4 pt-4">
+            <u-text size="md" class="font-light" color="text-gray-500">Top 5 Fast Move Product (Obat)</u-text>
+          </u-row>
+
+          <div class="">
+            <BaseChart
+              type="polarArea"
+              :labels="['Paracetamol', 'Antibody', 'Dextamin', 'Caroutine', 'Aspirin']"
+              :datasets="
+              [
+                {
+                  label: 'Top Product',
+                  data: [100, 88, 60, 40, 80],
+                  backgroundColor: ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6'],
+                }
+              ]"
+              height-class="h-80"
+            />
+          </div>
+        </u-card>
+
+        <u-card padding="p-0" class="col-span-1 md:col-span-4 w-full">
+          <u-row class="px-4 pt-4">
+            <u-text size="md" class="font-light" color="text-gray-500">Top 3 Dokter (Transaksi Resep)</u-text>
+          </u-row>
+
+          <div class="">
+            <BaseChart
+              type="pie"
+              :labels="['dr. Adi', 'dr. Budi', 'dr. Caca Handika']"
+              :datasets="
+              [
+                {
+                  label: 'Top 3 Dokter',
+                  data: [100, 60, 5],
+                  backgroundColor: ['#3B82F6', '#10B981', '#F59E0B'],
+                }
+              ]"
+              height-class="h-80"
+            />
+          </div>
+        </u-card>
+
+        <u-card padding="p-0" class="col-span-1 md:col-span-4 w-full">
+          <u-row class="px-4 pt-4">
+            <u-text size="md" class="font-light" color="text-gray-500">Top 5 PBF </u-text>
+          </u-row>
+
+          <div class="">
+            <BaseChart
+              type="bar"
+              :labels="['PT. Aaaa', 'PT. Bbbb', 'PT. Cccc', 'PT. Dddd', 'PT. Eeee']"
+              :datasets="
+              [
+                {
+                  label: 'Top 5 PBF',
+                  data: [600, 800, 300, 2, 100],
+                  backgroundColor: ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6'],
+                }
+              ]"
+              height-class="h-80"
+            />
+          </div>
+        </u-card>
+      </div>
           
       </u-col>
 
