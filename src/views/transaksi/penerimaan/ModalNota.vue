@@ -1,7 +1,7 @@
 <template>
-  <u-modal persistent :title="`${title}`" @close="emit('close')">
+  <u-modal persistent :title="`${title}`" @close="emit('close')" size="lg">
     <template #default>
-      <div id="printArea" ref="printArea" class=" max-w-full bg-white text-black mx-auto  p-1 thermal-58">
+      <div id="printArea" ref="printArea" class=" max-w-full bg-white text-black mx-auto  p-1 print-a4">
         <div class="text-center">
           <div class="text-sm font-semibold tracking-wide">NAMA TOKO</div>
           <div class="text-[10px] leading-tight">ALAMAT TOKO</div>
@@ -58,16 +58,16 @@
             <div class="row w-full text-center">
               <div class="col-12 px-2">Supplier</div>
               <div class="col-12 px-2"> {{ store.form?.suplier?.nama }} </div>
-              <div class="col-12 px-2 pt-8"> </div>
-              <div class="col my-1 px-20">
+              <div class="col-12 px-2 pt-8" style="height: 60px"> </div>
+              <div class="col my-1 justify-self-center" style="width: 200px">
                 <div class="border-t border-dashed border-black"></div>
               </div>
 
             </div>
             <div class="col w-full text-center">
               <div class="col-12 px-2">Diterima Oleh</div>
-              <div class="col-12 px-2 pt-12"> </div>
-              <div class="col my-1 px-20">
+              <div class="col-12 px-2 pt-12" style="height: 80px"> </div>
+              <div class="col my-1 justify-self-center" style="width: 200px">
                 <div class="border-t border-dashed border-black"></div>
               </div>
             </div>

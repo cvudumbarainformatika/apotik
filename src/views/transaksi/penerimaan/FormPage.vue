@@ -157,7 +157,7 @@
                         :error="errorMessage(`rincian.${item.kode_barang}.tgl_exprd`)" />
                     </u-row>
                     <u-row class="col-span-8">
-                      <template v-if="!item.saved">
+                      <template v-if="!item.saved && !form.rincian[item.kode_barang]?.saved">
                         <u-btn variant="secondary" label="Batal" @click="handleBatal(item.kode_barang)" />
                         <u-btn :loading="item.loading" label="Simpan"
                           @click.stop="handleSubmit($event, item)" />
@@ -536,7 +536,7 @@ const handleSubmit = async (e, item) => {
     diskon_rupiah: parseInt(rincianItem.diskon_rupiah) || 0,
     tgl_exprd: rincianItem.tgl_exprd || '',
     loading: true,
-    saved: true,
+    saved: false,
   }
 
   try {
@@ -549,11 +549,15 @@ const handleSubmit = async (e, item) => {
     const b = form.value.rincian[kode_barang].jumlah_b
     // console.log('ab', a,b)
     if (parseInt(b) > parseInt(a)) {
+      
       notify({ message: 'Penerimaan Lebih Besar Dari Jumlah Pesanan', type: 'error' })
+      form.value.rincian[kode_barang].saved = false
+      console.log('form.value.rincian[kode_barang]', form.value.rincian[kode_barang])
     } 
     else {
       console.log('form.value', form.value)
       await props.store.create(form.value)
+      form.value.rincian[kode_barang].saved = true
       // props.store.supplierSelected = suplier
       // props.store.orderSelected = orderan
 
@@ -561,13 +565,14 @@ const handleSubmit = async (e, item) => {
     }
     // form.value.nopenerimaan = props.store?.items[0]?.header?.nopenerimaan
     form.value.rincian[kode_barang].loading = false
-    form.value.rincian[kode_barang].saved = true
     // console.log('fofo', props.items)
 
   } catch (err) {
     console.error('Error saat menyimpan:', err)
+    
     if (form.value.rincian[kode_barang]) {
       form.value.rincian[kode_barang].loading = false
+      form.value.rincian[kode_barang].saved = false
     }
   } finally {
     skipWatch.value = false

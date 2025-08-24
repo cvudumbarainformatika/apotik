@@ -22,7 +22,8 @@
 
                 <u-row>
                   <u-icon size="14" name="file-check-2"></u-icon>
-                  <u-text class="" color="text-gray-500">{{ item?.suplier?.nama }}</u-text>
+                  <u-text class="" color="text-gray-500">{{ item?.suplier?.nama }} ||</u-text>
+                  <u-text class="" color="text-gray-500">Order: {{ item?.noorder }}</u-text>
                 </u-row>
 
                 <u-row>
