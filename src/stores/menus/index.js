@@ -102,7 +102,7 @@ export const useMenuStore = defineStore('menu-store', {
             component: 'IndexPage',
           },
            {
-            title: 'Penerimaan Produk',
+            title: 'Penerimaan',
             icon: 'layers',
             url: 'admin/transaksi/penerimaan',
             name: 'transaksi.penerimaan',
@@ -133,6 +133,27 @@ export const useMenuStore = defineStore('menu-store', {
             view: '/src/views/transaksi/returpembelian',
             component: 'IndexPage',
           }
+        ]
+      },
+
+      //  LAPORAN
+      {
+        title: 'Laporan',
+        icon: 'layers',
+        url: 'admin/laporan',
+        name: null,
+        view: null,
+        component: null,
+        children:[
+          {
+            title: 'Kartu Stok',
+            icon: 'layers',
+            url: 'admin/laporan/kartustok',
+            name: 'laporan.kartustok',
+            view: '/src/views/laporan/kartustok',
+            component: 'IndexPage',
+          },
+          
         ]
       },
      

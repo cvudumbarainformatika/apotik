@@ -44,7 +44,7 @@ export const useDokterStore = createTemplateStore('dokter', {
 
 export const useOrderStore = createTemplateTransaksiStore('order', {
   baseUrl: '/api/v1/transactions/order',
-  persist: true
+  persist: false
 })
 
 export const usePenerimaanStore = createTemplateTransaksiStore('penerimaan', {
@@ -60,12 +60,22 @@ export const usePenjualanStore = createTemplateTransaksiStore('penjualan', {
 export const useStockStore = createTemplateTransaksiStore('stok', {
   baseUrl: '/api/v1/transactions/stok',
   // createUrl: '/tambah',
-  persist: true
+  persist: false
 })
 
 export const useReturPembelianStore = createTemplateTransaksiStore('retur-pembelian', {
   baseUrl: '/api/v1/transactions/returpembelian',
   persist: false
 })
+
+
+export const useKartuStokStore = createTemplateTransaksiStore('kartu-stok', {
+  baseUrl: 'api/v1/transactions/stok',
+  persist: false
+})
+// LAPORAN STORE
+
+
+
 
 // dan seterusnya...
