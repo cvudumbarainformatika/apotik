@@ -26,7 +26,7 @@
         </u-row>
       </u-row>
       <u-row right justify-self-end class="gap-2">
-        <u-date-range v-if="showDateButton" v-model="store.range" @update:modelValue="store.setRange"
+        <u-date-range v-if="showDateButton" v-model="store.range" @update:modelValue="onRange"
           default-period="month" />
       </u-row>
     </u-view>
@@ -70,6 +70,7 @@ const props = defineProps({
   showDateButton: { type: Boolean, default: false },
   onAdd: Function, // ✅ supaya tidak error saat dipanggil
   onRefresh: Function, // ✅ hanya dipanggil kalau diberikan
+  onRange: Function, // ✅ hanya dipanggil kalau diberikan
 })
 
 const emit = defineEmits(['close', 'save'])
