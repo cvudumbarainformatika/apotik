@@ -72,12 +72,20 @@ export const useReturPembelianStore = createTemplateTransaksiStore('retur-pembel
   persist: false
 })
 
+export const useBebanPengeluaranStore = createTemplateTransaksiStore('beban-pengeluaran', {
+  baseUrl: '/api/v1/transactions/beban',
+  persist: false
+})
 
+
+
+
+// LAPORAN STORE
 export const useKartuStokStore = createTemplateTransaksiStore('kartu-stok', {
   baseUrl: 'api/v1/transactions/stok',
   persist: false
 })
-// LAPORAN STORE
+
 
 
 

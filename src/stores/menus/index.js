@@ -140,6 +140,14 @@ export const useMenuStore = defineStore('menu-store', {
             name: 'transaksi.returpembelian',
             view: '/src/views/transaksi/returpembelian',
             component: 'IndexPage',
+          },
+          {
+            title: 'Beban Pengeluaran',
+            icon: 'layers',
+            url: 'admin/transaksi/beban',
+            name: 'transaksi.beban',
+            view: '/src/views/transaksi/beban',
+            component: 'IndexPage',
           }
         ]
       },
