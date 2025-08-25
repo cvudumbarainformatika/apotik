@@ -2,16 +2,10 @@
   <u-col gap="gap-1" class="w-full px-4 py-1">
     <u-view padding="0" flex1 class="w-full">
       <u-row flex1 class="w-full">
-        <u-col gap = gap-1>
-          <u-grid cols=12>
-            <u-row class="col-span-1">
-              <span>Nama</span>
-            </u-row>
-            <u-row class="col-span-11">
-              <span>: {{ item?.nama_beban }}</span>
-            </u-row>
-          </u-grid>
-        </u-col>
+        <div>
+          <div class="font-bold">{{ item?.nama_beban }}</div>
+          <div class="text-xs text-gray-400">{{ useWaktuLaluReactive(item?.created_at) }}</div>
+        </div>
       </u-row>
       <u-row right class="">
         <div>

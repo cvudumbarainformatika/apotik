@@ -89,7 +89,8 @@ function init(){
     const item = props.store.item || {}
     console.log('edit item', item);
     form.value = {
-      nama_beban: item.nama || '',
+      id: item.id || '',
+      nama_beban: item.nama_beban || '',
       flag: item.flag || ''
     }
   }

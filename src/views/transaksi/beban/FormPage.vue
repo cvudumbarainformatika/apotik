@@ -122,8 +122,10 @@
         <u-separator spacing="-my-1"></u-separator>
         <u-row class="z-99">
           <u-btn v-if="store.mode === 'edit'" variant="secondary" @click="initForm">Trans Baru</u-btn>
-          <u-btn v-if="store.form" :loading="loadingLock" @click="handleKunci">{{ store.form?.flag ? 'Buka Kunci' :
-            'Kunci Order' }}</u-btn>
+          <!-- <u-btn v-if="store.form" :loading="loadingLock" @click="handleKunci">{{ store.form?.flag ? 'Buka Kunci' :
+            'Kunci Order' }}</u-btn> -->
+          <u-btn v-if="store.form && store.form?.flag !== '1'" :loading="loadingLock" @click="handleKunci">{{ 'Kunci'
+            }}</u-btn>
         </u-row>
       </u-col>
     </u-grid>
