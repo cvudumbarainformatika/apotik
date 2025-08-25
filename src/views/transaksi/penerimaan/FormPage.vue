@@ -370,8 +370,8 @@ const handleKunci = async (e) => {
       
     }))
   }
-  console.log('payload', payload)
-  console.log('rincians', rincians)
+  // console.log('payload', payload)
+  // console.log('rincians', rincians)
   loadingLock.value = true
 
   let resp
@@ -438,14 +438,7 @@ function initForm() {
 const clearSelectedOrder = () => {
 
   
-  // props.store.orderSelected = {
-  //   nomor_order: null,
-  //   order_records: []
-  // }
   props.store.init()
-  // console.log('clearSelectedOrder', props.store.orderSelected)
-  // props.store.orderSelected = null
-  // props.store.supplierSelected = null
   props.store.mode = 'add'
   form.value.noorder = ''
   form.value.nopenerimaan = ''
@@ -503,7 +496,6 @@ const handleSubmit = async (e, item) => {
   const kode_barang = item.kode_barang
 
   const rincianItem = form.value.rincian[kode_barang] || {}
-  
 
   form.value.kode_barang = kode_barang
   form.value.nobatch = rincianItem.nobatch || ''
@@ -536,44 +528,37 @@ const handleSubmit = async (e, item) => {
     diskon_rupiah: parseInt(rincianItem.diskon_rupiah) || 0,
     tgl_exprd: rincianItem.tgl_exprd || '',
     loading: true,
-    saved: false,
+    saved: true,
   }
 
   try {
-    // const payload = {
-    //   ...form.value,
-    //   rincian: Object.values(form.value.rincian) // kirim sebagai array
-    // }
-
+    
     const a = form.value.rincian[kode_barang].jumlah_pesan
     const b = form.value.rincian[kode_barang].jumlah_b
-    // console.log('ab', a,b)
+    
     if (parseInt(b) > parseInt(a)) {
       
       notify({ message: 'Penerimaan Lebih Besar Dari Jumlah Pesanan', type: 'error' })
       form.value.rincian[kode_barang].saved = false
-      console.log('form.value.rincian[kode_barang]', form.value.rincian[kode_barang])
+      // console.log('form.value.rincian[kode_barang]', form.value.rincian[kode_barang])
     } 
+    
     else {
-      console.log('form.value', form.value)
       await props.store.create(form.value)
       form.value.rincian[kode_barang].saved = true
-      // props.store.supplierSelected = suplier
-      // props.store.orderSelected = orderan
-
-      // props.store.mode = 'edit'
+      if (props.store.error) {
+        form.value.rincian[kode_barang].saved = false
+      }
+     
     }
-    // form.value.nopenerimaan = props.store?.items[0]?.header?.nopenerimaan
     form.value.rincian[kode_barang].loading = false
-    // console.log('fofo', props.items)
-
+    
   } catch (err) {
     console.error('Error saat menyimpan:', err)
-    
-    if (form.value.rincian[kode_barang]) {
+   
       form.value.rincian[kode_barang].loading = false
       form.value.rincian[kode_barang].saved = false
-    }
+  
   } finally {
     skipWatch.value = false
     isSubmitting.value = false
@@ -666,15 +651,12 @@ watch(
         props.store.clearFieldError(key)
       }
     }
-    console.log('newForm', newForm)
     if (newForm) {
       const filteredOrders = props.store.dataorder
         ?.filter(o => o.nomor_order === newForm?.noorder)
         ?.flatMap(o => o.order_records) || []
       const today = new Date().toISOString().split('T')[0]
 
-      // const filters = form.value.rincian[kode_barang].saved = true
-      // console.log('filters', filters)
       const rincianObj = {}
       filteredOrders.forEach(orderItem => {
         const savedItem = newForm?.rincian?.find(r => r.kode_barang === orderItem.kode_barang)
@@ -714,7 +696,6 @@ watch(
         rincian: rincianObj
       }
 
-      console.log('savedItem', form.value)
     }
 
     if (!props.store.orderSelected && newForm?.noorder) {
@@ -735,15 +716,12 @@ const TotalPenerimaan = computed(() => {
   if (props.store.mode === 'add') {
     return 0
   } else {
-    // const items = Object.values(form.value?.rincian ?? {})
-    // return items.reduce((a, b) => {
-    //   const subtotal = Number(b?.jumlah_b ?? 0) * Number(b?.harga_b ?? 0)
-    //   return a + subtotal
-    // }, 0)
-    // const items = Object.values(form.value?.rincian ?? {})
-    // return items.reduce((a, b) => a + Number(b?.subtotal ?? 0), 0)
+  
     const items = props?.store?.form?.rincian ?? []
-    return items.reduce((a, b) => a + Number(b?.subtotal), 0)
+    return items.reduce((a, b) => {
+      const subtotal = (Number(b?.jumlah_b ?? 0) * Number(b?.harga_b ?? 0)) - (Number(b?.jumlah_k ?? 0) * Number(b?.diskon_rupiah ?? 0)) + (Number(b?.jumlah_k ?? 0) * Number(b?.pajak_rupiah ?? 0))
+      return a + subtotal
+    }, 0)
   }
 })
 
