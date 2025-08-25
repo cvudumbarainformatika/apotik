@@ -79,6 +79,14 @@ export const useMenuStore = defineStore('menu-store', {
             name: 'master.dokter',
             view: '/src/views/master/dokter',
             component: 'IndexPage',
+          },
+          {
+            title: 'Master Beban',
+            icon: 'users',
+            url: 'admin/master/beban',
+            name: 'master.beban',
+            view: '/src/views/master/beban',
+            component: 'IndexPage',
           }
         ]
       },
