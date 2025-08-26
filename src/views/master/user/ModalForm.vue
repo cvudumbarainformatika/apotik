@@ -98,6 +98,8 @@ const { isError, errorMessage } = useFormError(form.value, props.store)
 
 function handleSubmit() {
   emit('save' , form.value, props.mode)
+  
+  emit('close')
 }
 
 function init(){

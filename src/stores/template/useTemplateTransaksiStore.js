@@ -178,7 +178,7 @@ export function createTemplateTransaksiStore(storeId, config) {
         // return await api.put(`${config.baseUrl}/${config?.endpointUpdate || '/update'}/${id}`, data)
         this.loadingSave = true
         try {
-          const res = await api.put(`${config.baseUrl}${config?.updateUrl || '/update'}`, data)
+          const res = await api.post(`${config.baseUrl}${config?.updateUrl || '/update'}`, data)
           console.log(`resp ${storeId} update : `, res);
           if (res.status === 200) {
             const result = res.data.data

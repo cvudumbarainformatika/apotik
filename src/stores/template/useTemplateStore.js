@@ -139,10 +139,10 @@ export function createTemplateStore(storeId, config) {
         // return await api.put(`${config.baseUrl}/${config?.endpointUpdate || '/update'}/${id}`, data)
         this.loadingSave = true
         try {
-          const res = await api.put(`${config.baseUrl}${config?.updateUrl || '/update'}`, data)
+          const res = await api.post(`${config.baseUrl}${config?.updateUrl || '/update'}`, data)
           console.log(`resp ${storeId} update : `, res);
           if (res.status === 200) {
-            const result = res.data.data
+            const result = res.data.data || res.data.user
             // if (mode === 'add') {
             //   this.items.unshift(result)
             // }else {
@@ -154,6 +154,7 @@ export function createTemplateStore(storeId, config) {
             })
             // }
             this.error = null
+            notify({ message: res.data.message ?? 'Berhasil Update data', type: 'success' })
           }
         } catch (error) {
           console.log(`error ${storeId} update : `, error);
