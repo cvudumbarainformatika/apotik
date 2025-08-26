@@ -9,7 +9,7 @@ export const useMenuStore = defineStore('menu-store', {
         icon: 'home',
         url: 'admin',
         name: 'dashboard',
-        view: '/src/views/dashboard',
+        view: '/views/dashboard',
         component: 'IndexPage',
         children:[]
       },
@@ -29,7 +29,7 @@ export const useMenuStore = defineStore('menu-store', {
             icon: 'tag',
             url: 'admin/master/satuan',
             name: 'master.satuan',
-            view: '/src/views/master/satuan',
+            view: '/views/master/satuan',
             component: 'IndexPage',
           },
           {
@@ -37,7 +37,7 @@ export const useMenuStore = defineStore('menu-store', {
             icon: 'layers',
             url: 'admin/master/barang',
             name: 'master.barang',
-            view: '/src/views/master/barang',
+            view: '/views/master/barang',
             component: 'IndexPage',
           },
           {
@@ -45,7 +45,7 @@ export const useMenuStore = defineStore('menu-store', {
             icon: 'network',
             url: 'admin/master/jabatan',
             name: 'master.jabatan',
-            view: '/src/views/master/jabatan',
+            view: '/views/master/jabatan',
             component: 'IndexPage',
           },
           {
@@ -53,7 +53,7 @@ export const useMenuStore = defineStore('menu-store', {
             icon: 'users-round',
             url: 'admin/master/supplier',
             name: 'master.supplier',
-            view: '/src/views/master/supplier',
+            view: '/views/master/supplier',
             component: 'IndexPage',
           },
           {
@@ -61,7 +61,7 @@ export const useMenuStore = defineStore('menu-store', {
             icon: 'users',
             url: 'admin/master/pelanggan',
             name: 'master.pelanggan',
-            view: '/src/views/master/pelanggan',
+            view: '/views/master/pelanggan',
             component: 'IndexPage',
           },
           {
@@ -69,7 +69,7 @@ export const useMenuStore = defineStore('menu-store', {
             icon: 'users',
             url: 'admin/master/user',
             name: 'master.user',
-            view: '/src/views/master/user',
+            view: '/views/master/user',
             component: 'IndexPage',
           },
           {
@@ -77,7 +77,7 @@ export const useMenuStore = defineStore('menu-store', {
             icon: 'users',
             url: 'admin/master/dokter',
             name: 'master.dokter',
-            view: '/src/views/master/dokter',
+            view: '/views/master/dokter',
             component: 'IndexPage',
           },
           {
@@ -85,7 +85,7 @@ export const useMenuStore = defineStore('menu-store', {
             icon: 'users',
             url: 'admin/master/beban',
             name: 'master.beban',
-            view: '/src/views/master/beban',
+            view: '/views/master/beban',
             component: 'IndexPage',
           }
         ]
@@ -106,7 +106,7 @@ export const useMenuStore = defineStore('menu-store', {
             icon: 'layers',
             url: 'admin/transaksi/order',
             name: 'transaksi.order',
-            view: '/src/views/transaksi/order',
+            view: '/views/transaksi/order',
             component: 'IndexPage',
           },
            {
@@ -114,7 +114,7 @@ export const useMenuStore = defineStore('menu-store', {
             icon: 'layers',
             url: 'admin/transaksi/penerimaan',
             name: 'transaksi.penerimaan',
-            view: '/src/views/transaksi/penerimaan',
+            view: '/views/transaksi/penerimaan',
             component: 'IndexPage',
           },
            {
@@ -122,7 +122,7 @@ export const useMenuStore = defineStore('menu-store', {
             icon: 'layers',
             url: 'admin/transaksi/penjualan',
             name: 'transaksi.penjualan',
-            view: '/src/views/transaksi/penjualan',
+            view: '/views/transaksi/penjualan',
             component: 'IndexPage',
           },
            {
@@ -130,7 +130,7 @@ export const useMenuStore = defineStore('menu-store', {
             icon: 'layers',
             url: 'admin/transaksi/stock',
             name: 'transaksi.stock',
-            view: '/src/views/transaksi/stock',
+            view: '/views/transaksi/stock',
             component: 'IndexPage',
           },
            {
@@ -138,7 +138,7 @@ export const useMenuStore = defineStore('menu-store', {
             icon: 'layers',
             url: 'admin/transaksi/returpembelian',
             name: 'transaksi.returpembelian',
-            view: '/src/views/transaksi/returpembelian',
+            view: '/views/transaksi/returpembelian',
             component: 'IndexPage',
           },
           {
@@ -146,7 +146,7 @@ export const useMenuStore = defineStore('menu-store', {
             icon: 'layers',
             url: 'admin/transaksi/beban',
             name: 'transaksi.beban',
-            view: '/src/views/transaksi/beban',
+            view: '/views/transaksi/beban',
             component: 'IndexPage',
           }
         ]
@@ -166,7 +166,7 @@ export const useMenuStore = defineStore('menu-store', {
             icon: 'layers',
             url: 'admin/laporan/kartustok',
             name: 'laporan.kartustok',
-            view: '/src/views/laporan/kartustok',
+            view: '/views/laporan/kartustok',
             component: 'IndexPage',
           },
           
