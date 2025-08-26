@@ -2,7 +2,7 @@
 import { ref, onMounted, computed, defineAsyncComponent } from 'vue'
 import { formatRupiah } from '@/utils/numberHelper'
 
-const LineChart = defineAsyncComponent(() => import('@/components/templates/chart/LineChart.vue'))
+// const LineChart = defineAsyncComponent(() => import('@/components/templates/chart/LineChart.vue'))
 const BaseChart = defineAsyncComponent(() => import('@/components/templates/chart/BaseChart.vue'))
 
 onMounted(() => {

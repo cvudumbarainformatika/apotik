@@ -10,5 +10,21 @@ export default defineConfig({
     alias: {
       '@': path.resolve(__dirname, './src')
     }
+  },
+  build: {
+    target: 'esnext',
+    cssMinify: 'esbuild', // lebih cepat daripada terser
+    sourcemap: false, // matikan sourcemap untuk production (lebih cepat & ukuran lebih kecil)
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vue: ['vue', 'vue-router', 'pinia'],
+          chart: ['chart.js'],
+        }
+      }
+    }
+  },
+  optimizeDeps: {
+    include: ['vue', 'vue-router', 'pinia', 'chart.js'],
   }
 })
