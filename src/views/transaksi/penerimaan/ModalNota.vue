@@ -46,6 +46,7 @@
               <tr class="text-left text-bold">
                 <th class="th">#</th>
                 <th class="th p-1">Nama Barang</th>
+                <th class="th p-1">Nobatch</th>
                 <th class="th p-1">Jumlah Barang</th>
                 <th class="th text-right p-1">Harga Barang (Rp)</th>
                 <th class="th text-right p-1">Disc (%)</th>
@@ -56,8 +57,9 @@
               <tr v-for="(item, index) in groupedItems" :key="index">
                 <td class="td text-gray-500">{{ index + 1 }}</td>
                 <td class="td p-1 text-left">{{ item?.nama || '-' }}</td>
-                <td class="td p-1 text-left">{{ item?.jumlah_k }} {{ item?.satuan_k }}</td>
-                <td class="td p-1 text-right">{{ formatRupiah(item?.harga) }}</td>
+                <td class="td p-1 text-left">{{ item?.nobatch || '-' }}</td>
+                <td class="td p-1 text-left">{{ item?.jumlah_b }} {{ item?.satuan_b }}</td>
+                <td class="td p-1 text-right">{{ formatRupiah(item?.harga_b) }}</td>
                 <td class="td p-1 text-right">{{ formatRupiah(item?.diskon) }}</td>
                 <td class="td p-1 text-right">{{ formatRupiah(item?.subtotal) }}</td>
               </tr>
@@ -65,9 +67,7 @@
                 <td class="td text-center text-gray-500" colspan="8">Belum ada Item Penerimaan.</td>
               </tr>
             </tbody>
-
           </table>
-
         </div>
 
 
@@ -170,8 +170,12 @@ const groupedItems = computed(() => {
         kode_barang: item?.kode_barang,
         nama: item?.barang?.nama,
         satuan_k: item?.satuan_k,
+        satuan_b: item?.satuan_b,
+        nobatch: item?.nobatch,
         jumlah_k: Number(item?.jumlah_k),
+        jumlah_b: Number(item?.jumlah_b),
         harga: Number(item?.harga),
+        harga_b: Number(item?.harga_b),
         diskon: Number(item?.diskon_persen),
         subtotal: Number(item?.subtotal) - (Number(item?.pajak_rupiah) * Number(item?.jumlah_k || 0)),
         created_at: item?.created_at
