@@ -4,9 +4,9 @@
       <div id="printArea" ref="printArea"
         class="w-[58mm] max-w-full bg-white text-black mx-auto font-mono p-1 thermal-58">
         <div class="text-center">
-          <div class="text-sm font-semibold tracking-wide">NAMA TOKO</div>
-          <div class="text-[10px] leading-tight">ALAMAT TOKO</div>
-          <div class="text-[10px]">TELEPON TOKO</div>
+          <div class="text-sm font-semibold tracking-wide">{{ app?.form?.nama || 'NAMA TOKO' }}</div>
+          <div class="text-[10px] leading-tight">{{ app?.form?.alamat || 'ALAMAT TOKO' }}</div>
+          <div class="text-[10px]">{{ app?.form?.telepon || 'TELEPON TOKO' }}</div>
           <div class="w-full border-t border-dashed border-black my-1"></div>
         </div>
         <div class="flex justify-between text-[10px] mt-1">
@@ -50,8 +50,8 @@
 
         <div class="mt-2 text-center text-[10px] leading-snug">
           <div class="w-full border-t border-dashed border-black my-1"></div>
-          <p class="mt-1">Terimakasih atas kunjungan anda</p>
-          <p class="opacity-60">Simpan struk ini sebagai bukti transaksi.</p>
+          <p class="mt-1">{{ app?.form?.footer || 'Terimakasih atas kunjungan anda' }}</p>
+          <!-- <p class="opacity-60">Simpan struk ini sebagai bukti transaksi.</p> -->
           <p class="mt-1 opacity-80">&copy; 2025 CV Udumbara Informatika</p>
         </div>
 
@@ -69,9 +69,12 @@
 <script setup>
 import { ref, onMounted, computed, watch } from 'vue'
 import { useAuthStore } from '@/stores/auth'
+import { useAppStore } from '@/stores/app'
 import { storeToRefs } from 'pinia'
 import { formatRupiah } from '@/utils/numberHelper'
 import { formatDateIndo, formatTimeOnly } from '@/utils/dateHelper'
+
+
 const props = defineProps({
   store: { type: Object, required: true },
   title: { type: String, default: 'Nota Penjualan' },
@@ -82,6 +85,8 @@ const emit = defineEmits(['close', 'save'])
 
 const auth = useAuthStore()
 const { user } = storeToRefs(auth)
+
+const app = useAppStore()
 
 
 const printType = ref('thermal-58') // 'a4' | 'thermal-58 | 'thermal-80' | 'thermal-100'

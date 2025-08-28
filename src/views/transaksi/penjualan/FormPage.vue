@@ -321,6 +321,9 @@
             <u-btn v-if="store.mode === 'edit'" variant="secondary" @click="initForm">Baru</u-btn>
             <u-btn v-if="store.form && !errorPembayaran && !store.form?.flag" variant="primary" @click="simpanPenjualan">Simpan</u-btn>
           </u-row>
+          <u-row class="z-9">
+            <u-btn v-if="store.form?.flag" variant="secondary" @click="modalNota = true">Cetak</u-btn>
+          </u-row>
         </u-col>
     </u-grid>
 

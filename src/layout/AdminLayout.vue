@@ -4,12 +4,14 @@ import { useRouter } from 'vue-router'
 import { useInactivityLogout } from './useInactivityLogout'
 
 import { useSatuanStore, useJabatanStore } from '@/stores/template/register'
+import { useAppStore } from '@/stores/app'
 
 const router = useRouter()
 const HeaderMenu = defineAsyncComponent(() => import('./HeaderMenu.vue'))
 
 const storeSatuan = useSatuanStore()
 const storeJabatan = useJabatanStore()
+const app = useAppStore()
 
 
 useInactivityLogout()
@@ -17,7 +19,9 @@ useInactivityLogout()
 onMounted(() => {
   storeSatuan.per_page = 100
   storeJabatan.per_page = 100
+
   Promise.all([
+    app.fetchData(),
     storeSatuan.fetchAll(),
     storeJabatan.fetchAll()
   ])

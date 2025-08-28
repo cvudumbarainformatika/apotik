@@ -172,6 +172,26 @@ export const useMenuStore = defineStore('menu-store', {
           
         ]
       },
+
+      //SETTINGS
+      {
+        title: 'Settings',
+        icon: 'layers',
+        url: 'admin/settings',
+        name: null,
+        view: null,
+        component: null,
+        children:[
+          {
+            title: 'Aplikasi',
+            icon: 'layers',
+            url: 'admin/settings/aplikasi',
+            name: 'settings.aplikasi',
+            view: '/views/settings/aplikasi',
+            component: 'IndexPage',
+          },
+        ]
+      },
      
     ],
     
