@@ -8,10 +8,10 @@
         <div class="flex items-center gap-4">
           <img src="/images/logo.svg" alt="logo" class="w-14 h-14 object-contain" />
           <div>
-            <div class="text-xl font-semibold tracking-wide">{{ company?.name || 'Nama Apotik nya' }}</div>
+            <div class="text-xl font-semibold tracking-wide">{{ company?.nama || 'Nama Apotik nya' }}</div>
             <p class="text-sm text-gray-600">
               {{ company?.address || 'Alamat Apotik nya' }}<br />
-              Tel: {{ company?.phone || '08123456789' }} • Email: {{ company?.email || 'email Apotik nya' }}
+              Tel: {{ company?.telepon || '08123456789' }}
             </p>
           </div>
         </div>
@@ -135,14 +135,20 @@
 import { ref, onMounted, computed, watch } from 'vue'
 import { formatDateIndo, formatTimeOnly } from '@/utils/dateHelper'
 import { formatRupiah } from '@/utils/numberHelper'
+
+import { useAppStore } from '@/stores/app'
+
 const props = defineProps({
   store: { type: Object, required: true },
   title: { type: String, default: 'Data' },
 })
 const emit = defineEmits(['close', 'save'])
 
+
+const app = useAppStore()
+
 const company = computed(() => {
-  return props.store.company || null
+  return app?.form || null
 })
 
 const data = computed(() => {
