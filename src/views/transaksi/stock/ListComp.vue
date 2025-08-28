@@ -116,7 +116,7 @@
                       <span class="font-medium">Harga Resep</span>
                     </u-row>
                     <u-row class="col-span-2">
-                      <span>: {{ item?.barang.harga_jual_resep_k }}</span>
+                      <span>: {{ item?.barang?.harga_jual_resep_k }}</span>
                     </u-row>
                   </u-grid>
                   <u-grid cols="4">
@@ -124,7 +124,7 @@
                       <span class="font-medium">Harga Biasa</span>
                     </u-row>
                     <u-row class="col-span-2">
-                      <span>: {{ item?.barang.harga_jual_biasa_k }}</span>
+                      <span>: {{ item?.barang?.harga_jual_biasa_k }}</span>
                     </u-row>
                   </u-grid>
                 </u-row>
@@ -138,7 +138,7 @@
                   <span class="font-medium">Kandungan</span>
                 </u-row>
                 <u-row class="col-span-7">
-                  <span>: {{ item?.barang.kandungan }}</span>
+                  <span>: {{ item?.barang?.kandungan }}</span>
                 </u-row>
               </u-grid>
 
@@ -174,10 +174,10 @@ import { computed, defineAsyncComponent, ref } from 'vue'
 
 const props = defineProps({
   item: { type: Object, default: null },
-  // store: { type: Object, required: true },
+  store: { type: Object, required: true }
 })
 
-const store = useStockStore()
+// const store = useStockStore()
 const emit = defineEmits(['show-detail'])
 const menuBarangRef = ref(null)
 const openmodalData = ref(false)
@@ -226,6 +226,7 @@ const clearSelectedBarang = () => {
   form.value.keterangan = ''
 }
 const openModalTambah = () => {
+  console.log('itemscacac', props.store?.items)
   openmodalData.value = true
   isModalTambah.value = true
   isModalMinus.value = false
@@ -247,25 +248,34 @@ const openModalMinus = () => {
   clearSelectedBarang()
 }
 
-const handleSubmit = (e) => {
+const handleSubmit = async (e) =>  {
   e.preventDefault()
   e.stopPropagation()
   if (isModalTambah.value) {
     form.value.jumlah = Math.abs(form.value.jumlah)
-    console.log('form tambah', form.value)
+    // console.log('form tambah', form.value)
   } else if (isModalMinus.value) {
     form.value.jumlah = -Math.abs(form.value.jumlah)
-    console.log('form minus', form.value)
+    // console.log('form minus', form.value)
   }
-  console.log('form', form.value);
-  store.create(form.value)
-    .then(() => {
-      clearSelectedBarang()
-      store.fetchAll()
-      console.log('Data saved successfully:', store.items)
-    })
+  // console.log('form', form.value);
+  try {
+    props.store.create(form.value)
+      .then(() => {
+        clearSelectedBarang()
+        !props.store?.fetchAll()
 
-  openmodalData.value = false
+        console.log('Data saved successfully:', props.store.items)
+      })
+    openmodalData.value = false
+  }  catch (err) {
+    props.store.error = err
+  } finally {
+    props.store.loading = false
+  }
+
+  
+  // store.fetchAll()
 }
 
 const handleBatal = () => {

@@ -54,19 +54,27 @@ const getCurrentDate = () => {
   const start = new Date(now.getFullYear(), now.getMonth(), 1)
   const end = new Date(now.getFullYear(), now.getMonth() + 1, 0)
 
-  dateRange.value = {
+  console.log('start', start)
+  console.log('end', end)
+  store.range = {
     start_date: toLocalDateString(start),
     end_date: toLocalDateString(end),
   }
+  console.log('dateRange', store.range)
 }
 const handleRange = async () => {
   // console.log('handleRange', store.range);
+  const params = {
+    from: store.range?.start_date,
+    to: store.range?.end_date,
+  }
   store.loading = true
   store.items = []
   try {
-    const response = await api.get(`api/v1/transactions/stok/get-kartu-stok`, {params: dateRange.value})
+    const response = await api.get(`api/v1/transactions/stok/get-kartu-stok`, {params})
     if (response) {
       store.items = response.data.data
+      console.log('items params', store.items)
     }
   } catch (error) {
     console.error('Error fetching Kartu Stok:', error)

@@ -17,13 +17,15 @@ onMounted(() => {
 
   store.per_page = 100
   Promise.all([
-    store.fetchAll()
+    store.fetchAll(),
+    console.log('Refresh List', store.items)
   ])
 })
 
 function handleRefresh() {
-  // console.log('Refresh List')
+  console.log('Refresh List')
   store.fetchAll()
+  console.log('Refr', store.items)
 }
 </script>
 
@@ -35,7 +37,7 @@ function handleRefresh() {
     <template #item="{ item }">
       <Suspense>
         <template #default>
-          <list-comp :item="item" />
+          <list-comp :item="item" :store="store" />
         </template>
         <template #fallback>
           <LoaderItem />

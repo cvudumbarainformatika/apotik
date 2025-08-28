@@ -5,7 +5,7 @@
         <u-row flex1 class="w-full pt-1">
           <u-row flex1 class="w-full">
             <div class="font-bold">{{ item?.nama }}</div>
-            <div class="italic text-light-primary/60 text-xs">Perhitungan Satuan Kecil</div>
+            <div class="italic text-light-primary/60 text-xs">Stok Sekarang:  {{ stokSekarang }} {{ item?.satuan_k }}</div>
           </u-row>
           <u-row class="">
             <div class="italic text-light-primary text-xs">{{ item?.kode }}</div>
@@ -105,8 +105,8 @@ const openDetail = async () => {
   props.store.loading = true
   try {
     const params = {
-      from: props.range.start_date,
-      to: props.range.end_date,
+      from: props.store.range.start_date,
+      to: props.store.range.end_date,
       id: props.item.id
     }
     console.log('params', params)
@@ -162,9 +162,12 @@ const totalKeluar = computed(() => {
 const totalPenyesuaian = computed(() => {
   return (props.item?.penyesuaian ?? []).reduce((sum, it) => sum + Number(it.jumlah_k ?? 0), 0)
 })
-
 // stok akhir
 const stokAkhir = computed(() => {
+  return saldoAwal.value + totalMasuk.value - totalKeluar.value + totalPenyesuaian.value
+})
+// stok akhir
+const stokSekarang = computed(() => {
   return (props.item?.stok ?? []).reduce((sum, it) => sum + Number(it.jumlah_k ?? 0), 0) 
 })
 
