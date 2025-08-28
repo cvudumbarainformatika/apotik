@@ -167,15 +167,24 @@
             <u-badge v-else :variant="store.mode === 'add' ? 'success' : 'warning'">Mode {{ store.mode === 'add' ? 'Tambah' : 'Edit' }}</u-badge>
           </u-row>
           <u-separator spacing="-my-1"></u-separator>
-          <u-row class="z-99">
+          <u-row class="z-9">
             <u-btn v-if="store.mode === 'edit'" variant="secondary" @click="initForm">Order Baru</u-btn>
             <u-btn v-if="store.form" :loading="loadingLock" @click="handleKunci">{{ store.form?.flag ? 'Buka Kunci' : 'Kunci Order' }}</u-btn>
           </u-row>
+          <u-row class="z-9">
+            <u-btn v-if="store.form?.flag" :loading="loadingLock" @click="handlePrint">Print Order</u-btn>
+          </u-row>
+
         </u-col>
     </u-grid>
 
     <div v-if="store.form?.flag" class="absolute top-0 left-0 right-0 w-full h-full rounded-2xl flex items-center justify-center p-4 bg-light-primary/10" padding="p-0"></div>
   
+
+
+    <!-- Cetak -->
+    <modal-cetak v-model="modalCetak" title="Cetak Order" :store="store"
+      @close="modalCetak = false" />
   </u-col>
 </template>
 
@@ -183,6 +192,7 @@
 import { ref, computed, nextTick, onMounted, onUnmounted, watch, defineAsyncComponent } from 'vue'
 
 import { api } from '@/services/api'
+import ModalCetak from './ModalCetak.vue'
 
 
 const ListRincian = defineAsyncComponent(() => import('./ListRincian.vue'))
@@ -198,6 +208,8 @@ const searchBarang = ref('')
 const menuBarangRef = ref(null)
 const inpJumlahRef = ref(null)
 const loadingLock = ref(false)
+
+const modalCetak = ref(false)
 
 const form = ref({
   nomor_order: '',
@@ -250,6 +262,10 @@ const handleSelectedBarang = (item) => {
   // inpJumlahRef.value?.inputRef?.focus()
   handleFocus(inpJumlahRef)
   
+}
+
+const handlePrint = () => {
+  modalCetak.value = true
 }
 
 const handleFocus = async (e) => {
@@ -339,9 +355,6 @@ const handleKunci = async (e) => {
   props.store.form.flag = data?.flag
   props.store.initModeEdit(data)
 
-  
-
-  
 }
 
 onMounted(() => {
