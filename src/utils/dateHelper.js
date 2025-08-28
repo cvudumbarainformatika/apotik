@@ -13,6 +13,33 @@ export function formatDateIndo(dateInput) {
   })
 }
 
+
+const monthMap = {
+  jan: 0, januari: 0,
+  feb: 1, februari: 1,
+  mar: 2, maret: 2,
+  apr: 3, april: 3,
+  mei: 4,
+  jun: 5, juni: 5,
+  jul: 6, juli: 6,
+  agu: 7, agustus: 7,
+  sep: 8, september: 8,
+  okt: 9, oktober: 9,
+  nov: 10, november: 10,
+  des: 11, desember: 11
+}
+
+
+export function parseDateIndo(str) {
+  // contoh: "13 Juni 2025" → "2025-06-13"
+  const [day, monthName, year] = str.trim().split(/\s+/)
+  const month = monthMap[monthName?.toLowerCase()]
+  if (month === undefined) return null
+
+  const date = new Date(year, month, parseInt(day, 10))
+  return isNaN(date.getTime()) ? null : date.toISOString().split('T')[0]
+}
+
 /**
  * Format tanggal + jam ke format lokal Indonesia
  * Contoh: "10 Jul 2025 14:30"

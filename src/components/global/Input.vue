@@ -1,5 +1,6 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
+import { formatDateIndo, parseDateIndo } from '@/utils/dateHelper'
 
 const props = defineProps({
   label: { type: String, required: true },
@@ -40,6 +41,15 @@ function parseNumber(str) {
   return Number(str.replace(/\./g, '').replace(',', '.'))
 }
 
+function formatDate(value) {
+  if (value === null || value === undefined || value === '') return ''
+  return formatDateIndo(value)
+}
+
+function parseDate(str) {
+  return parseDateIndo(str)
+}
+
 function handleInput(e) {
  let raw = e.target.value
 
@@ -51,6 +61,8 @@ function handleInput(e) {
 
     const parsed = parseNumber(raw)
     emit('update:modelValue', isNaN(parsed) ? null : parsed)
+
+  
   } else {
     internalValue.value = raw
     emit('update:modelValue', raw)
@@ -109,7 +121,6 @@ defineExpose({ inputRef })
         // ✅ tambahan kondisi readonly & disable
         readonly ? 'border-dashed border-primary/50  cursor-default' : '',
         disable ? ' border-dashed border-primary/50 cursor-not-allowed' : ''
-
       ]"
 
     />
@@ -128,7 +139,7 @@ defineExpose({ inputRef })
             : 'bg-light-primary text-background peer-placeholder-shown:text-gray-600 peer-focus:bg-light-primary peer-focus:text-background peer-focus'
       ]"
     >
-      {{ label }}
+      {{ label }} {{ props.type === 'date' ? formatDateIndo(props.modelValue) ?? '' : '' }}
     </label>
 
 
