@@ -3,7 +3,7 @@
     <u-view flex1 class="gap-2 ">
       <u-row class="cursor-pointer" @click="router.push('/profiles') ">
         <img src="/images/logo.svg" alt="Logo" class="w-10 h-10" />
-        <div>Apotik Udumbara</div>
+        <div>{{ company.nama }}</div>
       </u-row>
       <u-row flex1 right class="">
         <!-- header desktop -->
@@ -86,18 +86,21 @@ import { ref, onMounted, nextTick, watch, computed, defineAsyncComponent } from 
 import { useMenuStore } from '@/stores/menus'
 import { convertMenusToHeader } from '../router/modules/convertMenusToHeader'
 import { useRouter } from 'vue-router'
+import { useAppStore } from '@/stores/app'
 
 
 const MobileMenu = defineAsyncComponent(() => import('./MobileMenu.vue'))
 
 const menuStore = useMenuStore()
-
+const app = useAppStore()
 // KHusus Desktop
 const router = useRouter()
 const dropdownDirection = ref({})
 const dropdownRefs = ref({})
 
-
+const company = computed(() => {
+  return app.form || null
+})
 
 const openMenu = ref(null)
 

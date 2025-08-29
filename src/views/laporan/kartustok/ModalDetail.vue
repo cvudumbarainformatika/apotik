@@ -6,10 +6,11 @@
           <div class="flex items-center gap-4">
             <img src="/images/logo.svg" alt="logo" class="w-14 h-14 object-contain" />
             <div>
-              <div class="text-xl font-semibold tracking-wide">{{ company?.name || 'Nama Apotik nya' }}</div>
+              <div class="text-xl font-semibold tracking-wide">{{ company?.nama || 'Nama Apotik nya' }}</div>
               <p class="text-sm text-gray-600">
-                {{ company?.address || 'Alamat Apotik nya' }}<br />
-                Tel: {{ company?.phone || '08123456789' }} • Email: {{ company?.email || 'email Apotik nya' }}
+                {{ company?.alamat }}<br />
+                • Telp: {{ formatTeleponID(company?.telepon) }}
+                <!-- • Email: {{ company?.email || 'email Apotik nya' }} -->
               </p>
             </div>
           </div>
@@ -35,15 +36,17 @@
           <div class="inline-block px-3 py-1 rounded-full border text-sm uppercase tracking-wider">
             KARTU STOK
           </div>
+          <div class="mt-2 text-sm">Periode {{ formatDateIndo(store.range?.start_date) }} - {{
+            formatDateIndo(store.range?.end_date) }} </div>
         </div>
 
         <div class="mt-6">
           <table class="w-full text-sm border-separate [border-spacing:0]">
             <thead>
               <tr>
-                <th class="th text-left p-1">Jenis Transaksi</th>
-                <th class="th text-left p-1">Nomor Transaksi</th>
                 <th class="th text-left p-1">Tanggal</th>
+                <th class="th text-left p-1">Nomor Transaksi</th>
+                <th class="th text-left p-1">Jenis Transaksi</th>
                 <th class="th text-right p-1">Penerimaan ({{ store?.item?.satuan_k }}) </th>
                 <th class="th text-right p-1">Pengeluaran ({{ store?.item?.satuan_k }}) </th>
                 <th class="th text-right p-1">Saldo ({{ store?.item?.satuan_k }}) </th>
@@ -51,9 +54,9 @@
             </thead>
             <tbody>
               <tr v-for="(item, index) in groupedItems" :key="index">
-                <td class="td p-1 text-left">{{ item?.jenis || '-' }}</td>
-                <td class="td p-1 text-left">{{ item?.notrans || '-' }}</td>
                 <td class="td p-1 text-left">{{ formatDateIndo(item?.tanggal) }}</td>
+                <td class="td p-1 text-left">{{ item?.notrans || '-' }}</td>
+                <td class="td p-1 text-left">{{ item?.jenis || '-' }}</td>
                 <td class="td p-1 text-right">{{ formatRupiah(item?.debit) }}</td>
                 <td class="td p-1 text-right">{{ formatRupiah(item?.kredit) }}</td>
                 <td class="td p-1 text-right">{{ formatRupiah(item?.saldo) }}</td>
@@ -68,7 +71,7 @@
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div class="rounded-xl p-4">
-            <div class="space-y-2 text-sm">
+            <!-- <div class="space-y-2 text-sm">
               <div class="flex items-center justify-between text-sm">
                 <span class="font-semibold">Total Masuk</span>
                 <span class="font-semibold">{{ formatRupiah(totalDebit) }}</span>
@@ -81,35 +84,35 @@
                 <span class="font-semibold">Total Stok</span>
                 <span class="font-semibold">{{ formatRupiah(totalStok) }}</span>
               </div>
-            </div>
+            </div> -->
           </div>
           <div class="rounded-xl p-4 bg-gray-50">
             <div class="space-y-2 text-sm">
               <div class="flex items-center justify-between text-sm">
                 <span class="font-semibold">Total Penerimaan</span>
-                <span class="font-semibold">{{ formatRupiah(totalPenerimaan) }}</span>
+                <span class="font-semibold">{{ formatRupiah(totalPenerimaan) }} {{ store?.item?.satuan_k }}</span>
               </div>
               <div class="flex items-center justify-between text-sm">
                 <span class="font-semibold">Total Retur Penjualan</span>
-                <span class="font-semibold">{{ formatRupiah(totalReturPenjualan) }}</span>
+                <span class="font-semibold">{{ formatRupiah(totalReturPenjualan) }} {{ store?.item?.satuan_k }}</span>
               </div>
               <div class="flex items-center justify-between text-sm">
                 <span class="font-semibold">Total Penyesuaian</span>
-                <span class="font-semibold">{{ formatRupiah(totalPenyesuaian) }}</span>
+                <span class="font-semibold">{{ formatRupiah(totalPenyesuaian) }} {{ store?.item?.satuan_k }}</span>
               </div>
 
               <div class="flex items-center justify-between text-sm">
                 <span class="font-semibold">Total Penjualan</span>
-                <span class="font-semibold">{{ formatRupiah(totalPenjualan) }}</span>
+                <span class="font-semibold">{{ formatRupiah(totalPenjualan) }} {{ store?.item?.satuan_k }}</span>
               </div>
               <div class="flex items-center justify-between text-sm">
                 <span class="font-semibold">Total Retur Pembelian</span>
-                <span class="font-semibold">{{ formatRupiah(totalReturPembelian) }}</span>
+                <span class="font-semibold">{{ formatRupiah(totalReturPembelian) }} {{ store?.item?.satuan_k }}</span>
               </div>
               <div class="w-full border-t border-dotted border-black my-1"></div>
               <div class="flex items-center justify-between text-sm">
                 <span class="font-semibold">Total Stok</span>
-                <span class="font-semibold">{{ formatRupiah(totalStokAkhir) }}</span>
+                <span class="font-semibold">{{ formatRupiah(totalStokAkhir) }} {{ store?.item?.satuan_k }}</span>
               </div>
             </div>
           </div>
@@ -135,19 +138,21 @@
 import { ref, onMounted, computed, watch } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { storeToRefs } from 'pinia'
-import { formatRupiah } from '@/utils/numberHelper'
-import { formatDateIndo, formatTimeOnly } from '@/utils/dateHelper'
+import { formatRupiah, formatTeleponID } from '@/utils/numberHelper'
+import { formatDateIndo, formatJamMenit, formatTimeOnly } from '@/utils/dateHelper'
+import { useAppStore } from '@/stores/app'
+// import { useDateFormat } from '@vueuse/core'
 const props = defineProps({
   store: { type: Object, required: true },
   title: { type: String, default: 'Kartu Stok' },
 })
 const emit = defineEmits(['close', 'save'])
-
+const app = useAppStore()
 const auth = useAuthStore()
 const { user } = storeToRefs(auth)
 const printType = ref('a4') // 'a4' | 'thermal-58 | 'thermal-80' | 'thermal-100'
 const company = computed(() => {
-  return props.store.company || null
+  return app.form || null
 })
 
 
@@ -161,7 +166,7 @@ const groupedItems = computed(() => {
   const saldoAwalRow = {
     jenis: 'SALDO AWAL',
     notrans: '-',
-    tanggal: stokAwal[0]?.tgl_opname ?? props.store?.item?.tgl_mulai ?? null,
+    tanggal: props.store.range?.start_date,
     satuan: props.store?.item?.satuan_k,
     debit: 0,
     kredit: 0,
@@ -171,17 +176,25 @@ const groupedItems = computed(() => {
   // saldo awal di-push dulu
   result.push(saldoAwalRow)
 
+  // const formatted = useDateFormat(useNow(), 'MM-DD-YYYY 00:00:01')
   // --- PENERIMAAN (selalu langsung setelah saldo awal) ---
+
+  
   const penerimaan = props.store?.item?.penerimaan_rinci ?? []
-  const penerimaanRows = penerimaan.map(item => ({
-    jenis: 'PENERIMAAN',
-    notrans: item.nopenerimaan,
-    tanggal: item.tgl_penerimaan,
-    satuan: props.store?.item?.satuan_k,
-    debit: Number(item.jumlah_k ?? 0),
-    kredit: 0,
-    saldo: 0,
-  }))
+  const penerimaanRows = penerimaan.map(item => {
+    const [year, month, day] = item.tgl_penerimaan.split("-")
+    const tanggal = `${year}-${month}-${day} 00:01:00`
+
+    return {
+      jenis: "PENERIMAAN",
+      notrans: item.nopenerimaan,
+      tanggal,
+      satuan: props.store?.item?.satuan_k,
+      debit: Number(item.jumlah_k ?? 0),
+      kredit: 0,
+      saldo: 0,
+    }
+  })
   result.push(...penerimaanRows)
 
   // --- TRANSAKSI LAIN ---

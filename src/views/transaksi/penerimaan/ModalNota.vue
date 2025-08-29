@@ -7,10 +7,11 @@
           <div class="flex items-center gap-4">
             <img src="/images/logo.svg" alt="logo" class="w-14 h-14 object-contain" />
             <div>
-              <div class="text-xl font-semibold tracking-wide">{{ company?.name || 'Nama Apotik nya' }}</div>
+              <div class="text-xl font-semibold tracking-wide">{{ company?.nama || 'Nama Apotik nya' }}</div>
               <p class="text-sm text-gray-600">
-                {{ company?.address || 'Alamat Apotik nya' }}<br />
-                Tel: {{ company?.phone || '08123456789' }} • Email: {{ company?.email || 'email Apotik nya' }}
+                {{ company?.alamat }}<br />
+                • Telp: {{ formatTeleponID(company?.telepon) }}
+                <!-- • Email: {{ company?.email || 'email Apotik nya' }} -->
               </p>
             </div>
           </div>
@@ -141,27 +142,28 @@
 import { ref, onMounted, computed, watch } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { storeToRefs } from 'pinia'
-import { formatRupiah } from '@/utils/numberHelper'
+import { formatRupiah, formatTeleponID } from '@/utils/numberHelper'
 import { formatDateIndo, formatTimeOnly } from '@/utils/dateHelper'
+import { useAppStore } from '@/stores/app'
 const props = defineProps({
   store: { type: Object, required: true },
   title: { type: String, default: 'Penerimaan' },
   form: { type: Object, default: null },
 })
 const emit = defineEmits(['close', 'save'])
-
+const app = useAppStore()
 const auth = useAuthStore()
 const { user } = storeToRefs(auth)
 
 
 const printType = ref('a4') // 'a4' | 'thermal-58 | 'thermal-80' | 'thermal-100'
 const company = computed(() => {
-  return props.store.company || null
+  return app?.form || null
 })
-console.log('form', props?.store?.form)
+// console.log('form', props?.store?.form)
 const groupedItems = computed(() => {
   const map = new Map()
-  console.log('store', props.store?.form)
+  // console.log('store', props.store?.form)
   const items = props?.store?.form?.rincian ?? []
   items.forEach(item => {
     const key = item.kode_barang

@@ -5,7 +5,7 @@
         <u-row flex1 class="w-full pt-1">
           <u-row flex1 class="w-full">
             <div class="font-bold">{{ item?.nama }}</div>
-            <div class="italic text-light-primary/60 text-xs">Stok Sekarang:  {{ stokSekarang }} {{ item?.satuan_k }}</div>
+            <div class="italic text-light-primary/60 text-xs">Stok Saat ini:  {{ stokSekarang }} {{ item?.satuan_k }}</div>
           </u-row>
           <u-row class="">
             <div class="italic text-light-primary text-xs">{{ item?.kode }}</div>
