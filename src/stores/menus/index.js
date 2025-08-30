@@ -169,6 +169,14 @@ export const useMenuStore = defineStore('menu-store', {
             view: '/views/laporan/kartustok',
             component: 'IndexPage',
           },
+          {
+            title: 'Penjualan',
+            icon: 'layers',
+            url: 'admin/laporan/penjualan',
+            name: 'laporan.penjualan',
+            view: '/views/laporan/penjualan',
+            component: 'IndexPage',
+          },
           
         ]
       },

@@ -147,8 +147,8 @@
           <u-row>
             <u-empty v-if="!store.form?.order_records?.length" title="Belum Ada Items" icon="baggage-claim" />
             <u-list v-else :spaced="true" anim :items="store.form?.order_records">
-              <template #item="{ item }">
-                <ListRincian :item="item" :store="store" />
+              <template #item="{ item, index, isHovered }">
+                <ListRincian :item="item" :store="store" :is-hovered="isHovered" />
               </template>
             </u-list>
           </u-row>
@@ -192,6 +192,12 @@
 import { ref, computed, nextTick, onMounted, onUnmounted, watch, defineAsyncComponent } from 'vue'
 
 import { api } from '@/services/api'
+import { useNotificationStore } from '@/stores/notification'
+
+const notify = useNotificationStore().notify
+
+
+
 import ModalCetak from './ModalCetak.vue'
 
 
@@ -343,9 +349,11 @@ const handleKunci = async (e) => {
     }
 
     // console.log('resp', resp);
+    return
   } catch (error) {
     console.log('error', error);
-    
+    notify({ message: error?.response?.data?.message ?? 'Kunci tidak bisa dibuka', type: 'error' })
+    return
   } finally {
     loadingLock.value = false
   }

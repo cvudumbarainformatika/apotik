@@ -20,15 +20,15 @@
       </u-row>
       <u-row gap="gap-0">
         <u-col align="items-end" gap="gap-1">
-        <u-row gap="gap-2">
-          <u-text color="text-primary" class="italic">{{ formatJamMenit(item?.created_at) }}</u-text>
-          <!-- <u-icon v-if="isHovered" name="pencil" size="18" class="mb-0 text-light-primary cursor-pointer" @click="handleSelectedBarang(item)"  /> -->
-          <u-icon v-if="isHovered" name="delete" size="18" class="mb-0 text-danger cursor-pointer" @click.stop="handleDelete(item)" />
-        </u-row>
-          <u-row gap="gap-1">
-            <u-text>Rp. </u-text>
-            <u-text size="lg" class="font-bold" color="text-primary">{{ formatRupiah(item?.subtotal) }}</u-text>
+          <u-row gap="gap-2">
+            <u-text color="text-primary" class="italic">{{ formatJamMenit(item?.created_at) }}</u-text>
+            <!-- <u-icon v-if="isHovered" name="pencil" size="18" class="mb-0 text-light-primary cursor-pointer" @click="handleSelectedBarang(item)"  /> -->
+            <u-icon v-if="isHovered" name="delete" size="18" class="mb-0 text-danger cursor-pointer" @click.stop="handleDelete(item)" />
           </u-row>
+            <u-row gap="gap-1">
+              <u-text>Rp. </u-text>
+              <u-text size="lg" class="font-bold" color="text-primary">{{ formatRupiah(item?.subtotal) }}</u-text>
+            </u-row>
         </u-col>
       </u-row>
     </u-row>
