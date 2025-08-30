@@ -50,7 +50,7 @@
                 <th class="th p-1">Nobatch</th>
                 <th class="th p-1">Jumlah Barang</th>
                 <th class="th text-right p-1">Harga Barang (Rp)</th>
-                <th class="th text-right p-1">Disc (%)</th>
+                <th class="th text-right p-1">Disc</th>
                 <th class="th text-right p-1">Subtotal (Rp)</th>
               </tr>
             </thead>
@@ -61,7 +61,10 @@
                 <td class="td p-1 text-left">{{ item?.nobatch || '-' }}</td>
                 <td class="td p-1 text-left">{{ item?.jumlah_b }} {{ item?.satuan_b }}</td>
                 <td class="td p-1 text-right">{{ formatRupiah(item?.harga_b) }}</td>
-                <td class="td p-1 text-right">{{ formatRupiah(item?.diskon) }}</td>
+                <td class="td p-1 text-right">
+                  <div>({{ formatRupiah(item?.diskon) }}%)</div>
+                  <div>Rp. {{ formatRupiah(item?.diskonitems) }}</div>
+                </td>
                 <td class="td p-1 text-right">{{ formatRupiah(item?.subtotal) }}</td>
               </tr>
               <tr v-if="groupedItems?.length === 0">
@@ -74,7 +77,9 @@
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div class="rounded-xl p-4">
-
+            <div class="space-y-2 text-sm">
+              Pembayaran: <span class="font-semibold">{{ form?.hutang }}</span>
+            </div>
           </div>
           <div class="rounded-xl p-4 bg-gray-50">
             <div class="space-y-2 text-sm">
@@ -179,6 +184,7 @@ const groupedItems = computed(() => {
         harga: Number(item?.harga),
         harga_b: Number(item?.harga_b),
         diskon: Number(item?.diskon_persen),
+        diskonitems: Number(item?.harga_b) * Number(item?.jumlah_b) * (Number(item?.diskon_persen)/Number(100)),
         subtotal: Number(item?.subtotal) - (Number(item?.pajak_rupiah) * Number(item?.jumlah_k || 0)),
         created_at: item?.created_at
       })

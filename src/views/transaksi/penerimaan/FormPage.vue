@@ -94,6 +94,11 @@
           <u-input readonly class="col-span-1" v-model="form.pajak" label="Pajak" :error="isError('pajak')"
             type="number" :error-message="errorMessage('pajak')" />
         </u-grid>
+        <u-grid cols="3" class="gap-2 mb-2" role="radiogroup" aria-label="Cara Bayar">
+          <u-row class="">Pembayaran : </u-row>
+          <u-radio class="bg-background" v-model="form.hutang" value="HUTANG" label="HUTANG" />
+          <u-radio class="bg-background" v-model="form.hutang" value="CASH" label="CASH" />
+        </u-grid>
       </u-card>
     </u-grid>
 
@@ -108,67 +113,98 @@
           <u-list :items="listItems">
             <template #item="{ item }">
               <u-view flex1 class="w-full" padding="px-3 py-3">
-                <u-row flex1 class="w-full">
-                  <u-grid cols="12" gap="gap-4">
-                    <div class="col-span-3">
-                      <u-text class="font-bold">Nama Barang</u-text>
-                      <u-text size="sm" class="font-medium">{{ item.nama || item.master?.nama || '-' }}</u-text>
-                    </div>
-                    <div class="col-span-3 text-center">
-                      <u-text class="font-bold">Jumlah Pesan</u-text>
-                      <u-text size="sm" class="font-medium">{{ item.jumlah_pesan || '-' }} {{ item.satuan_b || '-'
-                        }}</u-text>
-                    </div>
-                    <div class="col-span-3 text-center">
-                      <u-text class="font-bold">Satuan</u-text>
-                      <u-text size="sm" class="font-medium">per {{ item.satuan_b || '-' }} isi {{ item.isi || '-' }} {{
-                        item.satuan_k || '-' }}</u-text>
-                    </div>
-                    <div class="col-span-3 text-right">
-                      <u-text class="font-bold">Kode Obat</u-text>
-                      <u-text size="sm" class="font-medium">{{ item.kode_barang || '-' }}</u-text>
-                    </div>
-                    <div class="col-span-12">
-                      <u-separator spacing="-my-2"></u-separator>
-                    </div>
-                    <u-row class="col-span-4">
-                      <u-input v-model="form.rincian[item.kode_barang].jumlah_b" label="Penerimaan (Besar)"
-                        :error="isError(`rincian.${item.kode_barang}.jumlah_b`)"
-                        :error-message="errorMessage(`rincian.${item.kode_barang}.jumlah_b`)" type="number" />
-                    </u-row>
-                    <u-row class="col-span-3">
-                      <u-input v-model="form.rincian[item.kode_barang].harga_b" label="Harga"
-                        :error="isError(`rincian.${item.kode_barang}.harga_b`)"
-                        :error-message="errorMessage(`rincian.${item.kode_barang}.harga_b`)" type="number" />
-                    </u-row>
-                    <u-row class="col-span-3">
-                      <u-input v-model="form.rincian[item.kode_barang].nobatch" label="Nobatch"
-                        :error="isError(`rincian.${item.kode_barang}.nobatch`)"
-                        :error-message="errorMessage(`rincian.${item.kode_barang}.nobatch`)" />
-                    </u-row>
-                    <u-row class="col-span-2">
-                      <u-input v-model="form.rincian[item.kode_barang].diskon_persen" label="Disc(%)"
-                        :error="isError(`rincian.${item.kode_barang}.diskon_persen`)" type="number"
-                        :error-message="errorMessage(`rincian.${item.kode_barang}.diskon_persen`)" />
-                    </u-row>
-                    <u-row class="col-span-4">
-                      <u-input-date label="Tanggal Expired" type="date"
-                        v-model="form.rincian[item.kode_barang].tgl_exprd"
-                        :error="errorMessage(`rincian.${item.kode_barang}.tgl_exprd`)" />
-                    </u-row>
-                    <u-row class="col-span-8">
-                      <template  v-if="!isSameRincian(item.nobatch, item.kode_barang)">
-                        <u-btn variant="secondary" label="Batal" @click="handleBatal(item.kode_barang)" />
-                        <u-btn :loading="item.loading" label="Simpan"
-                          @click.stop="handleSubmit($event, item)" />
-                      </template>
-                      <template v-else>
-                        <u-btn :loading="item.loading" variant="secondary" label="Hapus"
-                          @click.stop="handleHapusRinci($event, item)" />
-                      </template>
-                    </u-row>
-                  </u-grid>
-                </u-row>
+                <u-grid>
+                  <u-row>
+                    <u-grid cols="12" gap="gap-4">
+                      <div class="col-span-3">
+                        <u-text class="font-bold">Nama Barang</u-text>
+                        <u-text size="sm" class="font-medium">{{ item.nama || item.master?.nama || '-' }}</u-text>
+                      </div>
+                      <div class="col-span-3 text-center">
+                        <u-text class="font-bold">Jumlah Pesan</u-text>
+                        <u-text size="sm" class="font-medium">{{ item.jumlah_pesan || '-' }} {{ item.satuan_b || '-'
+                          }}</u-text>
+                      </div>
+                      <div class="col-span-3 text-center">
+                        <u-text class="font-bold">Satuan</u-text>
+                        <u-text size="sm" class="font-medium">per {{ item.satuan_b || '-' }} isi {{ item.isi || '-' }}
+                          {{
+                          item.satuan_k || '-' }}</u-text>
+                      </div>
+                      <div class="col-span-3 text-right">
+                        <u-text class="font-bold">Kode Obat</u-text>
+                        <u-text size="sm" class="font-medium">{{ item.kode_barang || '-' }}</u-text>
+                      </div>
+                      <div class="col-span-12">
+                        <u-separator spacing="-my-2"></u-separator>
+                      </div>
+                    </u-grid>
+                  </u-row>
+                  <u-row>
+                    <u-grid cols="12">
+                      <u-row class="col-span-4">
+                        <u-input v-model="form.rincian[item.kode_barang].jumlah_b" label="Penerimaan (Besar)"
+                          :error="isError(`rincian.${item.kode_barang}.jumlah_b`)"
+                          :error-message="errorMessage(`rincian.${item.kode_barang}.jumlah_b`)" type="number" />
+                      </u-row>
+                      <u-row class="col-span-4">
+                        <u-input v-model="form.rincian[item.kode_barang].harga_b" label="Harga"
+                          :error="isError(`rincian.${item.kode_barang}.harga_b`)"
+                          :error-message="errorMessage(`rincian.${item.kode_barang}.harga_b`)" type="number" />
+                      </u-row>
+                      <u-row class="col-span-4">
+                        <u-input v-model="form.rincian[item.kode_barang].nobatch" label="Nobatch"
+                          :error="isError(`rincian.${item.kode_barang}.nobatch`)"
+                          :error-message="errorMessage(`rincian.${item.kode_barang}.nobatch`)" />
+                      </u-row>
+                    </u-grid>
+                  </u-row>
+                  <u-row>
+                    <u-grid cols="12">
+                      <u-row class="col-span-4">
+                        <u-input v-model="form.rincian[item.kode_barang].diskon_persen" label="Disc(%)"
+                          :error="isError(`rincian.${item.kode_barang}.diskon_persen`)" type="number"
+                          :error-message="errorMessage(`rincian.${item.kode_barang}.diskon_persen`)" />
+                      </u-row>
+                      <u-row class="col-span-8">
+                        <div
+                          class="bg-background border border-light-primary rounded-full shadow-sm p-2.5 transition-all duration-300 hover:shadow-md w-full">
+                          <u-row class="items-start" padding="p-0">
+                            <!-- <u-icon name="close" class="w-4 h-4 text-primary" /> -->
+                            <div>
+                              <u-text>
+                                Diskon Rp. {{ formatRupiah(
+                                  ((Number(form.rincian[item.kode_barang]?.harga_b ?? 0) *
+                                    Number(form.rincian[item.kode_barang]?.jumlah_b ?? 0)) *
+                                    (Number(form.rincian[item.kode_barang]?.diskon_persen ?? 0) / 100))
+                                ) }}
+                                <!-- {{ nilaiDiskon }} -->
+                              </u-text>
+                            </div>
+                          </u-row>
+                        </div>
+                      </u-row>
+                    </u-grid>
+                  </u-row>
+                  <u-row>
+                    <u-grid cols="12">
+                      <u-row class="col-span-4">
+                        <u-input-date label="Expired" type="date" v-model="form.rincian[item.kode_barang].tgl_exprd"
+                          :error="errorMessage(`rincian.${item.kode_barang}.tgl_exprd`)" />
+                      </u-row>
+                      <u-row class="col-span-8">
+                        <template v-if="!isSameRincian(item.nobatch, item.kode_barang)">
+                          <u-btn variant="secondary" label="Batal" @click="handleBatal(item.kode_barang)" />
+                          <u-btn :loading="item.loading" label="Simpan" @click.stop="handleSubmit($event, item)" />
+                        </template>
+                        <template v-else>
+                          <u-btn :loading="item.loading" variant="secondary" label="Hapus"
+                            @click.stop="handleHapusRinci($event, item)" />
+                        </template>
+                      </u-row>
+                    </u-grid>
+                  </u-row>
+                </u-grid>
               </u-view>
             </template>
           </u-list>
@@ -197,7 +233,8 @@
         <u-separator spacing="-my-1"></u-separator>
         <u-row class="z-50">
           <u-btn v-if="store.mode === 'edit'" variant="secondary" @click="initForm">Baru</u-btn>
-          <u-btn v-if="store.form && store.form?.flag !== '1'" :loading="loadingLock" @click="handleKunci">{{ 'Kunci' }}</u-btn>
+          <u-btn v-if="store.form && store.form?.flag !== '1'" :loading="loadingLock" @click="handleKunci">{{ 'Kunci'
+            }}</u-btn>
           <u-btn v-if="store.mode === 'edit' && store.form?.flag === '1'" @click="openModalCetak">Cetak</u-btn>
         </u-row>
       </u-col>
@@ -207,7 +244,7 @@
       @close="modalOpendata = false" />
 
 
-    <modal-cetak v-if="modalCetak" v-model="modalCetak" title="Penerimaan" :store="store" :form="form" 
+    <modal-cetak v-if="modalCetak" v-model="modalCetak" title="Penerimaan" :store="store" :form="form"
       @close="handleCloseModalNota" />
     <div v-if="store.form?.flag"
       class="absolute top-0 left-0 right-0 w-full h-full rounded-2xl flex items-center justify-center p-4 bg-light-primary/10"
@@ -250,6 +287,7 @@ const form = ref({
   jenispajak: '',
   pajak: '',
   flag: null,
+  hutang: '',
 
   // rincian (object key by kode_barang)
   kode_barang: '',
@@ -479,9 +517,9 @@ const initializeRincian = (orderRecords) => {
   orderRecords.forEach(item => {
     rincian[item.kode_barang] = {
       nama: item.master?.nama || item.nama || '',
-      jumlah_pesan: item.jumlah_pesan || '',
-      jumlah_b: item.jumlah_pesan || '',
-      harga_b: item.harga_b || '',
+      jumlah_pesan: item.jumlah_pesan || 0,
+      jumlah_b: item.jumlah_pesan || 0,
+      harga_b: item.harga_b || 0,
       nobatch: item.nobatch || '',
       diskon_persen: item.diskon_persen || 0,
       satuan_b: item.satuan_b || item.master?.satuan_b || '',
@@ -539,7 +577,8 @@ const handleSubmit = async (e, item) => {
     pajak_rupiah: parseInt(rincianItem.pajak_rupiah) || 0,
     diskon_rupiah: parseInt(rincianItem.diskon_rupiah) || 0,
     tgl_exprd: rincianItem.tgl_exprd || '',
-    loading: true,
+    loading: true
+    
   }
 
   const rincian = form.value.rincian[kode_barang]
@@ -652,7 +691,6 @@ const handleHapusRinci = async (e, item) => {
 watch(() => props.store.orderSelected, (newOrderSelected) => {
   if (newOrderSelected?.order_records) {
     initializeRincian(newOrderSelected.order_records)
-   
   } else {
     form.value.rincian = {}
   }
@@ -697,7 +735,7 @@ watch(() => props.store.orderSelected, (newOrderSelected) => {
           tgl_exprd: savedItem?.tgl_exprd ?? today,
           pajak_rupiah: parseInt(savedItem?.pajak_rupiah ?? 0),
           diskon_rupiah: parseInt(savedItem?.diskon_rupiah ?? 0),
-          loading: existing?.loading ?? false,
+          loading: existing?.loading ?? false
         }
       })
 
@@ -711,6 +749,7 @@ watch(() => props.store.orderSelected, (newOrderSelected) => {
         jenispajak: newForm?.jenispajak,
         pajak: newForm?.pajak,
         flag: newForm?.flag,
+        hutang: newForm?.hutang,
         rincian: rincianObj
     }
       
@@ -727,7 +766,6 @@ watch(() => props.store.orderSelected, (newOrderSelected) => {
   },
   { deep: true }
 )
-
 
 
 const TotalPenerimaan = computed(() => {
