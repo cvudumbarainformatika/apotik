@@ -8,7 +8,7 @@
       <u-row flex1 class="w-full">
         <u-col gap="gap-1">
           <u-row gap="gap-2">
-            <span>💊 </span>
+            <!-- <span>💊 </span> -->
             <u-text size="md" class="font-bold">{{ item?.mbeban?.nama_beban || '-' }}</u-text>
           </u-row>
           <u-row gap="gap-1">

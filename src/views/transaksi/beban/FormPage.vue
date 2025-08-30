@@ -53,7 +53,7 @@
           <u-text class="font-bold">Informasi Item</u-text>
         </u-row>
         <u-row>
-          <u-autocomplete v-model="searchBarang" placeholder="Cari Barang" :debounce="300" :min-search-length="2"
+          <u-autocomplete v-model="searchBarang" placeholder="Cari Jenis Beban" :debounce="300" :min-search-length="2"
             item-key="id" item-label="nama_beban" not-found-text="Data tidak ditemukan"
             not-found-subtext="Coba kata kunci lain" :show-add-button="false" api-url="/api/v1/master/beban/get-list"
             api-response-path="data.data" :api-params="{ per_page: 10 }" :use-api="true" @select="handleSelectedBarang"
@@ -108,7 +108,7 @@
       </u-card>
 
       <u-col align="items-end" class="col-span-4">
-        <u-text class="font-bold" size="sm">Summary Order</u-text>
+        <u-text class="font-bold" size="sm">Ringkasan Beban Pengeluaran</u-text>
         <u-separator spacing="-my-2"></u-separator>
         <u-row>
           <u-text>Total Pengeluaran : </u-text>
