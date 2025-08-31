@@ -177,6 +177,14 @@ export const useMenuStore = defineStore('menu-store', {
             view: '/views/laporan/penjualan',
             component: 'IndexPage',
           },
+          {
+            title: 'Laporan Pembelian',
+            icon: 'layers',
+            url: 'admin/laporan/pembelian',
+            name: 'laporan.pembelian',
+            view: '/views/laporan/pembelian',
+            component: 'IndexPage',
+          },
           
         ]
       },
