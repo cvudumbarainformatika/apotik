@@ -6,22 +6,37 @@ import { createTemplateTransaksiStore } from './useTemplateTransaksiStore'
 
 export const useBarangStore = createTemplateStore('barang', {
   baseUrl: 'api/v1/master/barang',
+  order_by: 'nama',
+  sort: 'asc',
+  order: 'Nama',
   persist: false
 })
 export const useSatuanStore = createTemplateStore('satuan', {
   baseUrl: 'api/v1/master/satuan',
+  order_by: 'nama',
+  sort: 'asc',
+  order: 'Nama',
   persist: true
 })
 export const useJabatanStore = createTemplateStore('jabatan', {
   baseUrl: 'api/v1/master/jabatan',
+  order_by: 'nama',
+  sort: 'asc',
+  order: 'Nama',
   persist: true
 })
 export const useSupplierStore = createTemplateStore('supplier', {
   baseUrl: 'api/v1/master/supplier',
+  order_by: 'nama',
+  sort: 'asc',
+  order: 'Nama',
   persist: false
 })
 export const usePelangganStore = createTemplateStore('pelanggan', {
   baseUrl: 'api/v1/master/pelanggan',
+  order_by: 'nama',
+  sort: 'asc',
+  order: 'Nama',
   persist: false
 })
 export const useUserStore = createTemplateStore('user', {
@@ -32,6 +47,9 @@ export const useUserStore = createTemplateStore('user', {
 })
 export const useDokterStore = createTemplateStore('dokter', {
   baseUrl: 'api/v1/master/dokter',
+  order_by: 'nama',
+  sort: 'asc',
+  order: 'Nama',
   persist: false
 })
 export const useBebanStore = createTemplateStore('beban', {

@@ -24,11 +24,19 @@ export function createTemplateStore(storeId, config) {
       per_page: 10,
       total: 0,
       q: '',
-      order_by: 'created_at',
-      sort: 'desc',
+      order_by: config.order_by || 'created_at',
+      sort: config.sort || 'desc',
 
       hasMore: true,
 
+      order: config.order || 'Nama',
+      orders: config.orders || 
+        [
+          { key: 'nama', sort: 'asc', label: 'Nama' },
+          { key: 'created_at', sort: 'desc', label: 'Terbaru' },
+          { key: 'created_at', sort: 'asc', label: 'Terlama' },
+        ]
+      ,
 
       modalFormOpen: false,
 
@@ -191,6 +199,16 @@ export function createTemplateStore(storeId, config) {
       setSearch(term) {
         this.search = term
         this.page = 1
+        this.fetchAll()
+      },
+
+      setOrder(label) {
+        const res = this.orders?.find(o => o?.label === label)
+        // console.log('sort', res);
+        
+        this.order_by = res?.key
+        this.sort = res?.sort
+        // this.sort = sort
         this.fetchAll()
       },
 

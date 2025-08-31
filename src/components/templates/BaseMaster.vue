@@ -28,6 +28,12 @@
       <u-row right justify-self-end class="gap-2">
         <u-date-range v-if="showDateButton" v-model="store.range" @update:modelValue="onRange"
           default-period="month" />
+        <order-by v-if="showOrder" 
+          :fields="store.orders"
+          v-model="store.order"
+          label="Urut By"
+          @update:model-value="onSortChange"
+        />
       </u-row>
     </u-view>
 
@@ -61,6 +67,7 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { useScroll } from '@vueuse/core'
+import OrderBy from './OrderBy.vue'
 
 const props = defineProps({
   store: { type: Object, required: true },
@@ -68,6 +75,7 @@ const props = defineProps({
   isLoadMore: { type: Boolean, default: true },
   showAddButton: { type: Boolean, default: true }, // baris ini Tambahkan agar bisa memilih false/true
   showDateButton: { type: Boolean, default: false },
+  showOrder: { type: Boolean, default: false },
   onAdd: Function, // ✅ supaya tidak error saat dipanggil
   onRefresh: Function, // ✅ hanya dipanggil kalau diberikan
   onRange: Function, // ✅ hanya dipanggil kalau diberikan
@@ -89,5 +97,11 @@ watch(
     }
   }
 )
+
+function onSortChange(qs) {
+  // console.log('onSortChange', qs);
+  props.store.setOrder(qs)
+  
+}
 
 </script>

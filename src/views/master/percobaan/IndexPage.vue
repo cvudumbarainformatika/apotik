@@ -20,7 +20,7 @@ function handleRefresh() {
 </script>
 
 <template>
-  <base-master :store="store" :onAdd="handleAdd" :onRefresh="handleRefresh">
+  <base-master :store="store" :onAdd="handleAdd" showOrder :onRefresh="handleRefresh">
     <template #item="{ item }">
       <list-comp :item="item" />
     </template>
