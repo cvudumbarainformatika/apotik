@@ -42,7 +42,7 @@
         </u-view>
 
         <!-- Tabel -->
-      <div v-else class=" bg-white shadow-md rounded-lg">
+      <div v-else class=" bg-white rounded-lg">
 
         <!-- Header -->
       <div class="flex items-start justify-between gap-6 mb-1">

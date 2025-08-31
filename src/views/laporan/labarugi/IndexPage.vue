@@ -42,7 +42,7 @@
         </u-view>
 
         <!-- Tabel -->
-      <div v-else class=" bg-white shadow-md rounded-lg">
+      <div v-else class=" bg-white  rounded-lg">
 
         <!-- Header -->
       <div class="flex items-start justify-between gap-6">
@@ -58,7 +58,7 @@
         </div>
         <div class="flex flex-col p-2">
           <div class="inline-block px-3 py-1 rounded-full text-center border text-xs uppercase tracking-wider">
-            LAPORAN PENJUALAN
+            LAPORAN LABARUGI
           </div>
            <div class="pt-2 uppercase text-xs">
             Periode {{ formatDateIndo(store.params?.from) }} - {{ formatDateIndo(store.params?.to) }}
@@ -68,35 +68,118 @@
       </div>
 
 
-        <table class="w-full border-collapse">
-          <thead class=" text-gray-700 text-sm uppercase">
-            <tr>
-              <th class="th text-left sticky-header">DETAIL</th>
-              <!-- <th class="th text-left sticky-header">Invoice</th> -->
-              <th class="th text-right sticky-header">Total</th>
+      <div class="overflow-x-auto">
+        <table class="w-full border border-gray-200 rounded-lg text-sm">
+          <tbody class="divide-y divide-gray-200">
+
+            <!-- Penjualan -->
+            <tr class="bg-gray-50 font-semibold">
+              <td class="px-4 py-2">Penjualan</td>
+              <td class="px-4 py-2 text-right">  </td>
+              <td class="px-4 py-2 text-right"> Rp. {{ formatRupiah(store?.items?.totalPenjualan) || 0 }} </td>
             </tr>
-          </thead>
-          <tbody>
-            <template v-for="(item, i) in store.items" :key="i">
-              <tr
-                class="border-b hover:bg-gray-50 transition"
-              >
-                <td class="td font-semibold">Tanggal : {{ formatDateIndo(item?.tgl_penjualan) }} ({{ item?.nopenjualan }})</td>
-                <!-- <td class="td font-semibold">{{ item?.nopenjualan }}</td> -->
-                <!-- <td class="td">{{ item.customer }}</td> -->
-                <td class="td text-sm text-right font-semibold ">
-                  Rp. {{ formatRupiah(getTotal(item)) }}
-                </td>
-              </tr>
-              <!-- detail item -->
-              <tr v-for="(rinci, i) in item?.rinci" :key="i" class="border-b last:border-0">
-                <td class="td text-gray-600">• {{ rinci?.master?.nama }} ({{ rinci?.harga_jual }} x {{ rinci?.jumlah_k }})</td>
-                <!-- <td class="px-4 py-2 text-sm text-gray-600">{{ rinci?.jumlah_k }}</td> -->
-                <td class="td text-right text-gray-600">{{ formatRupiah(rinci?.subtotal) }}</td>
-              </tr>
-            </template>
+
+            <!-- Potongan / retur penjualan -->
+            <tr>
+              <td class="px-4 py-2 pl-8">Retur Penjualan</td>
+              <td class="px-4 py-2 text-right">
+                Rp. ({{ formatRupiah(store?.items?.totalReturPenjualan) || 0 }})
+              </td>
+              <td class="px-4 py-2 text-right">
+                
+              </td>
+            </tr>
+
+            <!-- Penjualan Bersih -->
+            <tr class="bg-gray-100 font-semibold">
+              <td class="px-4 py-2">Penjualan Bersih</td>
+              <td class="px-4 py-2 text-right"></td>
+              <td class="px-4 py-2 text-right font-bold">Rp. {{ formatRupiah(store?.items?.totalPenjualan) || 0 }}</td>
+            </tr>
+
+            <!-- Harga Pokok Penjualan -->
+            <tr class="bg-gray-50 font-semibold">
+              <td class="px-4 py-2">Harga Pokok Penjualan</td>
+              <td class="px-4 py-2 text-right">
+                Rp. ({{ formatRupiah(store?.items?.hppPenjualanBersih) || 0 }})
+              </td>
+            </tr>
+
+            <!-- Laba Kotor -->
+            <tr class="bg-gray-100 font-bold">
+              <td class="px-4 py-2">Laba Kotor</td>
+              <td class="px-4 py-2"></td>
+              <td class="px-4 py-2 text-right">Rp. {{ formatRupiah(store?.items?.labaKotor) || 0 }}</td>
+            </tr>
+
+            <!-- Biaya Operasional -->
+            <tr class="bg-gray-50 font-semibold">
+              <td class="px-4 py-2">Beban & Biaya</td>
+              <td class="px-4 py-2 text-right">
+                
+              </td>
+              <td class="px-4 py-2 text-right ">
+                
+              </td>
+            </tr>
+            <tr v-for="(it, idx) in store.items?.rincianbeban" :key="idx">
+              <td class="px-4 py-2 pl-8">- {{ it?.nama_beban }}</td>
+              <td class="px-4 py-2 text-right">
+                Rp. {{ formatRupiah(it?.subtotal) || 0 }}
+              </td>
+              <td class="px-4 py-2 text-right">
+                
+              </td>
+            </tr>
+
+            <tr class="bg-gray-50 font-semibold">
+              <td class="px-4 py-2">TotalBeban & Biaya</td>
+              <td class="px-4 py-2 text-right">
+                
+              </td>
+              <td class="px-4 py-2 text-right ">
+                Rp. ({{ formatRupiah(store?.items?.totalbeban) || 0 }})
+              </td>
+            </tr>
+
+
+            <!-- Laba Usaha -->
+            <tr class="bg-gray-100 font-bold">
+              <td class="px-4 py-2">Laba Usaha</td>
+              <td class="px-4 py-2 text-right"></td>
+              <td class="px-4 py-2 text-right"></td>
+            </tr>
+
+            <!-- Pendapatan Lain-lain -->
+            <tr>
+              <td class="px-4 py-2 pl-8">Pendapatan Lain-lain</td>
+              <td class="px-4 py-2 text-right">Rp. 0</td>
+              <td class="px-4 py-2 text-right"></td>
+            </tr>
+
+            <!-- Biaya Lain-lain -->
+            <!-- <tr>
+              <td class="px-4 py-2 pl-8">Biaya Lain-lain</td>
+              <td class="px-4 py-2 text-right text-red-600">
+                (dddd)
+              </td>
+            </tr> -->
+
+            <!-- Laba Bersih -->
+            <tr class="bg-green-100 font-bold">
+              <td class="px-4 py-2">Laba Bersih</td>
+              <td class="px-4 py-2 text-right"></td>
+              <td class="px-4 py-2 text-right">Rp. {{ formatRupiah(store?.items?.labaBersih) || 0 }}</td>
+            </tr>
+
           </tbody>
         </table>
+      </div>  
+
+
+
+
+      
       </div>
     </u-view>
     
@@ -117,29 +200,20 @@
 import { ref, computed, onMounted } from "vue"
 import { formatRupiah } from "@/utils/numberHelper"
 import { formatDateIndo } from "@/utils/dateHelper"
-import { useLaporanPenjualanStore } from "@/stores/laporan/penjualan"
+import { useLaporanLabarugiStore } from "@/stores/laporan/labarugi"
 import { useAppStore } from "@/stores/app"
 
 
 import Pagination from "./Pagination.vue"
 import PerPage from "./PerPage.vue"
 
-const store = useLaporanPenjualanStore()
+const store = useLaporanLabarugiStore()
 const app = useAppStore()
 
 
 onMounted(store.fetchData)
 
-function getTotal (item) {
-  let subtotal = 0
-  let subtotalRetur
-  item.rinci.forEach((r) => {
-    subtotal += parseInt(r.subtotal)
-  })
 
-
-  return subtotal
-}
 
 
 const printObj = {

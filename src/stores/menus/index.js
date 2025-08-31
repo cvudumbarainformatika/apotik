@@ -170,7 +170,7 @@ export const useMenuStore = defineStore('menu-store', {
             component: 'IndexPage',
           },
           {
-            title: 'Penjualan',
+            title: 'Laporan Penjualan',
             icon: 'layers',
             url: 'admin/laporan/penjualan',
             name: 'laporan.penjualan',
@@ -183,6 +183,14 @@ export const useMenuStore = defineStore('menu-store', {
             url: 'admin/laporan/pembelian',
             name: 'laporan.pembelian',
             view: '/views/laporan/pembelian',
+            component: 'IndexPage',
+          },
+          {
+            title: 'Laporan Labarugi',
+            icon: 'layers',
+            url: 'admin/laporan/labarugi',
+            name: 'laporan.labarugi',
+            view: '/views/laporan/labarugi',
             component: 'IndexPage',
           },
           
