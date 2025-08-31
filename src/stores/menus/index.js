@@ -193,6 +193,14 @@ export const useMenuStore = defineStore('menu-store', {
             view: '/views/laporan/labarugi',
             component: 'IndexPage',
           },
+          {
+            title: 'Laporan Hutang',
+            icon: 'layers',
+            url: 'admin/laporan/hutang',
+            name: 'laporan.hutang',
+            view: '/views/laporan/hutang',
+            component: 'IndexPage',
+          },
           
         ]
       },

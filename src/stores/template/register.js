@@ -110,6 +110,10 @@ export const useLaporanPembelianStore = createTemplateTransaksiStore('laporan-pe
   persist: false
 })
 
+export const useLaporanHutangStore = createTemplateTransaksiStore('laporan-hutang', {
+  baseUrl: 'api/v1/laporan/laporan-hutang',
+  persist: false
+})
 
 
 // dan seterusnya...
