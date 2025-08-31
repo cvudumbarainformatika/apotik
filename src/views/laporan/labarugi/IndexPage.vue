@@ -45,7 +45,7 @@
       <div v-else class=" bg-white shadow-md rounded-lg">
 
         <!-- Header -->
-      <div class="flex items-start justify-between gap-6 mb-1">
+      <div class="flex items-start justify-between gap-6">
         <div class="flex items-center gap-4">
           <img src="/images/logo.svg" alt="logo" class="w-14 h-14 object-contain" />
           <div>
@@ -57,14 +57,11 @@
           </div>
         </div>
         <div class="flex flex-col p-2">
-          <div class="pt-2 uppercase text-md font-bold text-right">
+          <div class="inline-block px-3 py-1 rounded-full text-center border text-xs uppercase tracking-wider">
             LAPORAN PENJUALAN
           </div>
-           <div class=" uppercase text-xs">
+           <div class="pt-2 uppercase text-xs">
             Periode {{ formatDateIndo(store.params?.from) }} - {{ formatDateIndo(store.params?.to) }}
-          </div>
-           <div class="pt-2 uppercase text-sm font-bold text-right">
-            TOTAL PENJUALAN : {{ formatRupiah(store?.total) }}
           </div>
         </div>
         
@@ -137,15 +134,12 @@ function getTotal (item) {
   let subtotal = 0
   let subtotalRetur
   item.rinci.forEach((r) => {
-    subtotal += parseInt(r?.subtotal)
+    subtotal += parseInt(r.subtotal)
   })
 
 
   return subtotal
 }
-
-
-
 
 
 const printObj = {
