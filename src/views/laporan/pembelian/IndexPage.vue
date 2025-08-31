@@ -1,12 +1,13 @@
 <template>
-  <base-laporan :title="title" :store="store" :showDateButton="true" :showAddButton="false" :onRange="handleRange" :onRefresh="handleRefresh">
+  <base-laporan :title="title" :store="store" :showDateButton="true" :showAddButton="false" :onRange="handleRange"
+    :onRefresh="handleRefresh">
     <template #loading>
       <LoaderItem />
     </template>
     <template #item="{ item }">
       <Suspense>
         <template #default>
-          <list-comp :item="item" :store="store" :range="dateRange"  />
+          <list-comp :item="item" :store="store" :range="dateRange" />
         </template>
         <template #fallback>
           <LoaderItem />

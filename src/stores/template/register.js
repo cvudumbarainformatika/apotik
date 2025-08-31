@@ -105,6 +105,10 @@ export const useKartuStokStore = createTemplateTransaksiStore('kartu-stok', {
 })
 
 
+export const useLaporanPembelianStore = createTemplateTransaksiStore('laporan-pembelian', {
+  baseUrl: 'api/v1/laporan/laporan-pembelian',
+  persist: false
+})
 
 
 

@@ -23,6 +23,9 @@
                         <u-btn-icon icon="rotate-cw" tooltip="Refresh" @click="onRefresh" />
                     </slot>
                 </u-row>
+                <u-row>
+                    <u-btn-icon icon="print" tooltip="Print" v-print="printObj" />
+                </u-row>
             </u-row>
             <u-row right justify-self-end class="gap-2">
                 <u-date-range v-if="showDateButton" v-model="store.range" @update:modelValue="onRange"
@@ -32,7 +35,7 @@
 
         <!-- Content -->
 
-        <u-view ref="uViewRef" class="w-full relative" flex1 scrollY>
+        <u-view id="printArea" ref="uViewRef" class="w-full relative" flex1 scrollY>
             <!-- <div class="absolute inset-0 top-12">
         <u-load-spinner></u-load-spinner>
       </div> -->
@@ -43,7 +46,7 @@
             </div>
             <u-view v-else-if="store.items.length" :items="store.items" :loadingDeletes="store.loadingDeletes">
                 <!-- <template #item="{ item }"> -->
-                    <slot name="item" />
+                <slot name="item" />
                 <!-- </template> -->
             </u-view>
             <u-empty :title="store.emptyTitle" :subtitle="store.emptySubtitle"
@@ -58,8 +61,9 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useScroll } from '@vueuse/core'
+import { useAppStore } from '@/stores/app'
 
 const props = defineProps({
     store: { type: Object, required: true },
@@ -89,4 +93,24 @@ watch(
     }
 )
 
+const app = useAppStore()
+const company = computed(() => {
+    return app?.form || null
+})
+const printObj = {
+    id: '#printArea', // ref elemen yang mau diprint
+    popTitle: `${props.title} ${company.value?.nama}`,
+    preview: false,
+    extraCss: '',
+    extraHead: '',
+    beforeOpenCallback(vue) {
+        console.log('wait...')
+    },
+    openCallback(vue) {
+        console.log('opened')
+    },
+    closeCallback(vue) {
+        console.log('closePrint')
+    }
+}
 </script>
