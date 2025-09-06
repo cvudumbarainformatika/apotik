@@ -1,5 +1,5 @@
 <template>
-  <base-master :title="title" :store="store" :showDateButton="true" :showAddButton="false" :onRange="handleRange" :onRefresh="handleRefresh">
+  <base-master :title="title" :store="store" :showMonthButton="true" :showAddButton="false" :onRange="handleRange" :onRefresh="handleRefresh">
     <template #loading>
       <LoaderItem />
     </template>
@@ -46,28 +46,34 @@ onMounted(async () => {
     getCurrentDate()
   ])
 })
-function toLocalDateString(date) {
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
-}
+// function toLocalDateString(date) {
+//   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+// }
 const getCurrentDate = () => {
   const now = new Date()
-  const start = new Date(now.getFullYear(), now.getMonth(), 1)
-  const end = new Date(now.getFullYear(), now.getMonth() + 1, 0)
-
-  console.log('start', start)
-  console.log('end', end)
+  // const start = new Date(now.getFullYear(), now.getMonth(), 1)
+  // const end = new Date(now.getFullYear(), now.getMonth() + 1, 0)
+  // store.range = {
+  //   start_date: toLocalDateString(bulan),
+  //   end_date: toLocalDateString(tahun),
+  // }
+  const bulan = String(now.getMonth() + 1).padStart(2, '0')
+  const tahun = now.getFullYear()
+  // console.log('start', start)
+  // console.log('end', end)
   store.range = {
-    start_date: toLocalDateString(start),
-    end_date: toLocalDateString(end),
+    start_date: bulan,
+    end_date: tahun,
   }
   console.log('dateRange', store.range)
 }
 const handleRange = async () => {
   // console.log('handleRange', store.range);
   const params = {
-    from: store.range?.start_date,
-    to: store.range?.end_date,
+    bulan: store.range?.start_date,
+    tahun: store.range?.end_date,
   }
+  console.log('handleRange', params);
   store.loading = true
   store.items = []
   try {

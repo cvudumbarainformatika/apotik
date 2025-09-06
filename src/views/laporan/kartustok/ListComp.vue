@@ -105,8 +105,8 @@ const openDetail = async () => {
   props.store.loading = true
   try {
     const params = {
-      from: props.store.range.start_date,
-      to: props.store.range.end_date,
+      bulan: props.store.range.start_date,
+      tahun: props.store.range.end_date,
       id: props.item.id
     }
     console.log('params', params)

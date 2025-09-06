@@ -36,8 +36,7 @@
           <div class="inline-block px-3 py-1 rounded-full border text-sm uppercase tracking-wider">
             KARTU STOK
           </div>
-          <div class="mt-2 text-sm">Periode {{ formatDateIndo(store.range?.start_date) }} - {{
-            formatDateIndo(store.range?.end_date) }} </div>
+          <div class="mt-2 text-sm">Periode {{ periode }} </div>
         </div>
 
         <div class="mt-6">
@@ -156,6 +155,27 @@ const company = computed(() => {
 })
 
 
+const bulans = computed(() => [
+  { label: 'Januari', value: '01' },
+  { label: 'Februari', value: '02' },
+  { label: 'Maret', value: '03' },
+  { label: 'April', value: '04' },
+  { label: 'Mei', value: '05' },
+  { label: 'Juni', value: '06' },
+  { label: 'Juli', value: '07' },
+  { label: 'Agustus', value: '08' },
+  { label: 'September', value: '09' },
+  { label: 'Oktober', value: '10' },
+  { label: 'November', value: '11' },
+  { label: 'Desember', value: '12' },
+])
+const periode = computed(() => {
+  const bulanObj = bulans.value.find(b => b.value === props.store.range.start_date)
+  const namaBulan = bulanObj ? bulanObj.label : ''
+  const tahun = props.store.range.end_date || ''
+  return `${namaBulan} ${tahun}`
+})
+
 const groupedItems = computed(() => {
   const result = []
 
@@ -166,7 +186,7 @@ const groupedItems = computed(() => {
   const saldoAwalRow = {
     jenis: 'SALDO AWAL',
     notrans: '-',
-    tanggal: props.store.range?.start_date,
+    tanggal: `${props.store.range.end_date}-${props.store.range.start_date}-01`,
     satuan: props.store?.item?.satuan_k,
     debit: 0,
     kredit: 0,

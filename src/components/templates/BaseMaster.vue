@@ -24,16 +24,19 @@
             <u-btn-icon icon="rotate-cw" tooltip="Refresh" @click="onRefresh" />
           </slot>
         </u-row>
+        <u-row>
+          <u-select v-if="showMonthButton" label="Pilih Bulan" v-model="store.range.start_date" :options="bulans"
+            @update:modelValue="onRange" />
+        </u-row>
+        <u-row>
+          <u-select v-if="showMonthButton" label="Pilih Tahun" v-model="store.range.end_date" :options="generateTahuns"
+            @update:modelValue="onRange" />
+        </u-row>
       </u-row>
       <u-row right justify-self-end class="gap-2">
-        <u-date-range v-if="showDateButton" v-model="store.range" @update:modelValue="onRange"
-          default-period="month" />
-        <order-by v-if="showOrder" 
-          :fields="store.orders"
-          v-model="store.order"
-          label="Urut By"
-          @update:model-value="onSortChange"
-        />
+        <u-date-range v-if="showDateButton" v-model="store.range" @update:modelValue="onRange" default-period="month" />
+        <order-by v-if="showOrder" :fields="store.orders" v-model="store.order" label="Urut By"
+          @update:model-value="onSortChange" />
       </u-row>
     </u-view>
 
@@ -65,7 +68,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useScroll } from '@vueuse/core'
 import OrderBy from './OrderBy.vue'
 
@@ -75,6 +78,7 @@ const props = defineProps({
   isLoadMore: { type: Boolean, default: true },
   showAddButton: { type: Boolean, default: true }, // baris ini Tambahkan agar bisa memilih false/true
   showDateButton: { type: Boolean, default: false },
+  showMonthButton: { type: Boolean, default: false },
   showOrder: { type: Boolean, default: false },
   onAdd: Function, // ✅ supaya tidak error saat dipanggil
   onRefresh: Function, // ✅ hanya dipanggil kalau diberikan
@@ -98,6 +102,42 @@ watch(
   }
 )
 
+
+const now = new Date()
+const bulanSekarang = String(now.getMonth() + 1).padStart(2, '0')
+const tahunSekarang = now.getFullYear()
+const bulans = computed (() => [
+  { label: 'Januari', value: '01' },
+  { label: 'Februari', value: '02' },
+  { label: 'Maret', value: '03' },
+  { label: 'April', value: '04' },
+  { label: 'Mei', value: '05' },
+  { label: 'Juni', value: '06' },
+  { label: 'Juli', value: '07' },
+  { label: 'Agustus', value: '08' },
+  { label: 'September', value: '09' },
+  { label: 'Oktober', value: '10' },
+  { label: 'November', value: '11' },
+  { label: 'Desember', value: '12' },
+])
+
+const generateTahuns = computed(() => {
+  const tahuns = []
+  for (let i = tahunSekarang - 2; i <= tahunSekarang + 2; i++) {
+    tahuns.push({ label: i.toString(), value: i })
+  }
+  return tahuns
+})
+
+
+onMounted(() => {
+  if (!props.store.range.start_date) {
+    props.store.range.start_date = bulanSekarang
+  }
+  if (!props.store.range.end_date) {
+    props.store.range.end_date = tahunSekarang.toString()
+  }
+})
 function onSortChange(qs) {
   // console.log('onSortChange', qs);
   props.store.setOrder(qs)
