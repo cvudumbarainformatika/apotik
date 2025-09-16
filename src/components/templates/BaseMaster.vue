@@ -131,11 +131,13 @@ const generateTahuns = computed(() => {
 
 
 onMounted(() => {
-  if (!props.store.range.start_date) {
-    props.store.range.start_date = bulanSekarang
-  }
-  if (!props.store.range.end_date) {
-    props.store.range.end_date = tahunSekarang.toString()
+  if (props?.onRange){
+    if (!props.store.range.start_date) {
+      props.store.range.start_date = bulanSekarang
+    }
+    if (!props.store.range.end_date) {
+      props.store.range.end_date = tahunSekarang.toString()
+    }
   }
 })
 function onSortChange(qs) {
