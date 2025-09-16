@@ -117,6 +117,14 @@ export const useMenuStore = defineStore('menu-store', {
             view: '/views/transaksi/penerimaan',
             component: 'IndexPage',
           },
+          {
+            title: 'Retur PBF',
+            icon: 'layers',
+            url: 'admin/transaksi/returpembelian',
+            name: 'transaksi.returpembelian',
+            view: '/views/transaksi/returpembelian',
+            component: 'IndexPage',
+          },
            {
             title: 'Penjualan',
             icon: 'layers',
@@ -125,20 +133,20 @@ export const useMenuStore = defineStore('menu-store', {
             view: '/views/transaksi/penjualan',
             component: 'IndexPage',
           },
+          {
+            title: 'Retur Penjualan',
+            icon: 'layers',
+            url: 'admin/transaksi/returpenjualan',
+            name: 'transaksi.returpenjualan',
+            view: '/views/transaksi/returpenjualan',
+            component: 'IndexPage',
+          },
            {
             title: 'Stock List',
             icon: 'layers',
             url: 'admin/transaksi/stock',
             name: 'transaksi.stock',
             view: '/views/transaksi/stock',
-            component: 'IndexPage',
-          },
-           {
-            title: 'Retur PBF',
-            icon: 'layers',
-            url: 'admin/transaksi/returpembelian',
-            name: 'transaksi.returpembelian',
-            view: '/views/transaksi/returpembelian',
             component: 'IndexPage',
           },
           {

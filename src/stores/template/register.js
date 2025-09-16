@@ -94,7 +94,10 @@ export const useBebanPengeluaranStore = createTemplateTransaksiStore('beban-peng
   baseUrl: '/api/v1/transactions/beban',
   persist: false
 })
-
+export const useReturPenjualanStore = createTemplateTransaksiStore('retur-penjualan', {
+  baseUrl: '/api/v1/transactions/returpenjualan',
+  persist: false
+})
 
 
 
