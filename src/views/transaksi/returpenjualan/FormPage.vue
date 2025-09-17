@@ -337,7 +337,7 @@ const handleSelectedPenjualan = (item) => {
 }
 
 const handleOk = () => {
-  console.log('handleOk');
+  // console.log('handleOk');
   clearSelectedBarang()
   
 }
@@ -363,7 +363,7 @@ const onItemsLoaded = (items) => {
   
 }
 const onItemsLoadedBarang = (items) => {
-  console.log('items', items);
+  // console.log('items', items);
   
 }
 
@@ -381,7 +381,7 @@ const clearSelectedBarang = () => {
 }
 
 const handleRetur = (e) => {
-  console.log('handleRetur', e);
+  // console.log('handleRetur', e);
   
   // e.preventDefault()
   // e.stopPropagation()
@@ -399,7 +399,6 @@ const handleRetur = (e) => {
   form.value.id_penerimaan_rinci = e?.id_penerimaan_rinci ?? null
   form.value.jumlah_k = e.jumlah ?? null
   form.value.harga = e.harga_jual ?? null
-  console.log('form', form.value);
   // console.log('form', form.value);
   // console.log('handleRetur', e);
   // console.log('store', props.store.penerimaanSelected);
@@ -427,8 +426,8 @@ const handleBatal = () => {
 const handleKunci = async (e) => {
   e.preventDefault()
   e.stopPropagation()
-  console.log('store', props.store.items);
-  console.log('store form', props.store.form);
+  // console.log('store', props.store.items);
+  // console.log('store form', props.store.form);
 
 
   
@@ -514,7 +513,7 @@ onUnmounted(() => {
 })
 
 watch(() => ({ ...props.store.form }), (newForm, oldForm) => {
-  console.log('🔥 watch form', newForm, oldForm);
+  // console.log('🔥 watch form', newForm, oldForm);
   
   for (const key in newForm) {
     if (newForm[key] !== oldForm[key]) {

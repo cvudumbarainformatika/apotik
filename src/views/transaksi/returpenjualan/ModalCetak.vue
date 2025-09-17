@@ -181,7 +181,7 @@ const totals = computed(() => {
   return totalSubtotal.value || 0
 })
 
-console.log('data', data.value);
+// console.log('data', data.value);
 
 const printObj = {
   id: '#printArea', // ref elemen yang mau diprint
