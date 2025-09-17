@@ -413,6 +413,7 @@ const form = ref({
   nobatch: null,
   tgl_exprd: null,
   id_stok: null,
+  hpp: ''
 
 })
 
@@ -492,6 +493,7 @@ const groupedItems = computed(() => {
   const map = new Map()
 
   const items = props?.store?.form?.rinci ?? []
+  console.log('groupedItems', items);
   items.forEach(item => {
     const key = item.kode_barang
     if (!map.has(key)) {
@@ -529,7 +531,7 @@ const handleAdd = async(item) => {
   // console.log('handleAdd', props.store.barangSelected);
 
   const selected = props?.store?.barangSelected ?? null
-
+  console.log('handleAdd', selected);
   form.value.kode_barang = item?.kode_barang ?? null
   form.value.jumlah_k = item?.jumlah ?? 0
   form.value.satuan_k = item?.satuan_k ?? null
@@ -542,15 +544,18 @@ const handleAdd = async(item) => {
   form.value.nobatch = item?.nobatch ?? null
   form.value.tgl_exprd = item?.tgl_exprd ?? null
   form.value.id_stok = item?.id ?? null
+  form.value.hpp = parseFloat(selected?.hpp)
 
-  // console.log('form', form.value);
+
+  console.log('form', form.value);
   props.store.create(form.value)
   
 }
 
 function getHargaJual() {
   const selected = props?.store?.barangSelected ?? null
-  return form.value.kode_dokter ? parseInt(selected?.harga_jual_resep_k ?? 0) : parseInt(selected?.harga_jual_biasa_k ?? 0)
+  // return form.value.kode_dokter ? parseInt(selected?.harga_jual_resep_k ?? 0) : parseInt(selected?.harga_jual_biasa_k ?? 0)
+  return form.value.kode_dokter ? Math.ceil(parseFloat(selected?.hpp ?? 0) * parseInt(selected?.persen_resep ?? 0)) : Math.ceil(parseFloat(selected?.hpp ?? 0) * parseInt(selected?.persen_biasa ?? 0))
 }
 
 const handleSelectedPelanggan = (item) => {
