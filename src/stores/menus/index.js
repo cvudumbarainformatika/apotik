@@ -230,6 +230,14 @@ export const useMenuStore = defineStore('menu-store', {
             view: '/views/settings/aplikasi',
             component: 'IndexPage',
           },
+          {
+            title: 'Akses User',
+            icon: 'layers',
+            url: 'admin/settings/hak-akses',
+            name: 'settings.hakakses',
+            view: '/views/settings/hakakses',
+            component: 'IndexPage',
+          },
         ]
       },
      
