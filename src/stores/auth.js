@@ -48,22 +48,22 @@ export const useAuthStore = defineStore('auth-store', {
       }
     },
     async getProfile() {
-
+      const menuStore = useMenuStore()
       this.loading = true
-
+      this.user = null
+      menuStore.items = []
       try {
         const response = await api.post('/api/v1/auth/profile')
         console.log('profil', response);
         // this.setUser(response?.data?.user, null)
         this.user = response?.data?.user
 
-        // console.log('user', this.user);
         if (this.user) {
-          const menuStore = useMenuStore()
-          // await menuStore.loadUserMenu()
+          
+         
           menuStore.items = this.user?.items || []
         }
-        // return response
+        return response
       } catch (error) {
         console.error('Login error:', error)
         this.isError = true

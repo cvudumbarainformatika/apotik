@@ -247,31 +247,31 @@ export const useMenuStore = defineStore('menu-store', {
   }),
   persist: true,
   actions: {
-    async loadUserMenu() {
-      this.loading = true
+    // async loadUserMenu() {
+    //   this.loading = true
      
-      try {
-        const authStore = useAuthStore()
-        const menus = authStore.user?.items
-        this.items = menus || []
-        console.log('userid', menus)
+    //   try {
+    //     const authStore = useAuthStore()
+    //     const menus = authStore.user?.items
+    //     this.items = menus || []
+    //     // console.log('userid', menus)
 
-        // const res = await api.post('api/v1/setting/hak-akses/get-user', { id: idUser })
-        // const data = res.data?.data
-        // console.log('Menu user:', data)
-        // if (data?.items) {
-        //   this.items = data.items
+    //     // const res = await api.post('api/v1/setting/hak-akses/get-user', { id: idUser })
+    //     // const data = res.data?.data
+    //     // console.log('Menu user:', data)
+    //     // if (data?.items) {
+    //     //   this.items = data.items
          
-        // } else {
-        //   this.items = []
-        // }
-      } catch (e) {
-        console.error('Gagal load menu user:', e)
-        this.items = []
-      } finally {
-        this.loading = false
-      }
-    }
+    //     // } else {
+    //     //   this.items = []
+    //     // }
+    //   } catch (e) {
+    //     console.error('Gagal load menu user:', e)
+    //     this.items = []
+    //   } finally {
+    //     this.loading = false
+    //   }
+    // }
   }
 })
 

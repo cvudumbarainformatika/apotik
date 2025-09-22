@@ -43,14 +43,15 @@
   </div>
 </template>
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useFormError } from '@/composables/useFormError'
 import { useRouter } from 'vue-router'
+import { useMenuStore } from '@/stores/menus'
 
 const store = useAuthStore()
 const router = useRouter()
-
+const menustore = useMenuStore()
 const form = ref({
   login: '',
   password: '',
@@ -61,12 +62,30 @@ async function handleSubmit(e) {
     e.preventDefault()
     e.stopPropagation()
     await store.login(form.value)
-    await store.getProfile()
+    
     .then(() => {
-      router.push({ path: '/admin' })
+      store.getProfile()
+      // .then(() => {
+      //   if (store.user?.items?.length) {
+      //     router.push({ path: '/admin' })
+      //   } else {
+      //     router.push({ path: '/login' })
+      //   }
+      //   // router.push({ path: '/admin' })
+      //   // window.location.reload()
+      // })
+     
     })
 }
 
+watch(() => store.user, (newVal) => {
+  console.log('User changed:', newVal)
+
+  if (newVal) {
+      window.location.reload()
+        // router.push({ path: '/admin' })
+      }
+}, { immediate: true })
 
 </script>
 

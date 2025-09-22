@@ -10,9 +10,8 @@ export async function setupDynamicRoutes(pinia) {
   const { useAuthStore } = await import('@/stores/auth') // ✅ ESM dynamic import
   const menuStore = useMenuStore(pinia)
   const authStore = useAuthStore(pinia)
-  // console.log('Auth Store:', authStore.user?.items)
-  const dynamicRoutes = convertMenuToRoutes(authStore.user?.items || menuStore?.items)
-  // console.log('Dynamic Routes:', menuStore?.items)
+
+  const dynamicRoutes = convertMenuToRoutes(menuStore?.items)
   injectAdminRoutes(dynamicRoutes)
   // injectBootRoutes()
   // console.log('[DEBUG] dynamicRoutes injected:', dynamicRoutes)
