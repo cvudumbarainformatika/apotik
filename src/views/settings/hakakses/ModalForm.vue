@@ -38,8 +38,9 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { api } from '@/services/api'
-import { useNotify } from '@/composables/useNotify'
+import { useNotificationStore } from '@/stores/notification'
 
+const notify = useNotificationStore().notify
 const props = defineProps({
   user: { type: Object, required: true },
   title: { type: String, default: 'Hak Akses' }
@@ -58,9 +59,41 @@ const initialSet = ref(new Set())
 async function loadData() {
   loading.value = true
   try {
-    const res = await api.get('api/v1/setting/menu/get-list')
-    const items = res.data?.data?.items ?? res.data?.data ?? []
+    const resMenu = await api.get('api/v1/setting/menu/get-list')
+    console.log('resMenu', resMenu)
+    const items = resMenu.data?.data?.items ?? resMenu.data?.data ?? []
     menus.value = items
+
+    if (props.user?.id) {
+      const resAccess = await api.post('api/v1/setting/hak-akses/get-user', { id: props.user.id })
+      console.log('resAccess', resAccess)
+      const aksesRaw = resAccess.data?.data
+
+      const aksesList = Array.isArray(aksesRaw?.akses)
+        ? aksesRaw.akses
+        : Array.isArray(aksesRaw)
+          ? aksesRaw
+          : []
+
+      aksesList.forEach(acc => {
+        const key = `${acc.menu_id}:${acc.submenu_id ?? 'null'}`
+        initialSet.value.add(key)
+        
+      if (!selectedMenuIds.value.includes(acc.menu_id)) {
+          selectedMenuIds.value.push(acc.menu_id)
+        }
+      
+        if (acc.submenu_id !== null && acc.submenu_id !== undefined) {
+          const subKey = `${acc.menu_id}:${acc.submenu_id}`
+          if (!selectedSubIds.value.includes(subKey)) {
+            selectedSubIds.value.push(subKey)
+          }
+          if (!selectedMenuIds.value.includes(acc.menu_id)) {
+            selectedMenuIds.value.push(acc.menu_id)
+          }
+        }
+      })
+    }
   } catch (e) {
     console.error('load menus error', e)
     menus.value = []
@@ -108,16 +141,28 @@ function toggleSubmenu(menu, subId, checked) {
   }
 }
 
-async function handleSave() {
+async function handleSave(e) {
+  e.preventDefault()
+  e.stopPropagation()
   if (!props.user?.id) return
   saving.value = true
   try {
     const currentSet = new Set()
-    selectedMenuIds.value.forEach(id => {
-      currentSet.add(`${id}:null`)
-    })
-    selectedSubIds.value.forEach(key => {
-      currentSet.add(key)
+    menus.value.forEach(menu => {
+      if (selectedMenuIds.value.includes(menu.id)) {
+        if (menu.children?.length) {
+          // punya submenu → hanya simpan sub yang terpilih
+          menu.children.forEach(sub => {
+            const key = `${menu.id}:${sub.id}`
+            if (selectedSubIds.value.includes(key)) {
+              currentSet.add(key)
+            }
+          })
+        } else {
+          // tidak punya submenu → simpan menu_id:null
+          currentSet.add(`${menu.id}:null`)
+        }
+      }
     })
 
     const toGrant = []
@@ -144,23 +189,27 @@ async function handleSave() {
     }
 
     if (toGrant.length) {
-      await api.post('api/v1/setting/hak-akses/grant', {
+      const res = await api.post('api/v1/setting/hak-akses/grant', {
         user_id: props.user.id,
         menus: toGrant
       })
+      console.log('grant res', res)
+      notify({ message: res.data.message ?? 'Hak akses ditambahkan', type: 'success' })
     }
     if (toRevoke.length) {
-      await api.post('api/v1/setting/hak-akses/revoke', {
+      const res = await api.post('api/v1/setting/hak-akses/revoke', {
         user_id: props.user.id,
         menus: toRevoke
       })
+      notify({ message: res.data.message ?? 'Hak akses dicabut', type: 'success' })
     }
 
-    useNotify({ message: res.data.message ?? 'Berhasil Menyimpan data', type: 'success' })
+    initialSet.value = new Set(currentSet)
+
     emit('close')
-  } catch (e) {
-    console.error('simpan hak akses error', e)
-    alert('Gagal menyimpan hak akses.')
+  } catch (error) {
+    // console.log('simpan hak akses error', error)
+    notify({ message: error.message ?? 'Gagal menyimpan hak akses', type: 'error' })
   } finally {
     saving.value = false
   }
