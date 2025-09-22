@@ -1,5 +1,6 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
 import { api } from '@/services/api'
+import { useMenuStore } from './menus'
 
 export const useAuthStore = defineStore('auth-store', {
   state: () => ({
@@ -52,9 +53,16 @@ export const useAuthStore = defineStore('auth-store', {
 
       try {
         const response = await api.post('/api/v1/auth/profile')
-        // console.log('response', response);
+        console.log('profil', response);
         // this.setUser(response?.data?.user, null)
         this.user = response?.data?.user
+
+        // console.log('user', this.user);
+        if (this.user) {
+          const menuStore = useMenuStore()
+          // await menuStore.loadUserMenu()
+          menuStore.items = this.user?.items || []
+        }
         // return response
       } catch (error) {
         console.error('Login error:', error)

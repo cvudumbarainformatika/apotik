@@ -47,9 +47,14 @@ export const useUserStore = createTemplateStore('user', {
 })
 export const useDokterStore = createTemplateStore('dokter', {
   baseUrl: 'api/v1/master/dokter',
-  order_by: 'nama',
+  order_by: 'nama_dokter',
   sort: 'asc',
-  order: 'Nama',
+  order: 'Nama Dokter',
+  orders: [
+          { key: 'nama_dokter', sort: 'asc', label: 'Nama Dokter' },
+          { key: 'created_at', sort: 'desc', label: 'Terbaru' },
+          { key: 'created_at', sort: 'asc', label: 'Terlama' },
+        ],
   persist: false
 })
 export const useBebanStore = createTemplateStore('beban', {
