@@ -73,11 +73,11 @@
               <div class="bg-dark-800 rounded-md p-2">
                 <div class="calendar-container">
                   <div class="calendar-header flex justify-between items-center mb-2">
-                    <button @click="prevMonthEnd" class="text-gray-400 hover:text-white">
+                    <button @click="prevMonthEnd" class="text-primary hover:text-secondary cursor-pointer">
                       <u-icon name="ChevronLeft" class="w-4 h-4" />
                     </button>
-                    <span class="text-white">{{ endMonthYear }}</span>
-                    <button @click="nextMonthEnd" class="text-gray-400 hover:text-white">
+                    <span class="text-primary">{{ endMonthYear }}</span>
+                    <button @click="nextMonthEnd" class="text-primary hover:text-secondary cursor-pointer">
                       <u-icon name="ChevronRight" class="w-4 h-4" />
                     </button>
                   </div>
@@ -109,7 +109,7 @@
       </div>
 
       <div class="flex justify-end gap-2 p-4 border-t border-gray-700">
-        <u-btn @click="resetFilter" variant="secondary" size="sm" >
+        <u-btn @click="resetFilter" variant="secondary" size="sm">
           Reset
         </u-btn>
         <u-btn @click="applyFilter" variant="primary" size="sm">
