@@ -5,9 +5,10 @@ import { useRoute } from 'vue-router'
 import { inject } from 'vue'
 const $confirm = inject('confirm')
 
+import BaseMaster from '@/components/templates/BaseMaster.vue'
 import LoaderItem from './LoaderItem.vue'
 // import BaseMaster from '@/components/templates/BaseMaster.vue'
-const BaseMaster = defineAsyncComponent(() => import('@/components/templates/BaseMaster.vue'))
+// const BaseMaster = defineAsyncComponent(() => import('@/components/templates/BaseMaster.vue'))
 const ListComp = defineAsyncComponent(() => import('./ListComp.vue'))
 const ModalForm = defineAsyncComponent(() => import('./ModalForm.vue'))
 
@@ -37,6 +38,7 @@ function handleRefresh() {
 
 function handleSave(form, mode) {
   console.log('handleSave', form, mode);
+  
   if (mode === 'add') {
     store.create(form, mode)
   } else {

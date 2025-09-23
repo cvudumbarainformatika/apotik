@@ -71,15 +71,20 @@
 
 <script setup>
 import { ref, onMounted, computed, watch } from 'vue'
-import { useFormError } from '@/composables/useFormError'
 const props = defineProps({
   store: { type: Object, required: true },
   title: { type: String, default: 'Data' },
   mode: { type: String, default: 'add' }
 })
 const emit = defineEmits(['close', 'save'])
-
-
+const error = computed(() => {
+  const err = props.store.error
+  const status = err?.status === 422
+  if (status) {
+    return err?.response?.data?.errors
+  }
+  return null
+})
 
 const form = ref({
   nama: '',
@@ -92,40 +97,53 @@ const form = ref({
   kode_jabatan: '',
 })
 
-const { isError, errorMessage } = useFormError(form.value, props.store)
+function isError(field) {
+  return !!error.value?.[field]
+}
+
+function errorMessage(field) {
+  return error.value?.[field]?.[0] ?? null
+}
+
+
+
+watch(
+  () => ({ ...form.value }),
+  (newForm, oldForm) => {
+    // console.log('🔥 watch form', newForm, oldForm);
+
+    for (const key in newForm) {
+      if (newForm[key] !== oldForm[key]) {
+        props.store.clearFieldError(key)
+      }
+    }
+  },
+  { deep: true }
+)
+
 
 
 
 function handleSubmit() {
-  emit('save' , form.value, props.mode)
-  
-  emit('close')
+  emit('save', form.value, props.mode)
 }
 
-function init(){
+function init() {
   const mode = props.mode
-
-  const exclude = mode === 'add'
-    ? ['kode', 'created_at', 'updated_at']
-    : ['created_at', 'updated_at']
-
-
   if (mode === 'add') {
-    form.value = Object.fromEntries(
-      Object.keys(form.value)
-        .filter(k => !['kode', 'created_at', 'updated_at'].includes(k))
-        .map(k => [k, ''])
-    )
+    form.value = {
+      nama: ''
+    }
   } else {
     const item = props.store.item || {}
-    form.value = Object.fromEntries(
-      Object.entries(item)
-        .filter(([key]) => !['created_at', 'updated_at'].includes(key))
-    )
+    form.value = {
+      kode: item.kode || '',
+      nama: item.nama || ''
+    }
   }
 
-  console.log('init form', form.value);
-  
+  // console.log('init form', form.value);
+
 }
 
 onMounted(() => {

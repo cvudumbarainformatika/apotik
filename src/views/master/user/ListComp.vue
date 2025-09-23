@@ -17,9 +17,7 @@
             <div class="w-full">
               <u-row flex1 class="text-xs">
                 <div>Contact : </div>
-                <div class="font-bold">{{ item?.tlp }}</div>
-                <div>Rek : </div>
-                <div class="font-bold">{{ item?.rekening }}</div>
+                <div class="font-bold">{{ item?.hp }}</div>
                 
               </u-row>
               <u-row flex1 class="w-full text-xs">
