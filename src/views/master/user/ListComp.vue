@@ -17,7 +17,7 @@
             <div class="w-full">
               <u-row flex1 class="text-xs">
                 <div>Contact : </div>
-                <div class="font-bold">{{ item?.hp }}</div>
+                <div class="font-semibold">{{ formatTeleponID(item?.hp) }}</div>
                 
               </u-row>
               <u-row flex1 class="w-full text-xs">
@@ -40,7 +40,7 @@
 
 <script setup>
 import { useWaktuLaluReactive } from '@/utils/dateHelper'
-import { formatRupiah } from '@/utils/numberHelper'
+import { formatRupiah, formatTeleponID } from '@/utils/numberHelper'
 defineProps({
   item: { type: Object, default: null },
 })
