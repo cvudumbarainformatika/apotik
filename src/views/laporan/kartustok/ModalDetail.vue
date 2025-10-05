@@ -46,6 +46,7 @@
                 <th class="th text-left p-1">Tanggal</th>
                 <th class="th text-left p-1">Nomor Transaksi</th>
                 <th class="th text-left p-1">Jenis Transaksi</th>
+                <th class="th text-left p-1">Keterangan</th>
                 <th class="th text-right p-1">Penerimaan ({{ store?.item?.satuan_k }}) </th>
                 <th class="th text-right p-1">Pengeluaran ({{ store?.item?.satuan_k }}) </th>
                 <th class="th text-right p-1">Saldo ({{ store?.item?.satuan_k }}) </th>
@@ -56,12 +57,13 @@
                 <td class="td p-1 text-left">{{ formatDateIndo(item?.tanggal) }}</td>
                 <td class="td p-1 text-left">{{ item?.notrans || '-' }}</td>
                 <td class="td p-1 text-left">{{ item?.jenis || '-' }}</td>
+                <td class="td p-1 text-left">{{ item?.ket || '-' }}</td>
                 <td class="td p-1 text-right">{{ formatRupiah(item?.debit) }}</td>
                 <td class="td p-1 text-right">{{ formatRupiah(item?.kredit) }}</td>
                 <td class="td p-1 text-right">{{ formatRupiah(item?.saldo) }}</td>
               </tr>
               <tr>
-                <td colspan="5" class="td p-1 text-right font-bold">SALDO AKHIR</td>
+                <td colspan="6" class="td p-1 text-right font-bold">SALDO AKHIR</td>
                 <td class="td p-1 text-right font-bold">{{ formatRupiah(totalStokAkhir) }}</td>
               </tr>
             </tbody>
@@ -213,6 +215,7 @@ const groupedItems = computed(() => {
       debit: Number(item.jumlah_k ?? 0),
       kredit: 0,
       saldo: 0,
+      ket: item.suplier?.nama || '-',
     }
   })
   result.push(...penerimaanRows)
@@ -231,6 +234,7 @@ const groupedItems = computed(() => {
       debit: 0,
       kredit: Number(item.jumlah_k ?? 0),
       saldo: 0,
+      ket: item.pelanggan?.nama || '-',
     })
   })
 
@@ -246,6 +250,7 @@ const groupedItems = computed(() => {
       debit: jumlah > 0 ? jumlah : 0,
       kredit: jumlah < 0 ? Math.abs(jumlah) : 0,
       saldo: 0,
+      ket: item.keterangan || '-',
     })
   })
 
