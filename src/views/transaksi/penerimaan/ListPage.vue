@@ -29,6 +29,15 @@
                 <u-row>
                   <u-text class="" color="text-gray-500">No Faktur :{{ item?.nofaktur }}</u-text>
                 </u-row>
+                <u-row flex1>
+                  <u-text v-if="item.hutang === 'HUTANG'" class="font-bold text-xs"
+                    :class="item.flag_hutang ? 'text-gray-500' : 'text-red-500'">
+                    {{ item?.flag_hutang ? 'LUNAS' : 'HUTANG BELUM LUNAS' }}
+                  </u-text>
+                  <u-text v-else class="font-bold text-xs" color="text-black">
+                    LUNAS
+                  </u-text>
+                </u-row>
               </u-col>
             </u-row>
           </u-row>

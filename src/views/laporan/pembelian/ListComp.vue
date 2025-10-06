@@ -49,10 +49,13 @@
             <tr>
               <td colspan="3" class="td p-1 align-top text-left"></td>
               <td class="td p-1 align-top text-left">
-                <div> {{ el?.rinci_nama }},
+                <div class="font-semibold"> {{ el?.rinci_nama }},
                   <span>Nilai: Rp. {{formatRupiah(el?.rinci_subtotal)}}</span>
                 </div>
-                <div>Jumlah Item {{ el?.rinci_jumlah_b }} {{ el?.rinci_satuan_b }} </div>
+                <div>Rincian : {{ el?.rinci_jumlah_b }} {{ el?.rinci_satuan_b }} x Rp.
+                  {{ formatRupiah(el?.rinci_harga_b) }}</div>
+                <div>Pajak Rp. {{ formatRupiah(el?.rinci_pajak) }} </div>
+                <div>Diskon Rp. {{ formatRupiah(el?.rinci_diskon) }} </div>
               </td>
               <td class="td p-1 align-top text-left">
                 <div v-if="el?.retur_nama"> {{ el?.retur_nama }},
@@ -104,15 +107,17 @@ const mapItems = computed(() => {
     const retur = item.retur
     const rinciretur = retur.flatMap(r => r.rincian || [])
 
-    console.log('key', rinciretur)
     if (!map.has(key)) {
       const rincianGabung = rinci.map((s, i) => {
         const ret = rinciretur[i] || null
         return {
           rinci_nama: s.barang?.nama,
           rinci_jumlah_b: s?.jumlah_b,
+          rinci_harga_b: s?.harga_b,
           rinci_satuan_b: s?.satuan_b,
           rinci_subtotal: s?.subtotal,
+          rinci_pajak: parseFloat(s?.pajak_rupiah) * parseFloat(s?.jumlah_k) || 0,
+          rinci_diskon:parseFloat(s?.diskon_rupiah) *parseFloat(s?.jumlah_k) || 0,
           retur_nama: ret?.barang?.nama || '',
           retur_jumlah_b: ret?.jumlahretur_b || '',
           retur_satuan_b: ret?.satuan_b || '',
@@ -132,10 +137,9 @@ const mapItems = computed(() => {
       })
     }
   })
-  console.log('map', map)
   return Array.from(map.values())
 })
-
+console.log('mapItems', mapItems) 
 const totalPembelian = computed(() =>{
   return mapItems.value.map((x) => parseInt(x.subtotal)).reduce((a,b) => a+b, 0)
 })

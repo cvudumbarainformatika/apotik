@@ -103,6 +103,10 @@ export const useReturPenjualanStore = createTemplateTransaksiStore('retur-penjua
   baseUrl: '/api/v1/transactions/returpenjualan',
   persist: false
 })
+export const usePembayaranHutangStore = createTemplateTransaksiStore('pembayaran-hutang', {
+  baseUrl: '/api/v1/transactions/pembayaran-hutang',
+  persist: false
+})
 
 
 
