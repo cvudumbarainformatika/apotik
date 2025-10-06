@@ -259,7 +259,7 @@
 
                       <u-btn :disabled="(parseInt(item?.jumlah) > parseInt(item?.jumlah_k)) || parseInt(item?.jumlah) === 0" 
                         :loading="store.loadingSave"
-                        variant="secondary" size="sm" @click.stop="handleAdd(item)">Add</u-btn>
+                        variant="secondary" size="sm" @click.stop="handleAdd(item)">Ad</u-btn>
                     </u-row>
                   </u-row>
                   <u-separator spacing=""></u-separator>
