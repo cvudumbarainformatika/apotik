@@ -63,14 +63,22 @@
            <div class=" uppercase text-xs">
             Periode {{ formatDateIndo(store.params?.from) }} - {{ formatDateIndo(store.params?.to) }}
           </div>
-           <div class="pt-2 uppercase text-sm font-bold text-right">
-            TOTAL PENJUALAN : {{ formatRupiah(store?.total) }}
+           <!-- <div class="pt-2 uppercase text-sm font-bold text-right">
+            TOTAL PENJUALAN : Rp.  {{ formatRupiah(store?.grand?.total_penjualan) }}
           </div>
+           <div class=" uppercase text-sm font-bold text-right">
+            HPP : Rp.  {{ formatRupiah(store?.grand?.total_hpp) }}
+          </div>
+           <div class=" uppercase text-sm font-bold text-right">
+            DISKON : Rp.  {{ formatRupiah(store?.grand?.total_diskon) }}
+          </div>
+          <u-separator></u-separator>
+           <div class=" uppercase text-sm font-bold text-right">
+            TOTAL MARGIN : Rp.  {{ formatRupiah(store?.grand?.total_margin_keuntungan) }}
+          </div> -->
         </div>
         
       </div>
-
-
         <table class="w-full border-collapse">
           <thead class=" text-gray-700 text-sm uppercase">
             <tr>
@@ -93,14 +101,47 @@
               </tr>
               <!-- detail item -->
               <tr v-for="(rinci, i) in item?.rinci" :key="i" class="border-b last:border-0">
-                <td class="td text-gray-600">• {{ rinci?.master?.nama }} ({{ rinci?.harga_jual }} x {{ rinci?.jumlah_k }})</td>
+                <td class="td text-gray-600">
+                  <div> • {{ rinci?.master?.nama }} ({{ rinci?.harga_jual }} x {{ rinci?.jumlah_k }})
+                  - disc {{ rinci.diskon }} </div>
+                  <div class="pl-2"><i>HPP Rp. {{ formatRupiah(rinci.harga_beli) }} || Margin Rp. {{ formatRupiah(rinci.margin) }}</i></div>
+
+                </td>
                 <!-- <td class="px-4 py-2 text-sm text-gray-600">{{ rinci?.jumlah_k }}</td> -->
                 <td class="td text-right text-gray-600">{{ formatRupiah(rinci?.subtotal) }}</td>
               </tr>
             </template>
           </tbody>
+          <tbody>
+            <tr>
+              <td class="td text-right font-bold">TOTAL PENJUALAN : </td>
+              <td class="td text-right font-bold">
+                Rp.  {{ formatRupiah(store?.grand?.total_penjualan) }}
+              </td>
+            </tr>
+            <tr>
+              <td class="td text-right font-bold">TOTAL HPP : </td>
+              <td class="td text-right font-bold">
+                Rp.  {{ formatRupiah(store?.grand?.total_hpp) }}
+              </td>
+            </tr>
+            <tr>
+              <td class="td text-right font-bold">TOTAL DISKON : </td>
+              <td class="td text-right font-bold">
+                Rp.  {{ formatRupiah(store?.grand?.total_hpp) }}
+              </td>
+            </tr>
+            <tr>
+              <td class="td text-right font-bold">TOTAL MARGIN : </td>
+              <td class="td text-right font-bold">
+                Rp.  {{ formatRupiah(store?.grand?.total_margin_keuntungan) }}
+              </td>
+            </tr>
+          </tbody>
         </table>
+      
       </div>
+      
     </u-view>
     
     <u-view>
