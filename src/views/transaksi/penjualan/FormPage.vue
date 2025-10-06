@@ -225,7 +225,7 @@
                 <template v-for="(item,) in store.barangSelected?.stok" :key="item?.id">
                   <u-row flex1 class="w-full bg-secondary" gap="gap-2" padding="px-2 py-3">
                     <u-row flex1 class="w-full items-start">
-                      <u-text class="italic" label="Expired di : " />
+                      <u-text class="italic" label="Expired : " />
                       <div>
                         <u-text class="font-medium italic">
                           {{ item?.tgl_exprd }}
@@ -249,6 +249,11 @@
                       <div class="w-20" :class="{ 'animate-shake': parseInt(item?.jumlah) > parseInt(item?.jumlah_k) }">
                         <u-input type="number" v-model.number="item.jumlah" label="Jumlah" @focus="handleFocusJumlah" 
                           :error="parseInt(item?.jumlah) > parseInt(item?.jumlah_k)"
+                        />
+                      </div>
+                      <div class="w-20" >
+                        <u-input type="number" v-model.number="item.diskon" label="Disc" 
+                          
                         />
                       </div>
 
@@ -281,10 +286,18 @@
           <u-text class="font-bold" size="sm">Ringkasan Penjualan</u-text>
           <u-separator spacing="my-1"></u-separator>
           <u-row>
-            <u-text>Total Penjualan : </u-text>
+            <u-text>Penjualan : </u-text>
+            <u-text class="font-bold" size="lg" color="text-light-primary">{{ formatRupiah(totalAmount) || 0 }}</u-text>
+          </u-row>
+          <u-row>
+            <u-text>Total Discount : </u-text>
+            <u-text class="font-bold" size="lg" color="text-light-primary">{{ formatRupiah(totalDiscount) || 0 }}</u-text>
+          </u-row>
+          <u-row>
+            <u-text>Total Pembayaran : </u-text>
             <u-text class="font-bold" size="lg" color="text-light-primary">{{ formatRupiah(totalPenjualan) || 0 }}</u-text>
           </u-row>
-          <u-row class="-mt-2">
+          <u-row class="-mt-1">
             <u-text>Total Item : </u-text>
             <u-text class="font-bold" size="lg">{{ groupedItems?.length || 0 }}</u-text>
           </u-row>
@@ -413,7 +426,8 @@ const form = ref({
   nobatch: null,
   tgl_exprd: null,
   id_stok: null,
-  hpp: ''
+  hpp: '',
+  diskon: 0,
 
 })
 
@@ -472,11 +486,22 @@ function errorMessage(field){
   return error.value?.[field]?.[0] ?? null
 } 
 
+const totalDiscount = computed(() => {
+  const items = props?.store?.form?.rinci ?? []
+  return items.reduce((a, b) => a + Number(b?.diskon), 0)
+})
+const totalAmount = computed(() => {
+  const items = props?.store?.form?.rinci ?? []
+  const sub = items.reduce((a, b) => a + Number(b?.subtotal), 0)
+  const disc = totalDiscount.value || 0
 
+  return sub + disc
+})
 const totalPenjualan = computed(() => {
   const items = props?.store?.form?.rinci ?? []
   return items.reduce((a, b) => a + Number(b?.subtotal), 0)
 })
+
 
 const kembali = computed(() => {
   if (formBayar.value.jumlah_bayar < totalPenjualan.value) {
@@ -503,13 +528,17 @@ const groupedItems = computed(() => {
         satuan_k: item?.satuan_k,
         jumlah_k: Number(item?.jumlah_k),
         harga_jual: Number(item?.harga_jual),
+        diskon: Number(item?.diskon),
         subtotal: Number(item?.subtotal),
         created_at: item?.created_at
       })
     } else {
       const existing = map.get(key)
+      
       existing.jumlah_k += Number(item.jumlah_k)
-      existing.subtotal += Number(item.subtotal)
+      existing.diskon += Number(item.diskon)
+      existing.subtotal += (Number(item.subtotal) )
+
       // update created_at jika lebih baru
       if (new Date(item.created_at) > new Date(existing.created_at)) {
         existing.created_at = item.created_at
@@ -534,6 +563,7 @@ const handleAdd = async(item) => {
   console.log('handleAdd', selected);
   form.value.kode_barang = item?.kode_barang ?? null
   form.value.jumlah_k = item?.jumlah ?? 0
+  form.value.diskon = item?.diskon ?? 0
   form.value.satuan_k = item?.satuan_k ?? null
   form.value.satuan_b = item?.satuan_b ?? null
   form.value.isi = parseInt(item?.isi ?? 1)
@@ -585,7 +615,7 @@ const handleSelectedBarang = (item) => {
     for (let i = 0; i < stok?.length; i++) {
       const el = stok[i];
       el.jumlah = 0 // ini menambah elemen jumlah
-
+      el.diskon = 0
       const idStok = el?.id ?? null
       if (idStok) {
         const keeping = item?.penjualan_rinci.filter(el => el.id_stok === idStok)

@@ -14,7 +14,11 @@
           </u-row>
           <u-row gap="gap-1">
             <u-badge variant="warning" class="">{{ item?.jumlah_k || 0 }} {{ item?.satuan_k }}</u-badge> x
-            <u-badge variant="warning">Rp. {{ formatRupiah(item?.harga_jual) }}</u-badge>
+            <u-badge variant="warning">Rp. {{ formatRupiah(item?.harga_jual) }}</u-badge> 
+            <template v-if="item?.diskon">
+              -
+              <u-badge  variant="danger">Rp. {{ formatRupiah(parseInt(item?.diskon)) }}</u-badge>
+            </template>
           </u-row>
         </u-col>
       </u-row>

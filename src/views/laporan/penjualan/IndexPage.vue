@@ -128,7 +128,7 @@
             <tr>
               <td class="td text-right font-bold">TOTAL DISKON : </td>
               <td class="td text-right font-bold">
-                Rp.  {{ formatRupiah(store?.grand?.total_hpp) }}
+                Rp.  {{ formatRupiah(store?.grand?.total_diskon) }}
               </td>
             </tr>
             <tr>
