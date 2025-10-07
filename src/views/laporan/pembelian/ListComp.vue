@@ -40,10 +40,10 @@
             <td class="td p-1 align-top text-left font-semibold">{{ formatDateIndo(it.tanggal) }}</td>
             <td class="td p-1 align-top text-left font-semibold">{{ it?.nopenerimaan || '-' }}</td>
             <td class="td p-1 align-top text-left font-semibold">{{ it?.suplier || '-' }}</td>
-            <td class="td p-1 align-top text-left font-semibold">Rp. {{ formatRupiah(it?.totalpenerimaan) || '-' }}
+            <td class="td p-1 align-top text-left font-semibold">Rp. {{ formatRupiah(it?.totalpenerimaan || 0) }}
             </td>
-            <td class="td p-1 align-top text-left font-semibold">Rp. {{ formatRupiah(it?.totalretur)|| '-' }}</td>
-            <td class="td p-1 align-top text-right font-semibold">Rp. {{ formatRupiah(it?.subtotal) || '-' }}</td>
+            <td class="td p-1 align-top text-left font-semibold">Rp. {{ formatRupiah(it?.totalretur || 0) }}</td>
+            <td class="td p-1 align-top text-right font-semibold">Rp. {{ formatRupiah(it?.subtotal || 0) }}</td>
           </tr>
           <template v-for="el in it.rincian" :key="el">
             <tr>
@@ -58,11 +58,18 @@
                 <div>Diskon Rp. {{ formatRupiah(el?.rinci_diskon) }} </div>
               </td>
               <td class="td p-1 align-top text-left">
-                <div v-if="el?.retur_nama"> {{ el?.retur_nama }},
-                  <span>Nilai: Rp. {{ formatRupiah(el?.retur_subtotal) }}</span>
-                </div>
-                <div v-if="el?.retur_jumlah_b && el?.retur_satuan_b">Jumlah Item {{ el?.retur_jumlah_b }} {{
-                  el?.retur_satuan_b }} </div>
+                <template
+                  v-if="el?.retur_nama || el?.retur_jumlah_b || el?.retur_satuan_b || el?.retur_pajak || el?.retur_diskon">
+                  <div class="font-semibold"> {{ el?.retur_nama }},
+                    <span>Nilai: Rp. {{ formatRupiah(el?.retur_subtotal || 0) }}</span>
+                  </div>
+                  <div>
+                    Rincian : {{ el?.retur_jumlah_b }} {{ el?.retur_satuan_b }} x Rp.
+                    {{ formatRupiah(el?.retur_harga_b || 0) }}
+                  </div>
+                  <div>Pajak Rp. {{ formatRupiah(el?.retur_pajak) }} </div>
+                  <div>Diskon Rp. {{ formatRupiah(el?.retur_diskon) }} </div>
+                </template>
               </td>
               <td class="td p-1 align-top text-left"></td>
             </tr>
@@ -117,11 +124,16 @@ const mapItems = computed(() => {
           rinci_satuan_b: s?.satuan_b,
           rinci_subtotal: s?.subtotal,
           rinci_pajak: parseFloat(s?.pajak_rupiah) * parseFloat(s?.jumlah_k) || 0,
-          rinci_diskon:parseFloat(s?.diskon_rupiah) *parseFloat(s?.jumlah_k) || 0,
-          retur_nama: ret?.barang?.nama || '',
-          retur_jumlah_b: ret?.jumlahretur_b || '',
-          retur_satuan_b: ret?.satuan_b || '',
-          retur_subtotal: ret?.subtotalretur || ''
+          rinci_diskon:parseFloat(s?.diskon_rupiah) * parseFloat(s?.jumlah_k) || 0,
+
+
+          retur_nama: ret?.barang?.nama,
+          retur_jumlah_b: ret?.jumlahretur_b,
+          retur_harga_b: ret?.harga_b,
+          retur_satuan_b: ret?.satuan_b,
+          retur_subtotal: ret?.subtotalretur,
+          retur_pajak: parseFloat(ret?.pajakretur_rupiah) * parseFloat(ret?.jumlahretur_b),
+          retur_diskon: parseFloat(ret?.diskonretur_rupiah) * parseFloat(ret?.jumlahretur_b),
         }
       })
       map.set(key, {
