@@ -45,7 +45,6 @@ const loadingHapusItem = ref(false)
 const notify = useNotificationStore().notify
 
 const handleDelete = async (item) => {
-  console.log('items del', item)
 
   const payload = {
     nopelunasan: item?.nopelunasan,
@@ -53,16 +52,11 @@ const handleDelete = async (item) => {
     noorder: item?.noorder
   }
 
-  
-
-  // console.log('handleDelete payload', props.store.form.rinci);
-
   try {
     const resp = await api.post(`api/v1/transactions/pembayaran-hutang/delete`, payload)
 
-    console.log('resp hapus', resp);
-    const rincian = props?.store?.form?.rincian?.filter(el => el?.id !== item?.id)
-    props.store.form.rincian = rincian
+    const rincian = props?.store?.form?.rinci?.filter(el => el?.id !== item?.id)
+    props.store.form.rinci = rincian
 
 
     notify({ message: resp.data.message ?? 'Data Berhasil dihapus', type: 'success' })
