@@ -1,7 +1,7 @@
 <template>
   <u-view flex1 class="w-full">
     <u-grid cols="4">
-      <u-col class="col-span-3" gap="gap-0">
+      <u-col class="col-span-3" gap="gap-1">
         <u-text class="font-bold">{{ item?.nopenerimaan }}</u-text>
         <u-text size="xs" color="text-gray-500">No Order : {{ item?.noorder || '-' }}</u-text>
          <u-text size="xs" color="text-gray-500">No Faktur : {{ item?.nofaktur || '-' }}</u-text>
@@ -9,7 +9,7 @@
       <u-col align="items-end" class="col-span-1" gap="gap-0">
         <u-row>
           <u-col align="items-end" gap="gap-0">
-            <u-text size="lg" class="font-bold" color="text-gray-500">Rp. {{ formatRupiah(item?.total || 0) }} </u-text>
+            <u-text size="md" class="font-bold" color="text-gray-500">Rp. {{ formatRupiah(item?.total || 0) }} </u-text>
             <span class="text-xs font-normal">{{ item?.satuan_b }}</span>
           </u-col>
           <div v-if="isHovered && !loadingHapusItem" class="ml-2">
@@ -45,12 +45,12 @@ const loadingHapusItem = ref(false)
 const notify = useNotificationStore().notify
 
 const handleDelete = async (item) => {
-
+  console.log('items del', item)
 
   const payload = {
-    noretur: props.store.form?.noretur,
-    id_penerimaan_rinci: item?.id_penerimaan_rinci ?? null,
-    id: item?.id ?? null
+    nopelunasan: item?.nopelunasan,
+    nopenerimaan: item?.nopenerimaan,
+    noorder: item?.noorder
   }
 
   
@@ -58,9 +58,9 @@ const handleDelete = async (item) => {
   // console.log('handleDelete payload', props.store.form.rinci);
 
   try {
-    const resp = await api.post(`api/v1/transactions/returpembelian/delete`, payload)
+    const resp = await api.post(`api/v1/transactions/pembayaran-hutang/delete`, payload)
 
-    // console.log('resp hapus', resp);
+    console.log('resp hapus', resp);
     const rincian = props?.store?.form?.rincian?.filter(el => el?.id !== item?.id)
     props.store.form.rincian = rincian
 
@@ -71,7 +71,7 @@ const handleDelete = async (item) => {
 
   } catch (error) {
     console.log('error', error);
-    notify({ message: error.response.data.message ?? 'Data Gagal dihapus', type: 'danger' })
+    notify({ message: error.response.data.message ?? 'Data Gagal dihapus', type: 'error' })
   } finally {
     loadingHapusItem.value = false
   }

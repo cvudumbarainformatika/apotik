@@ -21,79 +21,30 @@
             @items-loaded="onItemsLoadedBarang">
             <template #item="{ item }">
               <u-col gap="gap-1">
-                <u-text size="sm" class="font-medium">{{ item?.suplier?.nama }} ({{ item?.nopenerimaan }})</u-text>
-                <u-row class="-mt-1" gap="gap-1">
-                  <u-icon name="box" class="w-4 h-4" />
-                  <u-text class="">Rp. {{ formatRupiah(item?.nominal_total) }}</u-text>
+                <u-row flex1 class="w-full" gap="gap-2" padding="px-2 py-3">
+                  <u-col flex1 class="w-full" gap="gap-1">
+                    <u-row flex1 class="w-full items-start">
+                      <u-text size="sm" class="font-medium"> {{ item?.suplier?.nama }} ({{ item?.nopenerimaan }})
+                      </u-text>
+                    </u-row>
+                  </u-col>
+                  <u-row gap="gap-3">
+                    <div class="flex flex-col">
+                    </div>
+                    <div class="w-64">
+                      <u-badge variant="warning">Nilai Hutang : Rp. {{ formatRupiah(item?.total) }} </u-badge>
+                    </div>
+
+                    <u-btn
+                      :loading="store.loadingSave" variant="primary" size="sm"
+                      @click.stop="handleSave(item)">Bayar</u-btn>
+                  </u-row>
                 </u-row>
               </u-col>
             </template>
           </u-autocomplete>
         </u-row>
 
-        <u-row class="relative -mt-4">
-          <div v-if="store?.penerimaanSelected" ref="menuBarangRef"
-            class="bg-background border-1 border-primary rounded-xl shadow-sm p-4 transition-all duration-300 hover:shadow-md w-full absolute z-10 -top-4">
-            <u-grid cols="12" gap="gap-4">
-              <div class="col-span-4">
-                <u-text class="font-bold">Nama Supplier (PBF)</u-text>
-                <u-text>{{ store.penerimaanSelected?.suplier?.nama || '-' }}</u-text>
-              </div>
-              <div class="col-span-4 text-center">
-                <!-- <u-text class="font-bold">Satuan</u-text>
-                  <u-text>{{ store.barangSelected?.satuan_k || '-' }} | {{ store.barangSelected?.satuan_b || '-' }}, {{ store.barangSelected?.isi || 0 }}</u-text> -->
-              </div>
-              <div class="col-span-4 text-right">
-                <u-text class="font-bold">No Penerimaan</u-text>
-                <u-text>{{ store.penerimaanSelected?.nopenerimaan || '-' }}</u-text>
-              </div>
-
-              <div class="col-span-12">
-                <u-separator spacing="-mt-1 mb-1"></u-separator>
-                <u-col flex1 class="w-full" gap="gap-0">
-                  <!-- <u-row flex1 class="w-full bg-secondary" gap="gap-2" padding="px-2 py-3">
-                    <u-text> Nilai Hutang Rp. {{ formatRupiah(store.penerimaanSelected?.nominal_total) }} </u-text>
-                  </u-row> -->
-                  <template v-if="store.penerimaanSelected">
-                    <!-- <template v-for="(item) in store.penerimaanSelected?.rincian" :key="item.id"> -->
-                      <u-row flex1 class="w-full bg-secondary" gap="gap-2" padding="px-2 py-3">
-                        <u-col flex1 class="w-full" gap="gap-1">
-                          <u-row flex1 class="w-full items-start">
-                            <u-text class="font-bold"> Nilai Hutang </u-text>
-                          </u-row>
-                          <u-row>
-                            <u-text class="font-medium italic">
-                              Rp. {{ formatRupiah(store.penerimaanSelected?.nominal_total) }}
-                            </u-text>
-                          </u-row>
-                        </u-col>
-                        <u-row gap="gap-3">
-                          <div class="flex flex-col">
-                          </div>
-                          <div class="w-64"
-                            :class="{ 'animate-shake': parseInt(form?.nominal) > parseInt(form?.total_dibayar) }">
-                            <u-input type="number" v-model.number="form.total_dibayar" label="Jumlah Bayar"
-                              @focus="handleFocusJumlah" :error="parseInt(form?.nominal) > parseInt(form?.total_dibayar)" />
-                          </div>
-
-                          <u-btn
-                            :disabled="(parseInt(form?.nominal) > parseInt(form?.total_dibayar)) || parseInt(form?.total_dibayar) === 0"
-                            :loading="store.loadingSave" variant="secondary" size="sm"
-                            @click.stop="handleSave(item)">Save</u-btn>
-                        </u-row>
-                      </u-row>
-                      <u-separator spacing=""></u-separator>
-                    <!-- </template> -->
-
-                  </template>
-                  <u-row flex1 right class="w-full mt-2" gap="gap-2">
-                    <u-btn @click="handleOk">Tutup</u-btn>
-                  </u-row>
-                </u-col>
-              </div>
-            </u-grid>
-          </div>
-        </u-row>
         <u-row>
           <u-empty v-if="!store.form?.rinci?.length" title="Belum Ada Items" icon="baggage-claim" />
           <u-list v-else :spaced="true" anim :items="store.form?.rinci">
@@ -215,23 +166,12 @@ function errorMessage(field){
   return error.value?.[field]?.[0] ?? null
 } 
 
-const handleSelected = (item) => {
-  props.store.supplierSelected = item
-  form.value.kode_suplier = item?.kode ?? null
-  searchSupplier.value = ''
-  
-}
 const handleSelectedPenerimaan = (item) => {
   props.store.penerimaanSelected = item
   searchPenerimaan.value = ''
   handleFocus(inpJumlahRef)
 }
 
-const handleOk = () => {
-  console.log('handleOk');
-  clearSelectedBarang()
-  
-}
 
 const handleFocus = async (e) => {
   
@@ -243,16 +183,7 @@ const handleFocus = async (e) => {
   
 }
 
-function handleClickOutside(event) {
-  if (menuBarangRef.value && !menuBarangRef.value.contains(event.target)) {
-    clearSelectedBarang()
-  }
-}
 
-const onItemsLoaded = (items) => {
-  // console.log('items', items);
-  
-}
 const onItemsLoadedBarang = (items) => {
   // console.log('items', items);
   
@@ -274,31 +205,28 @@ const clearSelectedBarang = () => {
 const handleSave = (e) => {
   // e.preventDefault()
   // e.stopPropagation()
-  
-  form.value.nopenerimaan = props.store.penerimaanSelected?.nopenerimaan || null
-  form.value.noorder = props.store.penerimaanSelected?.noorder || null
-  form.value.nofaktur = props.store.penerimaanSelected?.nofaktur || null
-  form.value.kode_suplier = props.store.penerimaanSelected?.kode_suplier || null
-  form.value.nominal = props.store.penerimaanSelected?.rincian?.reduce((a, b) => a + (parseInt(b.harga_b) * parseInt(b.jumlah_b) || 0), 0) || 0
-  form.value.pajak = props.store.penerimaanSelected?.rincian?.reduce((a, b) => a + (parseInt(b.pajak_rupiah) * parseInt(b.jumlah_k) || 0), 0) || 0
-  form.value.diskon = props.store.penerimaanSelected?.rincian?.reduce((a, b) => a + (parseInt(b.diskon_rupiah) * parseInt(b.jumlah_k) || 0), 0) || 0
-  form.value.total = props.store.penerimaanSelected?.rincian?.reduce((a, b) => a + (parseInt(b.subtotal) || 0), 0) || 0
-  
+ 
+  form.value.nopenerimaan = e?.nopenerimaan || null
+  form.value.noorder = e?.noorder || null
+  form.value.nofaktur = e?.nofaktur || null
+  form.value.kode_suplier = e?.kode_suplier || null
+  form.value.nominal = e?.nominal
+  form.value.pajak = e?.pajak
+  form.value.diskon = e?.diskon
+  form.value.total = e?.total
+  // form.value.nominal = e?.rincian?.reduce((a, b) => a + (parseInt(b.harga_b) * parseInt(b.jumlah_b) || 0), 0) || 0
+  // form.value.pajak = e?.rincian?.reduce((a, b) => a + (parseInt(b.pajak_rupiah) * parseInt(b.jumlah_k) || 0), 0) || 0
+  // form.value.diskon = e?.rincian?.reduce((a, b) => a + (parseInt(b.diskon_rupiah) * parseInt(b.jumlah_k) || 0), 0) || 0
+  // form.value.total = e?.rincian?.reduce((a, b) => a + (parseInt(b.subtotal) || 0), 0) || 0
+ 
   props.store.create(form.value)
   .then(() => {
+    searchPenerimaan.value = ''
     // clearSelectedBarang()
   })
 }
 
 
-
-const handleFocusJumlah = async (e) => {
-  // console.log('handleFocusJumlah', e);
-}
-
-const handleBatal = () => {
-  clearSelectedBarang()
-}
 
 const handleKunci = async (e) => {
   e.preventDefault()
@@ -306,11 +234,11 @@ const handleKunci = async (e) => {
 
 
   const flag = (props.store.form?.flag === '1' || props.store.form?.flag === 1)
-  // if (flag) {
-  //   modalCetak.value = true
-  //   return 
-  // }
-
+  if (flag) {
+    modalCetak.value = true
+    return 
+  }
+  
   const id = props.store.form?.id
   const nopelunasan = props.store.form?.nopelunasan
   const payload = {
@@ -323,7 +251,7 @@ const handleKunci = async (e) => {
   try {
     if (!flag) {
     resp = await api.post(`api/v1/transactions/pembayaran-hutang/kunci`, payload)
-    } 
+    }
     // else {
     //   resp = await api.post(`api/v1/transactions/returpembelian/unlock-order`, payload)
     // }
@@ -340,7 +268,6 @@ const handleKunci = async (e) => {
   } finally {
     loadingLock.value = false
   }
-
   const data = resp?.data?.data
   props.store.form.flag = data?.flag
   props.store.initModeEdit(data)
@@ -368,7 +295,6 @@ onUnmounted(() => {
 })
 
 watch(() => ({ ...props.store.form }), (newForm, oldForm) => {
-  // console.log('🔥 watch form', newForm, oldForm);
   
   for (const key in newForm) {
     if (newForm[key] !== oldForm[key]) {
@@ -391,12 +317,6 @@ watch(() => ({ ...props.store.form }), (newForm, oldForm) => {
     if (props.store.mode === 'add') {
       initForm()
     }
-
-   
-
-    // console.log('🔥 watch form', form.value, newForm);
-
-
   }
 
 }, { deep: true })
