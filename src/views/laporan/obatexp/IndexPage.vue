@@ -59,8 +59,11 @@
             <div class="pt-2 uppercase text-md font-bold text-right">
               LAPORAN OBAT EXPIRED
             </div>
-            <div class=" uppercase text-xs">
+            <div class=" uppercase text-xs text-right">
               Periode {{ formatDateIndo(store.params?.from) }} - {{ formatDateIndo(store.params?.to) }}
+            </div>
+            <div class="pt-2 uppercase text-sm font-bold text-right">
+              TOTAL NILAI OBAT : Rp. {{ formatRpkoma(getTotal()) }}
             </div>
             <!-- <div class="pt-2 uppercase text-sm font-bold text-right">
             TOTAL PENJUALAN : Rp.  {{ formatRupiah(store?.grand?.total_penjualan) }}
@@ -85,8 +88,9 @@
               <th class="th text-left sticky-header">Kode Obat</th>
               <th class="th text-left sticky-header">Nama Obat</th>
               <th class="th text-left sticky-header">Satuan</th>
-              <!-- <th class="th text-left sticky-header">Invoice</th> -->
               <th class="th text-right sticky-header">Jumlah</th>
+              <th class="th text-right sticky-header">Harga (Rp.)</th>
+              <th class="th text-right sticky-header">Nilai Obat (Rp.)</th>
             </tr>
           </thead>
           <tbody>
@@ -96,12 +100,14 @@
                 <td class="td font-semibold">{{ item?.kode }}</td>
                 <td class="td font-semibold">{{ item?.nama }}</td>
                 <td class="td font-semibold">1 {{ item?.satuan_b }} isi {{ item?.isi }} {{ item?.satuan_k }}</td>
-                <!-- <td class="td">{{ item.customer }}</td> -->
-                <td class="td text-sm text-right font-semibold ">
+                <td class="td text-right font-semibold ">
                   {{ formatRupiah(item?.jumlah_k) }} {{ item?.satuan_k }}
                 </td>
+                <td class="td text-right font-semibold">{{ formatRpkoma(item?.harga_beli) }}</td>
+                <td class="td text-right font-semibold">{{ formatRpkoma(Number(item?.harga_beli) *
+                  Number(item?.jumlah_k)) }}</td>
               </tr>
-            </template> 
+            </template>
           </tbody>
         </table>
 
@@ -120,7 +126,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from "vue"
-import { formatRupiah, formatTeleponID } from "@/utils/numberHelper"
+import { formatRpkoma, formatRupiah, formatTeleponID } from "@/utils/numberHelper"
 import { formatDateIndo } from "@/utils/dateHelper"
 import { useAppStore } from "@/stores/app"
 import Pagination from "./Pagination.vue"
@@ -132,7 +138,15 @@ const app = useAppStore()
 
 onMounted(store.fetchData)
 
+function getTotal(item) {
+  let subtotal = 0
+  store.items.forEach((r) => {
+    subtotal += (parseFloat(r?.harga_beli) * parseFloat(r?.jumlah_k))
+  })
 
+
+  return subtotal
+}
 
 const printObj = {
   id: '#printArea', // ref elemen yang mau diprint
