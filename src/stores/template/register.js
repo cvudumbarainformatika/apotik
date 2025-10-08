@@ -16,14 +16,14 @@ export const useSatuanStore = createTemplateStore('satuan', {
   order_by: 'nama',
   sort: 'asc',
   order: 'Nama',
-  persist: true
+  persist: false
 })
 export const useJabatanStore = createTemplateStore('jabatan', {
   baseUrl: 'api/v1/master/jabatan',
   order_by: 'nama',
   sort: 'asc',
   order: 'Nama',
-  persist: true
+  persist: false
 })
 export const useSupplierStore = createTemplateStore('supplier', {
   baseUrl: 'api/v1/master/supplier',
