@@ -1,6 +1,6 @@
 <template>
-  <base-master :title="title" :store="store" :showOpnameButton="true" :showMonthButton="true" :showAddButton="false"
-    :onRange="handleRange" :onRefresh="handleRefresh" :onTriger="handleOpname">
+  <base-master :title="title" :store="store" :showPrint="true" :showOpnameButton="true" :showMonthButton="true"
+    :showAddButton="false" :onRange="handleRange" :onRefresh="handleRefresh" :onTriger="handleOpname">
     <!-- <template #loading>
       <LoaderItem />
     </template> -->
@@ -12,8 +12,15 @@
         <template #fallback>
           <LoaderItem />
         </template>
+
       </Suspense>
     </template>
+    <!-- <template #item="{ item }"> -->
+    <template #print>
+      <cetak-data :store="store" :range="dateRange" />
+    </template>
+    <!-- </template> -->
+
     <!-- <template #modal-form>
       <modal-form v-if="store.modalFormOpen" v-model="store.modalFormOpen" :mode="store.item ? 'edit' : 'add'"
         :title="title" :store="store" @close="store.modalFormOpen = false" @save="handleSave" />
@@ -35,6 +42,7 @@ const $confirm = inject('confirm')
 
 const notify = useNotificationStore().notify
 const ListComp = defineAsyncComponent(() => import('./ListComp.vue'))
+const CetakData = defineAsyncComponent(() => import('./CetakData.vue'))
 const ModalForm = defineAsyncComponent(() => import('./ModalDetail.vue'))
 const store = useKartuStokStore()
 const route = useRoute()
