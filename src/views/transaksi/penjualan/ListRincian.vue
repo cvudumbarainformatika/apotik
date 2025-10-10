@@ -1,5 +1,5 @@
 <template>
-  <div flex1 class="w-full p-3"
+  <div flex1 class="w-full p-3 "
   >
     <!-- Glow bawah -->
     <div class="absolute -bottom-1 left-4 right-4 h-[2px] rounded-full bg-white/40 blur-md"></div>
