@@ -13,6 +13,12 @@ export const useDashboardStore = defineStore('dashboard-store', {
       label:[],
       data:[]
     },
+    penjPblTahunIni:{
+      label:[],
+      penjualan:[],
+      pembelian:[]
+    },
+    harian :null,
     params: {
       q: '',
       per_page: 50,
@@ -66,7 +72,7 @@ export const useDashboardStore = defineStore('dashboard-store', {
         this.top5Products.label = data?.map(item => item.nama) || []
         this.top5Products.data = data?.map(item => parseInt(item?.total_penjualan)) || []
 
-        console.log('top5Products', this.top5Products);
+        // console.log('top5Products', this.top5Products);
         
             
     },
@@ -81,15 +87,48 @@ export const useDashboardStore = defineStore('dashboard-store', {
       const res = await api
         .get('api/v1/laporan/dashboard/toppbf', params)
 
-        console.log('res top pbf', res);
+        // console.log('res top pbf', res);
         const data = res.data?.data || []
 
         this.topPbf.label = data?.map(item => item.nama) || []
         this.topPbf.data = data?.map(item => parseInt(item?.jumlah)) || []
+    },
+    async fetchDataTahunIni() {
+      this.loading = true
+
+      // const params = {
+      //   ...this.params,
+      // }
+
+      const res = await api
+        .get('api/v1/laporan/dashboard/pen-pem-pbl')
+
+        // console.log('res pen-pem-pbl', res);
+        const data = res.data?.data || null
+
+        this.penjPblTahunIni.label = data?.bulan
+        this.penjPblTahunIni.penjualan = data?.penjualan || []
+        this.penjPblTahunIni.pembelian = data?.pembelian || []
 
         
-    
+    },
+    async fetchDataHariIni() {
+      this.loading = true
 
+      // const params = {
+      //   ...this.params,
+      // }
+
+      const res = await api
+        .get('api/v1/laporan/dashboard/pen-pem-harian')
+
+        console.log('res pen-pem-pbl hari ini', res);
+        const data = res.data || []
+
+        this.harian = data
+        
+
+        
     },
 
 

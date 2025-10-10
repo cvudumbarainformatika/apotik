@@ -15,7 +15,9 @@ onMounted(() => {
   .then(() => {
     Promise.all([
       store.fetchFastMoving(),
-      store.fetchPbf()
+      store.fetchPbf(),
+      store.fetchDataTahunIni(),
+      store.fetchDataHariIni(),
     ])
   })
 
@@ -25,27 +27,39 @@ const stats = computed(() => {
   return [
     { 
       label: 'Total Penjualan', 
-      jumlah: formatRupiah(9000000), 
-      persentase: '+' + '%',
-      trend: '📈 📉' 
+      jumlah: formatRupiah(store.harian?.penjualan?.total_penjualan?.hari_ini || 0) || formatRupiah(0), 
+      trend_persentase: store.harian?.penjualan?.total_penjualan?.status === 'naik' ? '+' 
+        : store.harian?.penjualan?.total_penjualan?.status === 'turun' ? '-' : '',
+      persentase: store.harian?.penjualan?.total_penjualan?.persentase_perubahan || 0,
+      trend: store.harian?.penjualan?.total_penjualan?.status === 'naik' ? '📉' 
+        : store.harian?.penjualan?.total_penjualan?.status === 'turun' ? '📈' : '-'
     },
     { 
       label: 'Trans Penjualan', 
-      jumlah: formatRupiah(256), 
-      persentase: '+' + '%',
-      trend: '📈 📉' 
+      jumlah: formatRupiah(store.harian?.penjualan?.jumlah_transaksi?.hari_ini || 0) || formatRupiah(0), 
+      trend_persentase: store.harian?.penjualan?.jumlah_transaksi?.status === 'naik' ? '+' 
+        : store.harian?.penjualan?.jumlah_transaksi?.status === 'turun' ? '-' : '',
+      persentase: store.harian?.penjualan?.jumlah_transaksi?.persentase_perubahan || 0,
+      trend: store.harian?.penjualan?.jumlah_transaksi?.status === 'naik' ? '📉' 
+        : store.harian?.penjualan?.jumlah_transaksi?.status === 'turun' ? '📈' : '-'
     },
     { 
       label: 'Total Pembelian', 
-      jumlah: formatRupiah(6000000), 
-      persentase: '+' + '%',
-      trend: '📈 📉' 
+     jumlah: formatRupiah(store.harian?.pembelian?.total_penerimaan?.hari_ini || 0) || formatRupiah(0), 
+      trend_persentase: store.harian?.pembelian?.total_penerimaan?.status === 'naik' ? '+' 
+        : store.harian?.pembelian?.total_penerimaan?.status === 'turun' ? '-' : '',
+      persentase: store.harian?.pembelian?.total_penerimaan?.persentase_perubahan || 0,
+      trend: store.harian?.pembelian?.total_penerimaan?.status === 'naik' ? '📉' 
+        : store.harian?.pembelian?.total_penerimaan?.status === 'turun' ? '📈' : '-'
     },
     { 
       label: 'Trans Pembelian', 
-      jumlah: formatRupiah(50), 
-      persentase: '+' + '%',
-      trend: '📈 📉' 
+      jumlah: formatRupiah(store.harian?.pembelian?.jumlah_transaksi?.hari_ini || 0) || formatRupiah(0), 
+      trend_persentase: store.harian?.pembelian?.jumlah_transaksi?.status === 'naik' ? '+' 
+        : store.harian?.pembelian?.jumlah_transaksi?.status === 'turun' ? '-' : '',
+      persentase: store.harian?.pembelian?.jumlah_transaksi?.persentase_perubahan || 0,
+      trend: store.harian?.pembelian?.jumlah_transaksi?.status === 'naik' ? '📉' 
+        : store.harian?.pembelian?.jumlah_transaksi?.status === 'turun' ? '📈' : '-'
     },
   ]
 })
@@ -64,12 +78,12 @@ const stats = computed(() => {
           <u-card v-for="(stat, i) in stats" :key="i" >
             <u-text size="xs" class="font-normal">{{ stat?.label }}</u-text>
             <u-row>
-              <u-text size="xs" class="font-normal">Rp. </u-text>
+              <u-text size="xs" class="font-normal"></u-text>
               <u-text size="xl" class="font-bold">{{ stat?.jumlah }} </u-text>
             </u-row>
             <u-row>
-              <u-text size="md" class="font-bold"> + 10% </u-text>
-              <u-text size="xl" class="font-bold"> 📈 📉</u-text>
+              <u-text size="md" class="font-bold">  {{ stat?.persentase || '' }} % </u-text>
+              <u-text size="xl" class="font-bold"> {{ stat?.trend || '' }}</u-text>
             </u-row>
           </u-card>
         </div>
@@ -87,10 +101,10 @@ const stats = computed(() => {
             <div class="">
               <base-chart 
                 type="bar" 
-                :labels="['Jn', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Des']"
+                :labels="store.penjPblTahunIni?.label || ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Des']"
                 :datasets="[
                   { 
-                    data: [10000000, 2000000, 3000000, 12000000, 5000000, 6000000, 7000000, 8000000, 9000000, 10000000, 11000000, 2000000],
+                    data: store.penjPblTahunIni?.penjualan || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                     label: 'Penjualan',
                     borderColor: '#0044B8',
                     backgroundColor: '#0044B880',
@@ -99,7 +113,7 @@ const stats = computed(() => {
                     tension: 0.4
                   },
                   { 
-                    data: [11000000, 12000000, 1000000, 2000000, 5000000, 8000000, 3000000, 5000000, 6000000, 2000000, 1000000, 200000],
+                    data: store.penjPblTahunIni?.pembelian || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                     label: 'Pembelian',
                     borderColor: '#E9053E',
                     backgroundColor: '#E9053E80',
@@ -122,22 +136,22 @@ const stats = computed(() => {
 
           <u-card padding="p-0" class="col-span-1 md:col-span-5 w-full">
             <u-row class="px-4 pt-4">
-              <u-text size="md" class="font-light" color="text-gray-500">Grafik Penjualan & Pembelian (5 Hari Terakhir)</u-text>
+              <u-text size="md" class="font-light" color="text-gray-500">Grafik Penjualan & Pembelian</u-text>
             </u-row>
 
             <div class="">
               <BaseChart 
                 type="line" 
-                :labels="['2025-01-01', '2025-01-02', '2025-01-03', '2025-01-04', '2025-01-05']"
+                :labels="store.penjPblTahunIni?.label || ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Des']"
                 :datasets="[
                   { 
-                    data: [2000000, 3000000, 9000000, 10000000, 11000000],
+                    data: store.penjPblTahunIni?.penjualan || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                     label: 'Penjualan',
                     borderColor: '#0044B8',
                     tension: 0.4
                   },
                   { 
-                    data: [5000000, 200000, 1000000, 600000, 1000],
+                    data: store.penjPblTahunIni?.pembelian || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                     label: 'Pembelian',
                     borderColor: '#E9053E',
                     tension: 0.4
@@ -155,7 +169,7 @@ const stats = computed(() => {
           
           </u-card>
 
-          <u-card padding="p-0" class="col-span-1 md:col-span-4 w-full">
+          <u-card padding="p-0" class="col-span-1 md:col-span-6 w-full">
             <u-row class="px-4 pt-4">
               <u-text size="md" class="font-light" color="text-gray-500">Top 5 Fast Move Product (Obat) Bulan Ini</u-text>
             </u-row>
@@ -177,7 +191,7 @@ const stats = computed(() => {
             </div>
           </u-card>
 
-          <u-card padding="p-0" class="col-span-1 md:col-span-4 w-full">
+          <!-- <u-card padding="p-0" class="col-span-1 md:col-span-4 w-full">
             <u-row class="px-4 pt-4">
               <u-text size="md" class="font-light" color="text-gray-500">Top 3 Dokter (Transaksi Resep) Bulan Ini</u-text>
             </u-row>
@@ -197,9 +211,9 @@ const stats = computed(() => {
                 height-class="h-80"
               />
             </div>
-          </u-card>
+          </u-card> -->
 
-          <u-card padding="p-0" class="col-span-1 md:col-span-4 w-full">
+          <u-card padding="p-0" class="col-span-1 md:col-span-6 w-full">
             <u-row class="px-4 pt-4">
               <u-text size="md" class="font-light" color="text-gray-500">Top 5 PBF (Bulan Ini)</u-text>
             </u-row>
