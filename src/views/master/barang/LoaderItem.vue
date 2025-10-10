@@ -1,5 +1,5 @@
 <template>
-  <u-col gap="gap-1" class="w-full px-4 py-1 animate-pulse">
+  <u-col v-for="n in 5"  gap="gap-1" class="w-full px-4 py-1 animate-pulse">
     <u-view padding="0" flex1 class="w-full">
       <u-col flex1 class="w-full" gap="gap-1">
         <u-row flex1 class="w-full pt-1 items-center justify-between">
@@ -41,3 +41,6 @@
     </u-view>
   </u-col>
 </template>
+
+<script setup>
+</script>

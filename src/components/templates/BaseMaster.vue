@@ -53,7 +53,7 @@
       <!-- <div class="absolute inset-0 top-12">
         <u-load-spinner></u-load-spinner>
       </div> -->
-      <div v-if="store.loading && !store.items.length" class="w-full">
+      <div v-if="store.loading " class="w-full">
         <slot name="loading">
           <u-load-spinner></u-load-spinner>
         </slot>

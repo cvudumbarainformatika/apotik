@@ -80,14 +80,14 @@ async function handleDelete(item) {
       <LoaderItem />
     </template>
     <template #item="{ item }">
-      <Suspense>
-        <template #default>
+      <!-- <Suspense> -->
+        <!-- <template #default> -->
           <list-comp :item="item" @edit="handleEdit" @delete="handleDelete" />
-        </template>
-        <template #fallback>
-          <LoaderItem />
-        </template>
-      </Suspense>
+        <!-- </template> -->
+        <!-- <template #fallback> -->
+          <!-- <LoaderItem /> -->
+        <!-- </template> -->
+      <!-- </Suspense> -->
     </template>
     <template #modal-form>
       <modal-form v-if="store.modalFormOpen" v-model="store.modalFormOpen" :mode="store.item ? 'edit' : 'add'"

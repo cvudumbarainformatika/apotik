@@ -147,7 +147,7 @@
                   <span class="font-medium">Tgl Expired</span>
                 </u-row>
                 <u-row class="col-span-7">
-                  <span>: {{ item?.tgl_exprd }}</span>
+                  <span>: {{ formatDateIndo(item?.tgl_exprd) }}</span>
                 </u-row>
               </u-grid>
             </div>
@@ -169,7 +169,7 @@
 
 <script setup>
 import { useStockStore } from '@/stores/template/register'
-import { useWaktuLaluReactive } from '@/utils/dateHelper'
+import { useWaktuLaluReactive, formatDateIndo } from '@/utils/dateHelper'
 import { computed, defineAsyncComponent, ref } from 'vue'
 
 const props = defineProps({

@@ -228,7 +228,7 @@
                       <u-text class="italic" label="Expired : " />
                       <div>
                         <u-text class="font-medium italic">
-                          {{ item?.tgl_exprd }}
+                          {{ formatDateIndo(item?.tgl_exprd) }}
                         </u-text>
                         <u-text color="text-gray-500 italic">
                           {{ formatWaktuSisa(item?.tgl_exprd) }}
@@ -251,15 +251,18 @@
                           :error="parseInt(item?.jumlah) > parseInt(item?.jumlah_k)"
                         />
                       </div>
-                      <div class="w-20" >
+                      <div class="w-24" >
                         <u-input type="number" v-model.number="item.diskon" label="Disc" 
                           
                         />
                       </div>
 
-                      <u-btn :disabled="(parseInt(item?.jumlah) > parseInt(item?.jumlah_k)) || parseInt(item?.jumlah) === 0" 
+                      <!-- <u-btn :disabled="(parseInt(item?.jumlah) > parseInt(item?.jumlah_k)) || parseInt(item?.jumlah) === 0" 
                         :loading="store.loadingSave"
-                        variant="secondary" size="sm" @click.stop="handleAdd(item)">Ad</u-btn>
+                        variant="secondary" size="sm" @click.stop="handleAdd(item)">Ad</u-btn> -->
+                      <u-btn-icon :disabled="(parseInt(item?.jumlah) > parseInt(item?.jumlah_k)) || parseInt(item?.jumlah) === 0" 
+                        :loading="store.loadingSave"
+                        icon="check" variant="secondary" size="sm" @click.stop="handleAdd(item)" />
                     </u-row>
                   </u-row>
                   <u-separator spacing=""></u-separator>
@@ -351,7 +354,7 @@
 import { ref, computed, nextTick, onMounted, onUnmounted, watch, defineAsyncComponent } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { api } from '@/services/api'
-import { formatWaktuSisa } from '@/utils/dateHelper'
+import { formatWaktuSisa, formatDateIndo } from '@/utils/dateHelper'
 import { formatRupiah } from '@/utils/numberHelper'
 import ModalNota from './ModalNota.vue'
 

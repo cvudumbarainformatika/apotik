@@ -1,12 +1,24 @@
 <script setup>
 import { ref, onMounted, computed, defineAsyncComponent } from 'vue'
 import { formatRupiah } from '@/utils/numberHelper'
+import { useDashboardStore } from '@/stores/dashboard'
 
 // const LineChart = defineAsyncComponent(() => import('@/components/templates/chart/LineChart.vue'))
 const BaseChart = defineAsyncComponent(() => import('@/components/templates/chart/BaseChart.vue'))
 
+
+const store = useDashboardStore()
+
 onMounted(() => {
   // store.fetchAll()
+  store.getDateMonth()
+  .then(() => {
+    Promise.all([
+      store.fetchFastMoving(),
+      store.fetchPbf()
+    ])
+  })
+
 })
 
 const stats = computed(() => {
@@ -151,12 +163,12 @@ const stats = computed(() => {
             <div class="">
               <BaseChart
                 type="polarArea"
-                :labels="['Paracetamol', 'Antibody', 'Dextamin', 'Caroutine', 'Aspirin']"
+                :labels="store?.top5Products?.label "
                 :datasets="
                 [
                   {
                     label: 'Top Product',
-                    data: [100, 88, 60, 40, 80],
+                    data: store.top5Products?.data ,
                     backgroundColor: ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6'],
                   }
                 ]"
@@ -195,12 +207,12 @@ const stats = computed(() => {
             <div class="">
               <BaseChart
                 type="bar"
-                :labels="['PT. Aaaa', 'PT. Bbbb', 'PT. Cccc', 'PT. Dddd', 'PT. Eeee']"
+                :labels="store?.topPbf?.label "
                 :datasets="
                 [
                   {
                     label: 'Top 5 PBF',
-                    data: [600, 800, 300, 2, 100],
+                    data: store?.topPbf?.data ,
                     backgroundColor: ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6'],
                   }
                 ]"

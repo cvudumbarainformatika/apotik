@@ -19,14 +19,14 @@ onMounted(() => {
   store.per_page = 100
   Promise.all([
     store.fetchAll(),
-    console.log('Refresh List', store.items)
+    // console.log('Refresh List', store.items)
   ])
 })
 
 function handleRefresh() {
-  console.log('Refresh List')
+  // console.log('Refresh List')
   store.fetchAll()
-  console.log('Refr', store.items)
+  // console.log('Refr', store.items)
 }
 </script>
 
