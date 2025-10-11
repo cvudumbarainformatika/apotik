@@ -335,7 +335,7 @@
           <u-separator spacing="my-2"></u-separator>
           <u-row class="z-9">
             <u-btn v-if="store.mode === 'edit'" variant="secondary" @click="initForm">Baru</u-btn>
-            <u-btn v-if="store.form && !errorPembayaran && !store.form?.flag" variant="primary" @click="simpanPenjualan">Simpan</u-btn>
+            <u-btn v-if="store.form && !errorPembayaran && !store.form?.flag" variant="primary" :loading="loadingLock" @click="simpanPenjualan">Simpan</u-btn>
           </u-row>
           <u-row class="z-9">
             <u-btn v-if="store.form?.flag" variant="secondary" @click="modalNota = true">Cetak</u-btn>
@@ -356,10 +356,12 @@ import { useAuthStore } from '@/stores/auth'
 import { api } from '@/services/api'
 import { formatWaktuSisa, formatDateIndo } from '@/utils/dateHelper'
 import { formatRupiah } from '@/utils/numberHelper'
+import { useNotificationStore } from '@/stores/notification'
 import ModalNota from './ModalNota.vue'
 
 
 const ListRincian = defineAsyncComponent(() => import('./ListRincian.vue'))
+const notify = useNotificationStore().notify
 
 const props = defineProps({
   store: { type: Object, required: true },
@@ -433,6 +435,8 @@ const form = ref({
   diskon: 0,
 
 })
+
+const loadingSimpan = ref(false)
 
 const formBayar = ref({
     diskon: 0,
@@ -717,6 +721,7 @@ const simpanPenjualan = async (e) => {
   } catch (error) {
     console.log('error', error);
     modalNota.value = false
+    notify({ message: error?.response?.data?.message ?? 'Data Penjualan gagal disimpan', type: 'error' })
   } finally {
     loadingLock.value = false
   }
