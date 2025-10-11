@@ -76,6 +76,7 @@ const handleDelete = async (item) => {
 
   } catch (error) {
     console.log('error', error);
+    notify({ message: error.response.data.message ?? 'Data Gagal dihapus', type: 'error' })
   } finally {
     loadingHapusItem.value = false
   }
