@@ -57,7 +57,7 @@
             </div>
           </u-row>
           <u-row right class="">
-            <u-btn label="Detail" @click="openDetail" />
+            <u-btn label="Detail" @click="openDetail" :loading="loadingOpen" />
           </u-row>
         </u-row>
       </u-col>
@@ -80,6 +80,7 @@ const props = defineProps({
 })
 const ModalDetail = defineAsyncComponent(() => import('./ModalDetail.vue'))
 const openModalDetail = ref(false)
+const loadingOpen = ref(false)
 onMounted(() => {
 
   // if (props.range) {
@@ -102,33 +103,36 @@ onMounted(() => {
 //   console.log('params ready', params)
 // }
 
-const openDetail = async () => {
-  props.store.loading = true
+const openDetail = async (e) => {
+  e.preventDefault()
+  e.stopPropagation()
+  // props.store.loading = true
+  loadingOpen.value = true
   try {
     const params = {
       bulan: props.store.range.start_date,
       tahun: props.store.range.end_date,
       id: props.item.id
     }
-    // console.log('params', params)
+    console.log('params', params)
     const response = await api.get(`api/v1/transactions/stok/get-rinci-kartu-stok`, { params })
     if (response) {
 
       props.store.item = response.data.data
-      // console.log('items', props.store.item)
     }
   } catch (error) {
     console.error('Error fetching Kartu Stok:', error)
   } finally {
-    props.store.loading = false
+    // props.store.loading = false
+    loadingOpen.value = true
   }
   openModalDetail.value = true
-
+  loadingOpen.value = false
 }
 
 const handleCloseModalNota = () => {
   openModalDetail.value = false
-
+  loadingOpen.value = false
 }
 
 // saldo awal

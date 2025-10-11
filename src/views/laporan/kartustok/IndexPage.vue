@@ -15,11 +15,9 @@
 
       </Suspense>
     </template>
-    <!-- <template #item="{ item }"> -->
     <template #print>
       <cetak-data :store="store" :range="dateRange" />
     </template>
-    <!-- </template> -->
 
     <!-- <template #modal-form>
       <modal-form v-if="store.modalFormOpen" v-model="store.modalFormOpen" :mode="store.item ? 'edit' : 'add'"
@@ -84,7 +82,6 @@ const handleRange = async () => {
     page: store.page,
     per_page: store.per_page,
   }
-  console.log('params', params);
   store.loading = true
   store.items = []
   try {
