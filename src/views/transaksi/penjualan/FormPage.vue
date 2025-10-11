@@ -175,7 +175,7 @@
               not-found-text="Data Barang tidak ditemukan" 
               not-found-subtext="Coba kata kunci lain" 
               :show-add-button="false"
-              api-url="/api/v1/transactions/penjualan/get-list-obat" api-response-path="data.data" :api-params="{ per_page: 20 }"
+              api-url="/api/v1/transactions/penjualan/get-list-obat" api-response-path="data.data" :api-params="{ per_page: 30 }"
               :use-api="true" @select="handleSelectedBarang" 
             >
               <template #item="{ item }">
