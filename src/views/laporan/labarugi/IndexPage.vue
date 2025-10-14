@@ -153,7 +153,7 @@
             <!-- Pendapatan Lain-lain -->
             <tr>
               <td class="px-4 py-2 pl-8">Pendapatan Lain-lain</td>
-              <td class="px-4 py-2 text-right">Rp. 0</td>
+              <td class="px-4 py-2 text-right">Rp. {{ formatRupiah(store?.items?.totalPendapatanLain) || 0 }}</td>
               <td class="px-4 py-2 text-right"></td>
             </tr>
 

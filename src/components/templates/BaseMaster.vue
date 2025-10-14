@@ -72,7 +72,7 @@
     <div id="printArea" class="print-only">
       <slot name="print" />
     </div>
-    <div id="printAreax" v-if="printContent" v-html="printContent" class="hidden"></div>
+    <div id="printAreax" v-if="printContent" v-html="printContent" class="print-only"></div>
     <!-- modal form -->
     <slot name="modal-form" />
   </u-page>
@@ -86,7 +86,7 @@ import { useAuthStore } from '@/stores/auth'
 import { useAppStore } from '@/stores/app'
 
 const auth = useAuthStore()
-
+const printContent = ref('')
 const props = defineProps({
   store: { type: Object, required: true },
   title: { type: String, default: 'Data' },
