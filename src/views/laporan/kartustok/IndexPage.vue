@@ -41,7 +41,7 @@ const $confirm = inject('confirm')
 const notify = useNotificationStore().notify
 const ListComp = defineAsyncComponent(() => import('./ListComp.vue'))
 const CetakData = defineAsyncComponent(() => import('./CetakData.vue'))
-const ModalForm = defineAsyncComponent(() => import('./ModalDetail.vue'))
+// const ModalForm = defineAsyncComponent(() => import('./ModalDetail.vue'))
 const store = useKartuStokStore()
 const route = useRoute()
 const title = computed(() => route.meta.title)

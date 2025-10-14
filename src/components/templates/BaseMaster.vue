@@ -72,6 +72,7 @@
     <div id="printArea" class="print-only">
       <slot name="print" />
     </div>
+    <div id="printAreax" v-if="printContent" v-html="printContent" class="hidden"></div>
     <!-- modal form -->
     <slot name="modal-form" />
   </u-page>
@@ -195,16 +196,27 @@ const printObj = {
 
 /* ✅ Tampilkan area print hanya saat print */
 @media print {
-  .print-only {
+
+  .print-only,
+  #printAreax {
     display: block !important;
   }
 
-  /* ✅ Sembunyikan semua elemen lain kecuali area print */
-  body *:not(.print-only):not(.print-only *) {
+  /* ✅ Sembunyikan semua elemen lain kecuali area print utama DAN area print modal */
+  body *:not(.print-only):not(.print-only *):not(#printAreax):not(#printAreax *) {
     display: none !important;
   }
 
-  /* ✅ Biar hasil print bersih dan putih */
+  /* ✅ Pastikan area cetak tampil normal */
+  #printAreax {
+    position: relative !important;
+    visibility: visible !important;
+    background: white !important;
+    color: black !important;
+    z-index: 999999 !important;
+  }
+
+  /* ✅ Biar hasil print bersih */
   body {
     background: white !important;
     -webkit-print-color-adjust: exact !important;

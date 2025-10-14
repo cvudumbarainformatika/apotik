@@ -1,7 +1,7 @@
 <template>
   <u-modal persistent :title="`${title}`" @close="emit('close')" size="xl">
     <template #default>
-      <div id="printArea" ref="printArea" class=" max-w-full bg-white text-black mx-auto  p-4 print-a4">
+      <div id="printAreax" ref="printAreax" class=" max-w-full bg-white text-black mx-auto  p-4 print-a4">
         <div class="flex items-start justify-between gap-6">
           <div class="flex items-center gap-4">
             <img src="/images/logo.svg" alt="logo" class="w-14 h-14 object-contain" />
@@ -47,6 +47,7 @@
                 <th class="th text-left p-1">Nomor Transaksi</th>
                 <th class="th text-left p-1">Jenis Transaksi</th>
                 <th class="th text-left p-1">Keterangan</th>
+                <th class="th text-right p-1">Harga Beli (Rp.)</th>
                 <th class="th text-right p-1">Penerimaan ({{ store?.item?.satuan_k }}) </th>
                 <th class="th text-right p-1">Pengeluaran ({{ store?.item?.satuan_k }}) </th>
                 <th class="th text-right p-1">Saldo ({{ store?.item?.satuan_k }}) </th>
@@ -58,12 +59,13 @@
                 <td class="td p-1 text-left">{{ item?.notrans || '-' }}</td>
                 <td class="td p-1 text-left">{{ item?.jenis || '-' }}</td>
                 <td class="td p-1 text-left">{{ item?.ket || '-' }}</td>
+                <td class="td p-1 text-right">{{ formatRpkoma(item?.hargabeli) }}</td>
                 <td class="td p-1 text-right">{{ formatRupiah(item?.debit) }}</td>
                 <td class="td p-1 text-right">{{ formatRupiah(item?.kredit) }}</td>
                 <td class="td p-1 text-right">{{ formatRupiah(item?.saldo) }}</td>
               </tr>
               <tr>
-                <td colspan="6" class="td p-1 text-right font-bold">SALDO AKHIR</td>
+                <td colspan="7" class="td p-1 text-right font-bold">SALDO AKHIR</td>
                 <td class="td p-1 text-right font-bold">{{ formatRupiah(totalStokAkhir) }}</td>
               </tr>
             </tbody>
@@ -129,7 +131,7 @@
     <template #footer>
       <u-row flex1 class="w-full" right>
         <u-btn variant="secondary" label="Batal" @click="$emit('close')" />
-        <u-btn v-print="printObj" label="Cetak" type="button" />
+        <u-btn v-print="printObjx" label="Cetak" type="button" />
       </u-row>
     </template>
   </u-modal>
@@ -139,7 +141,7 @@
 import { ref, onMounted, computed, watch } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { storeToRefs } from 'pinia'
-import { formatRupiah, formatTeleponID } from '@/utils/numberHelper'
+import { formatRpkoma, formatRupiah, formatTeleponID } from '@/utils/numberHelper'
 import { formatDateIndo, formatJamMenit, formatTimeOnly } from '@/utils/dateHelper'
 import { useAppStore } from '@/stores/app'
 // import { useDateFormat } from '@vueuse/core'
@@ -190,6 +192,7 @@ const groupedItems = computed(() => {
     notrans: '-',
     tanggal: `${props.store.range.end_date}-${props.store.range.start_date}-01`,
     satuan: props.store?.item?.satuan_k,
+    hargabeli: '',
     debit: totalAwal,
     kredit: 0,
     saldo: totalAwal,
@@ -212,6 +215,7 @@ const groupedItems = computed(() => {
       notrans: item.nopenerimaan,
       tanggal,
       satuan: props.store?.item?.satuan_k,
+      hargabeli: Number(item.harga_beli ?? 0),
       debit: Number(item.jumlah_k ?? 0),
       kredit: 0,
       saldo: 0,
@@ -231,6 +235,7 @@ const groupedItems = computed(() => {
       notrans: item.nopenjualan,
       tanggal: item.tgl_penjualan,
       satuan: props.store?.item?.satuan_k,
+      hargabeli: Number(item.harga_beli ?? 0),
       debit: 0,
       kredit: Number(item.jumlah_k ?? 0),
       saldo: 0,
@@ -247,6 +252,7 @@ const groupedItems = computed(() => {
       notrans: 'PS' + item.kode_barang,
       tanggal: item.tgl_penyesuaian,
       satuan: props.store?.item?.satuan_k,
+      hargabeli: Number(item.harga_beli ?? 0),
       debit: jumlah > 0 ? jumlah : 0,
       kredit: jumlah < 0 ? Math.abs(jumlah) : 0,
       saldo: 0,
@@ -262,6 +268,7 @@ const groupedItems = computed(() => {
       notrans: item.noretur,
       tanggal: item.tglretur,
       satuan: props.store?.item?.satuan_k,
+      hargabeli: Number(item.harga_beli ?? 0),
       debit: 0,
       kredit: Number(item.jumlah_k ?? 0),
       saldo: 0,
@@ -276,6 +283,7 @@ const groupedItems = computed(() => {
       notrans: item.noretur,
       tanggal: item.tgl_retur,
       satuan: props.store?.item?.satuan_k,
+      hargabeli: Number(item.harga_beli ?? 0),
       debit: Number(item.jumlah_k ?? 0),
       kredit: 0,
       saldo: 0,
@@ -361,11 +369,11 @@ const totalStok = computed(() => {
 
 
 
-const printArea = ref(null)
+const printAreax = ref(null)
 
-const printObj = {
-  id: '#printArea', // ref elemen yang mau diprint
-  popTitle: 'Penerimaan Barang',
+const printObjx = {
+  id: '#printAreax', // ref elemen yang mau diprint
+  popTitle: 'Kartu Stok',
   preview: false,
   extraCss: '',
   extraHead: '',
@@ -373,7 +381,9 @@ const printObj = {
     console.log('wait...')
   },
   openCallback(vue) {
-    console.log('opened')
+    setTimeout(() => {
+      console.log('mulai print')
+    }, 300)
   },
   closeCallback(vue) {
     console.log('closePrint')
