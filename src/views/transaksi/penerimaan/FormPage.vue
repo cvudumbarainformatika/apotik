@@ -40,7 +40,7 @@
                   {{ store.orderSelected?.nomor_order }}
                 </u-text>
               </u-row>
-              <button @click="clearSelectedOrder" class="text-primary hover:text-danger" aria-label="Hapus">
+              <button @click="initForm()" class="text-primary hover:text-danger" aria-label="Hapus">
                 <u-icon name="X" class="w-4 h-4" />
               </button>
             </div>
@@ -306,16 +306,12 @@ const form = ref({
   rincian: {},
 })
 
-/* ---------- Helpers ---------- */
-
-// Konversi rincian (bisa object keyed by kode_barang atau array) -> selalu array
 function rincianAsArray(r) {
   if (!r) return []
   if (Array.isArray(r)) return r
   return Object.values(r)
 }
 
-// Konversi rincian (array) -> object keyed by kode_barang (dipakai saat membangun form lokal)
 function arrayToRincianObject(arr = []) {
   const obj = {}
   arr.forEach(item => {
@@ -334,7 +330,6 @@ const toFloat = (v, fallback = 0) => {
   return Number.isNaN(n) ? fallback : n
 }
 
-/* ---------- Computed / derived ---------- */
 
 const optionJenispajaks = computed(() => [
   { value: 'Exclude', label: 'Exclude' },
@@ -396,14 +391,14 @@ const listItems = computed(() => {
   const rincianLocal = form.value.rincian || {}
   const orderSelected = props.store.orderSelected || {}
   const orderRecords = orderSelected.order_records || orderSelected.rincians || orderSelected.rincian || []
-  console.log('🔄 listItems recomputed', { rincianLocal, orderRecords })
-
-  // Pastikan rincian selalu ada minimal object kosong
+  // console.log('🔄 listItems recomputed', { rincianLocal, orderRecords })
+  if (Object.keys(rincianLocal).length > 0) {
+    return Object.values(rincianLocal)
+  }
   if (!form.value.rincian) {
     form.value.rincian = {}
   }
 
-  // Sinkronisasi otomatis setiap barang di order_records
   orderRecords.forEach(item => {
     // console.log('Syncing orderRecord item:', item)
     const key = item.kode_barang
@@ -427,10 +422,8 @@ const listItems = computed(() => {
     }
   })
 
-  // kalau sudah ada rincian (setelah disinkronisasi), kembalikan array-nya
   return Object.values(form.value.rincian)
 })
-/* ---------- Core functions ---------- */
 
 const openModalCetak = () => {
   modalCetak.value = true
@@ -457,7 +450,6 @@ function errorMessage(field) {
   return error.value?.[field]?.[0] ?? null
 }
 
-/* ---------- ambilOrder / initForm ---------- */
 
 const ambilOrder = async () => {
   await storeorder.fetchAll(params.value)
@@ -479,6 +471,7 @@ const ambilOrder = async () => {
 
 function initForm() {
   props.store.mode = 'add'
+  props.store.init()
   const today = new Date().toISOString().split('T')[0]
   form.value = {
     tgl_penerimaan: today,
@@ -503,13 +496,9 @@ function initForm() {
     diskon_rupiah: '',
     rincian: {},
   }
-  props.store.init()
-  props.store.orderSelected = null
-  props.store.supplierSelected = null
   ambilOrder()
 }
 
-/* ---------- initializeRincian (from order) ---------- */
 
 const initializeRincian = (orderRecords) => {
   const today = new Date().toISOString().split('T')[0]
@@ -540,7 +529,6 @@ const initializeRincian = (orderRecords) => {
   form.value.rincian = { ...rincian, ...form.value.rincian }
 }
 
-/* ---------- handleKunci (safe) ---------- */
 
 const handleKunci = async (e) => {
   e?.preventDefault?.()
@@ -602,7 +590,6 @@ const handleKunci = async (e) => {
   }
 }
 
-/* ---------- handleSubmit (per-item submit) ---------- */
 
 const handleSubmit = async (e, item) => {
   e?.preventDefault?.()
@@ -683,8 +670,6 @@ const handleSubmit = async (e, item) => {
   }
 }
 
-/* ---------- handleBatal ---------- */
-
 const handleBatal = (kode_barang) => {
   const today = new Date().toISOString().split('T')[0]
   if (form.value.rincian[kode_barang]) {
@@ -709,7 +694,6 @@ const handleBatal = (kode_barang) => {
   }
 }
 
-/* ---------- isSameRincian (safe remote lookup) ---------- */
 
 const isSameRincian = (nobatch, kode_barang) => {
   const local = form.value.rincian?.[kode_barang]
@@ -735,7 +719,6 @@ const isSameRincian = (nobatch, kode_barang) => {
   )
 }
 
-/* ---------- handleHapusRinci (safe) ---------- */
 
 const handleHapusRinci = async (e, item) => {
   e?.preventDefault?.()
@@ -782,7 +765,6 @@ const handleHapusRinci = async (e, item) => {
   }
 }
 
-/* ---------- watchers ---------- */
 
 watch(() => props.store.orderSelected, (newOrderSelected) => {
   if (newOrderSelected?.order_records) {
@@ -882,7 +864,6 @@ watch(
   { deep: true }
 )
 
-/* ---------- TotalPenerimaan computed (safe) ---------- */
 
 const TotalPenerimaan = computed(() => {
   if (props.store.mode === 'add') {
@@ -901,10 +882,25 @@ const TotalPenerimaan = computed(() => {
   }
 })
 
+const clearSelectedOrder = () => {
+  console.log('Clearing selected order and supplier', form.value.rincian)
+  if (form.value.rincian && Object.keys(form.value.rincian).length > 0) {
+    const confirmClear = notify({
+      message: 'Mengganti Order akan menghapus data penerimaan yang sudah diinput. Lanjutkan?',
+      type: 'error',
+      duration: 0
+    })
+    if (!confirmClear) {
+      return
+    }
+  }
+  props.store.orderSelected = null
+  props.store.supplierSelected = null
+}
 /* ---------- lifecycle ---------- */
 
 onMounted(async () => {
-  console.log('🟢 Form transaksi mounted')
+  // console.log('🟢 Form transaksi mounted')
   initForm()
   props.store.dataorder = []
   storeorder.per_page = 20
@@ -912,7 +908,7 @@ onMounted(async () => {
 })
 
 onUnmounted(() => {
-  console.log('🔴 Form transaksi unmounted')
+  // console.log('🔴 Form transaksi unmounted')
 })
 </script>
 
