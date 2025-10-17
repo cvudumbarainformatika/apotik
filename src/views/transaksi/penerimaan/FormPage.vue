@@ -496,7 +496,7 @@ function initForm() {
     diskon_rupiah: '',
     rincian: {},
   }
-  ambilOrder()
+  // ambilOrder()
 }
 
 
