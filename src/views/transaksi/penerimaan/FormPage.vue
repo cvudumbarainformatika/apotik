@@ -320,15 +320,6 @@ function arrayToRincianObject(arr = []) {
   return obj
 }
 
-// safe parse helpers
-const toInt = (v, fallback = 0) => {
-  const n = parseInt(v, 10)
-  return Number.isNaN(n) ? fallback : n
-}
-const toFloat = (v, fallback = 0) => {
-  const n = parseFloat(v)
-  return Number.isNaN(n) ? fallback : n
-}
 
 
 const optionJenispajaks = computed(() => [
@@ -391,7 +382,8 @@ const listItems = computed(() => {
   const rincianLocal = form.value.rincian || {}
   const orderSelected = props.store.orderSelected || {}
   const orderRecords = orderSelected.order_records || orderSelected.rincians || orderSelected.rincian || []
-  // console.log('🔄 listItems recomputed', { rincianLocal, orderRecords })
+  // console.log('🔄 listItems rincianLocal', rincianLocal)
+  // console.log('🔄 listItems orderSelected', orderSelected)
   if (Object.keys(rincianLocal).length > 0) {
     return Object.values(rincianLocal)
   }
@@ -400,21 +392,21 @@ const listItems = computed(() => {
   }
 
   orderRecords.forEach(item => {
-    // console.log('Syncing orderRecord item:', item)
+  
     const key = item.kode_barang
     if (!form.value.rincian[key]) {
       form.value.rincian[key] = {
         kode_barang: key,
         nama: item.barang?.nama || item.master?.nama || item.nama || '',
         jumlah_pesan: parseInt(item.jumlah_b || item?.jumlah_pesan, 0),
-        jumlah_b: item.jumlah_b ?? item.jumlah_pesan ?? 0,
+        jumlah_b: item.jumlah_b || item.jumlah_pesan || 0,
         harga_b: parseFloat(item.harga_b || 0),
-        nobatch: item.nobatch ?? '',
+        nobatch: item.nobatch || '',
         diskon_persen: parseFloat(item.diskon_persen || 0),
-        tgl_exprd: item.tgl_exprd ?? new Date().toISOString().split('T')[0],
-        satuan_b: item.satuan_b ?? item.barang?.satuan_b ?? '',
-        satuan_k: item.satuan_k ?? item.barang?.satuan_k ?? '',
-        isi: item.isi ?? item.barang?.isi ?? 1,
+        tgl_exprd: item.tgl_exprd || new Date().toISOString().split('T')[0],
+        satuan_b: item.satuan_b || item.barang?.satuan_b || '',
+        satuan_k: item.satuan_k || item.barang?.satuan_k || '',
+        isi: item.isi || item.master?.isi || item.barang?.isi || 1,
         pajak_rupiah: parseFloat(item.pajak_rupiah || 0),
         diskon_rupiah: parseFloat(item.diskon_rupiah || 0),
         loading: false,
@@ -424,7 +416,6 @@ const listItems = computed(() => {
 
   return Object.values(form.value.rincian)
 })
-
 const openModalCetak = () => {
   modalCetak.value = true
 }
@@ -504,23 +495,23 @@ const initializeRincian = (orderRecords) => {
   const today = new Date().toISOString().split('T')[0]
   const rincian = {}
   orderRecords.forEach(item => {
-    const isiVal = toInt(item.isi ?? item.master?.isi, 1)
-    const jumlahPesan = toInt(item.jumlah_pesan, 0)
+    const isiVal = parseInt(item.isi || item.master?.isi)
+    const jumlahPesan = parseInt(item.jumlah_pesan, 0)
     const jumlah_b_default = jumlahPesan
     rincian[item.kode_barang] = {
       nama: item.master?.nama || item.nama || '',
       jumlah_pesan: jumlahPesan,
       jumlah_b: jumlah_b_default,
-      harga_b: toFloat(item.harga_b || 0),
+      harga_b: parseFloat(item.harga_b || 0),
       nobatch: item.nobatch || '',
-      diskon_persen: toFloat(item.diskon_persen || 0),
+      diskon_persen: parseFloat(item.diskon_persen || 0),
       satuan_b: item.satuan_b || item.master?.satuan_b || '',
       satuan_k: item.satuan_k || item.master?.satuan_k || '',
       isi: isiVal,
       jumlah_k: jumlah_b_default * isiVal,
       kode_barang: item.kode_barang,
-      pajak_rupiah: toFloat(item.pajak_rupiah || 0),
-      diskon_rupiah: toFloat(item.diskon_rupiah || 0),
+      pajak_rupiah: parseFloat(item.pajak_rupiah || 0),
+      diskon_rupiah: parseFloat(item.diskon_rupiah || 0),
       tgl_exprd: today,
       loading: false,
       master: item.master || null,
@@ -546,17 +537,17 @@ const handleKunci = async (e) => {
       kode_barang: item.kode_barang,
       nobatch: item.nobatch,
       id_penerimaan_rinci: item.id,
-      isi: toInt(item.isi, 1),
+      isi: parseInt(item.isi, 1),
       satuan_b: item.satuan_b || '',
       satuan_k: item.satuan_k || '',
-      jumlah_b: toInt(item.jumlah_b, 0),
-      jumlah_k: toInt(item.jumlah_k, 0),
-      harga: toFloat(item.harga_b ?? item.harga ?? 0),
-      pajak_rupiah: toFloat(item.pajak_rupiah || 0),
-      diskon_persen: toFloat(item.diskon_persen || 0),
-      harga_total: toFloat(item.harga_total || 0),
-      subtotal: toFloat(item.subtotal || 0),
-      diskon_rupiah: toFloat(item.diskon_rupiah || 0),
+      jumlah_b: parseInt(item.jumlah_b, 0),
+      jumlah_k: parseInt(item.jumlah_k, 0),
+      harga: parseFloat(item.harga_b || item.harga || 0),
+      pajak_rupiah: parseFloat(item.pajak_rupiah || 0),
+      diskon_persen: parseFloat(item.diskon_persen || 0),
+      harga_total: parseFloat(item.harga_total || 0),
+      subtotal: parseFloat(item.subtotal || 0),
+      diskon_rupiah: parseFloat(item.diskon_rupiah || 0),
       tgl_exprd: item.tgl_exprd || null,
     }))
   }
@@ -603,39 +594,39 @@ const handleSubmit = async (e, item) => {
 
   const kode_barang = item.kode_barang
   const rincianItem = form.value.rincian[kode_barang] || {}
-
+  console.log('Handling submit for kode_barang:', item)
   // sync beberapa field ke form utama (mirip logic sebelumnya)
   form.value.kode_barang = kode_barang
   form.value.nobatch = rincianItem.nobatch || ''
-  form.value.jumlah_b = rincianItem.jumlah_b ?? ''
-  form.value.jumlah_k = toInt(rincianItem.jumlah_b, 0) * toInt(item.isi ?? item.master?.isi, 1)
-  form.value.harga_b = rincianItem.harga_b ?? ''
-  form.value.diskon_persen = rincianItem.diskon_persen ?? 0
-  form.value.isi = toInt(item.isi ?? item.master?.isi, 1)
+  form.value.jumlah_b = rincianItem.jumlah_b || 0
+  form.value.jumlah_k = parseInt(rincianItem.jumlah_b, 0) * parseInt(item.isi || item.master?.isi)
+  form.value.harga_b = rincianItem.harga_b || 0
+  form.value.diskon_persen = parseFloat(rincianItem.diskon_persen || 0)
+  form.value.isi = parseInt(item.isi || item.master?.isi)
   form.value.satuan_k = item.satuan_k || item.master?.satuan_k || ''
   form.value.satuan_b = item.satuan_b || item.master?.satuan_b || ''
-  form.value.pajak_rupiah = toInt(rincianItem.pajak_rupiah, 0)
-  form.value.diskon_rupiah = toInt(rincianItem.diskon_rupiah, 0)
+  form.value.pajak_rupiah = parseFloat(rincianItem.pajak_rupiah)
+  form.value.diskon_rupiah = parseFloat(rincianItem.diskon_rupiah)
   form.value.tgl_exprd = rincianItem.tgl_exprd || ''
   form.value.kode_suplier = props.store.supplierSelected?.kode || ''
   form.value.noorder = props.store.orderSelected?.nomor_order || ''
-
+  console.log('Submitting rincian for kode_barang:', form.value)
   // ensure rincian entry exists and mark loading
   form.value.rincian[kode_barang] = {
     ...form.value.rincian[kode_barang],
     nama: item.barang?.nama || item.nama || '',
-    jumlah_pesan: item.jumlah_pesan ?? form.value.rincian[kode_barang]?.jumlah_pesan ?? '',
-    jumlah_b: toInt(rincianItem.jumlah_b, ''),
-    harga_b: rincianItem.harga_b ?? '',
-    nobatch: rincianItem.nobatch ?? '',
-    diskon_persen: toFloat(rincianItem.diskon_persen || 0),
+    jumlah_pesan: item.jumlah_pesan || form.value.rincian[kode_barang]?.jumlah_pesan || '',
+    jumlah_b: parseInt(rincianItem.jumlah_b || 0),
+    harga_b: rincianItem.harga_b || 0,
+    nobatch: rincianItem.nobatch || '',
+    diskon_persen: parseFloat(rincianItem.diskon_persen || 0),
     satuan_b: item.satuan_b || item.master?.satuan_b || '',
     satuan_k: item.satuan_k || item.master?.satuan_k || '',
-    isi: toInt(item.isi ?? item.master?.isi, 1),
-    jumlah_k: toInt(rincianItem.jumlah_b, 0) * toInt(item.isi ?? item.master?.isi, 1),
+    isi: parseInt(item.isi || item.master?.isi),
+    jumlah_k: parseInt(rincianItem.jumlah_b || 0) * parseInt(item.isi || item.master?.isi),
     kode_barang: kode_barang,
-    pajak_rupiah: toFloat(rincianItem.pajak_rupiah || 0),
-    diskon_rupiah: toFloat(rincianItem.diskon_rupiah || 0),
+    pajak_rupiah: parseFloat(rincianItem.pajak_rupiah || 0),
+    diskon_rupiah: parseFloat(rincianItem.diskon_rupiah || 0),
     tgl_exprd: rincianItem.tgl_exprd || '',
     loading: true
   }
@@ -647,8 +638,8 @@ const handleSubmit = async (e, item) => {
   }
 
   try {
-    const a = toInt(form.value.rincian[kode_barang].jumlah_pesan, 0)
-    const b = toInt(form.value.rincian[kode_barang].jumlah_b, 0)
+    const a = parseInt(form.value.rincian[kode_barang].jumlah_pesan, 0)
+    const b = parseInt(form.value.rincian[kode_barang].jumlah_b, 0)
 
     if (b > a) {
       notify({ message: 'Penerimaan Lebih Besar Dari Jumlah Pesanan', type: 'error' })
@@ -797,27 +788,27 @@ watch(
         const savedItem = (Array.isArray(newForm?.rincian) ? newForm?.rincian : rincianAsArray(newForm?.rincian))
           .find(r => r.kode_barang === orderItem.kode_barang)
         const existing = form.value?.rincian?.[orderItem.kode_barang]
-
-        const isiVal = toInt(savedItem?.isi ?? orderItem?.isi ?? 1, 1)
-        const jumlahSavedB = toInt(savedItem?.jumlah_b ?? 0, 0)
-        const jumlahPesan = toInt(orderItem?.jumlah_pesan ?? 0, 0)
+        console.log('Merging order item:', { orderItem, savedItem, existing })
+        const isiVal = parseInt(savedItem?.isi || orderItem?.isi)
+        const jumlahSavedB = parseInt(savedItem?.jumlah_b || 0)
+        const jumlahPesan = parseInt(orderItem?.jumlah_pesan || 0)
 
         rincianObj[orderItem.kode_barang] = {
           nama: savedItem?.barang?.nama || orderItem?.master?.nama,
-          jumlah_pesan: savedItem?.jumlah_pesan ?? orderItem?.jumlah_pesan ?? null,
-          jumlah_b: savedItem?.jumlah_b ?? orderItem.jumlah_pesan,
-          harga_b: savedItem?.harga_b ?? null,
-          nobatch: savedItem?.nobatch ?? null,
-          diskon_persen: savedItem?.diskon_persen ?? 0,
-          satuan_b: savedItem?.satuan_b ?? orderItem?.satuan_b ?? null,
-          satuan_k: savedItem?.satuan_k ?? orderItem?.satuan_k ?? null,
+          jumlah_pesan: savedItem?.jumlah_pesan || orderItem?.jumlah_pesan || null,
+          jumlah_b: savedItem?.jumlah_b || orderItem.jumlah_pesan,
+          harga_b: savedItem?.harga_b || null,
+          nobatch: savedItem?.nobatch || null,
+          diskon_persen: parseFloat(savedItem?.diskon_persen || 0),
+          satuan_b: savedItem?.satuan_b || orderItem?.satuan_b || null,
+          satuan_k: savedItem?.satuan_k || orderItem?.satuan_k || null,
           isi: isiVal,
-          jumlah_k: (toInt(savedItem?.jumlah_b ?? jumlahPesan, 0)) * isiVal,
+          jumlah_k: (parseInt(savedItem?.jumlah_b || jumlahPesan)) * isiVal,
           kode_barang: orderItem.kode_barang,
-          tgl_exprd: savedItem?.tgl_exprd ?? today,
-          pajak_rupiah: toInt(savedItem?.pajak_rupiah ?? 0, 0),
-          diskon_rupiah: toInt(savedItem?.diskon_rupiah ?? 0, 0),
-          loading: existing?.loading ?? false
+          tgl_exprd: savedItem?.tgl_exprd || today,
+          pajak_rupiah: parseFloat(savedItem?.pajak_rupiah || 0),
+          diskon_rupiah: parseFloat(savedItem?.diskon_rupiah || 0),
+          loading: existing?.loading || false
         }
       })
 
@@ -871,11 +862,11 @@ const TotalPenerimaan = computed(() => {
   } else {
     const items = rincianAsArray(props.store.form?.rincian ?? [])
     return items.reduce((a, b) => {
-      const jumlah_b = Number(b?.jumlah_b ?? 0)
-      const harga_b = Number(b?.harga_b ?? 0)
-      const diskon_rp = Number(b?.diskon_rupiah ?? 0)
-      const pajak_rp = Number(b?.pajak_rupiah ?? 0)
-      const jumlah_k = Number(b?.jumlah_k ?? (jumlah_b * Number(b?.isi ?? 1)))
+      const jumlah_b = Number(b?.jumlah_b || 0)
+      const harga_b = Number(b?.harga_b || 0)
+      const diskon_rp = Number(b?.diskon_rupiah || 0)
+      const pajak_rp = Number(b?.pajak_rupiah || 0)
+      const jumlah_k = Number(b?.jumlah_k || (jumlah_b * Number(b?.isi || 1)))
       const subtotal = (jumlah_b * harga_b) - (jumlah_k * diskon_rp) + (jumlah_k * pajak_rp)
       return a + subtotal
     }, 0)
