@@ -537,7 +537,7 @@ const handleKunci = async (e) => {
       kode_barang: item.kode_barang,
       nobatch: item.nobatch,
       id_penerimaan_rinci: item.id,
-      isi: parseInt(item.isi, 1),
+      isi: parseInt(item.isi),
       satuan_b: item.satuan_b || '',
       satuan_k: item.satuan_k || '',
       jumlah_b: parseInt(item.jumlah_b, 0),
