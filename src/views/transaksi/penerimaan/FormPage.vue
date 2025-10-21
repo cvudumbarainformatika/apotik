@@ -901,5 +901,19 @@ onMounted(async () => {
 onUnmounted(() => {
   // console.log('🔴 Form transaksi unmounted')
 })
+
+watch(
+  () => ({ ...form.value }),
+  (newForm, oldForm) => {
+    // console.log('🔥 watch form', newForm, oldForm);
+
+    for (const key in newForm) {
+      if (newForm[key] !== oldForm[key]) {
+        props.store.clearFieldError(key)
+      }
+    }
+  },
+  { deep: true }
+)
 </script>
 
