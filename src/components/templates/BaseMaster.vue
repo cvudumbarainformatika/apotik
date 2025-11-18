@@ -24,7 +24,7 @@
           </slot>
         </u-row>
         <u-row>
-          <u-btn-icon icon="print" tooltip="Print" v-print="printObj" />
+          <u-btn-icon v-if="showPrintButton" icon="print" tooltip="Print" v-print="printObj" />
         </u-row>
         <u-row>
           <u-select v-if="showMonthButton" label="Pilih Bulan" v-model="store.range.start_date" :options="bulans"
@@ -94,6 +94,7 @@ const props = defineProps({
   showAddButton: { type: Boolean, default: true }, // baris ini Tambahkan agar bisa memilih false/true
   showDateButton: { type: Boolean, default: false },
   showMonthButton: { type: Boolean, default: false },
+  showPrintButton: { type: Boolean, default: false },
   showOrder: { type: Boolean, default: false },
   showOpnameButton: { type: Boolean, default: false },
   showPrint: { type: Boolean, default: false },
