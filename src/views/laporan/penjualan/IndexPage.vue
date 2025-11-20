@@ -180,14 +180,11 @@ function getTotal (item) {
   item.rinci.forEach((r) => {
     subtotal += parseInt(r?.subtotal - r?.subtotal_retur)
   })
-
-
   return subtotal
 }
 
 
-
-
+const printArea = ref(null)
 
 const printObj = {
   id: '#printArea', // ref elemen yang mau diprint
