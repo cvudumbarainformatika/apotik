@@ -71,7 +71,6 @@ export function createTemplateStore(storeId, config) {
       },
 
       async fetchMore(extraParams = {}) {
-        
         if (this.meta.page >= this.meta.last_page) return
         this.loadingMore = true
         this.page += 1

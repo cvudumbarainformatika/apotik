@@ -80,7 +80,6 @@ export function createTemplateTransaksiStore(storeId, config) {
       },
 
       async fetchMore(extraParams = {}) {
-        
         if (this.meta.page >= this.meta.last_page) return
         this.loadingMore = true
         this.page += 1
@@ -93,7 +92,7 @@ export function createTemplateTransaksiStore(storeId, config) {
             sort: this.sort,
             from: this.range.start_date,
             to: this.range.end_date,
-            ...extraParams
+            // ...extraParams
           }
 
           const res = await api.get(`${config.baseUrl}${config?.createUrl  || '/get-list'}`, { params })
