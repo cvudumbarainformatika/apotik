@@ -26,7 +26,7 @@
               <!-- <span>{{ f.rupiah(it.qty * it.price - (it.discount||0)) }}</span> -->
               <span>{{ formatRupiah(it?.subtotal + (it?.diskon || 0)) }}</span>
             </div>
-            <div class="flex justify-between text-[10px]">
+            <div class="flex justify-between">
               <span>{{ it?.jumlah_k }} {{ it?.satuan_k }} x {{ formatRupiah(it?.harga_jual) }}</span>
               <span >Disc: - {{ formatRupiah(it?.diskon) }}</span>
             </div>
