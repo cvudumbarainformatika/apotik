@@ -22,11 +22,11 @@
         <div class="text-[11px]">
           <div v-for="(it, i) in groupedItems" :key="i" class="py-0.5">
             <div class="flex justify-between">
-              <span class="pr-2">{{ it?.nama || '-' }}<span class="opacity-70"></span></span>
+              <span class="pr-2">{{ it?.nama || '-' }}<span class=""></span></span>
               <!-- <span>{{ f.rupiah(it.qty * it.price - (it.discount||0)) }}</span> -->
               <span>{{ formatRupiah(it?.subtotal + (it?.diskon || 0)) }}</span>
             </div>
-            <div class="flex justify-between text-[10px] opacity-70">
+            <div class="flex justify-between text-[10px]">
               <span>{{ it?.jumlah_k }} {{ it?.satuan_k }} x {{ formatRupiah(it?.harga_jual) }}</span>
               <span >Disc: - {{ formatRupiah(it?.diskon) }}</span>
             </div>
